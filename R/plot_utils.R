@@ -1,15 +1,3 @@
-#' Quantile function to use with ggplot2 stat_summary
-#'
-plot_hd <- function(x,q){
-  m <- hd(x,q)
-  c(y = m, ymin = m, ymax = m)
-}
-
-plot_mean <- function(x){
-  m <- mean(x)
-  c(y = m, ymin = m, ymax = m)
-}
-
 #' Add bars marking quantiles to plot
 #' Default to deciles.
 #' To plot the deciles with a different bar size for the median,
@@ -21,7 +9,9 @@ plot_hd_bars <- function(p,
                             size = 0.5){
    for (qi in 1:length(q_seq)){
     p <- p + geom_errorbar(stat = "summary",
-                           fun.data = "plot_hd",
+                           fun.y = hd,
+                           fun.ymin = hd,
+                           fun.ymax = hd,
                            fun.args = list(q = q_seq[[qi]]),
                            colour = col,
                            width = width,
@@ -41,14 +31,13 @@ plot_dec_bars <- function(p,
   size_seq <- c(rep(dec_size,4), md_size, rep(dec_size,4))
   for (qi in 1:length(q_seq)){
     p <- p + stat_summary(geom = "errorbar",
-      # fun.data = "plot_hd",
-      fun.y = hd,
-      fun.ymin = hd,
-      fun.ymax = hd,
-      fun.args = list(q = q_seq[[qi]]),
-      colour = col,
-      width = width,
-      size = size_seq[[qi]])
+                          fun.y = hd,
+                          fun.ymin = hd,
+                          fun.ymax = hd,
+                          fun.args = list(q = q_seq[[qi]]),
+                          colour = col,
+                          width = width,
+                          size = size_seq[[qi]])
   }
   p
 }
@@ -64,7 +53,9 @@ plot_quartile_bars <- function(p,
   size_seq <- c(q_size, md_size, q_size)
   for (qi in 1:length(q_seq)){
     p <- p + geom_errorbar(stat = "summary",
-                           fun.data = "plot_hd",
+                           fun.y = hd,
+                           fun.ymin = hd,
+                           fun.ymax = hd,
                            fun.args = list(q = q_seq[[qi]]),
                            colour = col,
                            width = width,
@@ -80,7 +71,9 @@ plot_mean_bar <- function(p,
                           width = 0.5,
                           size = 0.5){
     p <- p + geom_errorbar(stat = "summary",
-                           fun.data = "plot_mean",
+                           fun.y = mean,
+                           fun.ymin = mean,
+                           fun.ymax = mean,
                            colour = col,
                            width = width,
                            size = size)
