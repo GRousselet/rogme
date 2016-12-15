@@ -84,6 +84,7 @@ plot_mean_bar <- function(p,
   p
 }
 
+# =================================================================================
 #' Add deciles to plot + links between deciles
 #'
 #' Used in README to demonstrate the shift function.
@@ -165,6 +166,7 @@ plot_dec_links <- function(p,
   } # if add_lab
   p
 }
+# =================================================================================
 
 #' Add difference labels to shift function
 #'
