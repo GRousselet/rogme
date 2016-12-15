@@ -19,6 +19,10 @@ plot_hd_bars <- function(p,
                             col = "grey21",
                             width = 0.5,
                             size = 0.5){
+  plot_hd <- function(x,q){
+    m <- hd(x,q)
+    return(c(y = m, ymin = m, ymax = m))
+  }
   for (qi in 1:length(q_seq)){
     p <- p + geom_errorbar(stat = "summary",
                            fun.data = "plot_hd",
@@ -38,6 +42,10 @@ plot_dec_bars <- function(p,
                           width = 0.5,
                           dec_size = 0.5,
                           md_size = 1){
+  plot_hd <- function(x,q){
+    m <- hd(x,q)
+    return(c(y = m, ymin = m, ymax = m))
+  }
   size_seq <- c(rep(dec_size,4), md_size, rep(dec_size,4))
   for (qi in 1:length(q_seq)){
     p <- p + stat_summary(geom = "errorbar",
