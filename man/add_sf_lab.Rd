@@ -2,12 +2,13 @@
 % Please edit documentation in R/plot_utils.R
 \name{add_sf_lab}
 \alias{add_sf_lab}
-\title{All labels of differences to shift function}
+\title{Add difference labels to shift function}
 \usage{
 add_sf_lab(p, sf, dec = seq(1, 9), labres = 2, link_col = c("darkviolet",
   "darkorange2"), link_alpha = c(0.4, 1), y_lab_nudge = 0)
 }
 \description{
-All labels of differences to shift function
+Add labels of difference values to shift function plot.
+Used in README.md file to illustrate the shift function.
 }
 

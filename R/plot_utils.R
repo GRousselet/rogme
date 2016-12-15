@@ -164,6 +164,9 @@ plot_dec_links <- function(p,
 }
 
 #' Add difference labels to shift function
+#'
+#' Add labels of difference values to shift function plot.
+#' Used in README.md file to illustrate the shift function.
 #' @export
 add_sf_lab <- function(p,
                        sf,
