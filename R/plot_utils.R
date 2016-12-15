@@ -40,18 +40,12 @@ plot_dec_bars <- function(p,
                           md_size = 1){
   size_seq <- c(rep(dec_size,4), md_size, rep(dec_size,4))
   for (qi in 1:length(q_seq)){
-    # p <- p + geom_errorbar(stat = "summary",
-    #                        fun.data = "plot_hd",
-    #                        fun.args = list(q = q_seq[[qi]]),
-    #                        colour = col,
-    #                        width = width,
-    #                        size = size_seq[[qi]])
     p <- p + stat_summary(geom = "errorbar",
-      fun.data = "plot_hd",
-      fun.args = list(q = q_seq[[qi]]),
-      colour = col,
-      width = width,
-      size = size_seq[[qi]])
+                          fun.data = "plot_hd",
+                          fun.args = list(q = q_seq[[qi]]),
+                          colour = col,
+                          width = width,
+                          size = size_seq[[qi]])
   }
   p
 }
