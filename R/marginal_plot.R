@@ -56,8 +56,7 @@ plot_kde_rug_dec1 <- function(data=df,fill.colour="grey30",fill.alpha=.3){
 
 #' Scatterplots for 2 groups
 #'
-#' \code{plot_scat2} produces scatterplots for 2 marginal distributions. The
-#' scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
+#' \code{plot_scat2} produces scatterplots for 2 marginal distributions. #' The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
 #'
 #' @export
 plot_scat2 <- function(data = df,

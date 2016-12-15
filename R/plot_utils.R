@@ -121,11 +121,6 @@ plot_dec_links <- function(p,
                  dec_size,dec_size,dec_size,dec_size)
   # add links ---------------------------------------------------
   for (d in 1:9){
-    # if (diff_sign[d] == 1){
-    #     cc <- link_col[2]
-    #   } else {
-    #     cc <- link_col[1]
-    #   }
   p <- p + annotate("segment",
                     x = 1 + dec_width / 2,
                     xend = 2 - dec_width / 2,

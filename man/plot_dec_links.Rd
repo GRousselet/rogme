@@ -10,6 +10,6 @@ plot_dec_links(p, sf = sf, dec_col = "grey21", dec_width = 0.5,
   rect_col = NULL, add_lab = FALSE, labres = 2)
 }
 \description{
-Add deciles to plot + links between deciles
+Used in README to demonstrate the shift function.
 }
 
