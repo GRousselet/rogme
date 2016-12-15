@@ -2,12 +2,12 @@
 #'
 plot_hd <- function(x,q){
   m <- hd(x,q)
-  c(y = m, ymin = m, ymax = m)
+  return(c(y = m, ymin = m, ymax = m))
 }
 
 plot_mean <- function(x){
   m <- mean(x)
-  c(y = m, ymin = m, ymax = m)
+  return(c(y = m, ymin = m, ymax = m))
 }
 
 #' Add bars marking quantiles to plot
@@ -22,7 +22,7 @@ plot_hd_bars <- function(p,
   for (qi in 1:length(q_seq)){
     p <- p + geom_errorbar(stat = "summary",
                            fun.data = "plot_hd",
-                           fun.args = list(q = q_seq(qi)),
+                           fun.args = list(q = q_seq[[qi]]),
                            colour = col,
                            width = width,
                            size = size)
@@ -41,11 +41,11 @@ plot_dec_bars <- function(p,
   size_seq <- c(rep(dec_size,4), md_size, rep(dec_size,4))
   for (qi in 1:length(q_seq)){
     p <- p + stat_summary(geom = "errorbar",
-                          fun.data = "plot_hd",
-                          fun.args = list(q = q_seq[[qi]]),
-                          colour = col,
-                          width = width,
-                          size = size_seq[[qi]])
+      fun.data = "plot_hd",
+      fun.args = list(q = q_seq[[qi]]),
+      colour = col,
+      width = width,
+      size = size_seq[[qi]])
   }
   p
 }
