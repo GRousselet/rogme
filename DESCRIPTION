@@ -23,3 +23,5 @@ License: MIT | file LICENSE
 LazyData: TRUE
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
+URL: https://github.com/GRousselet/rogme
+BugReports: https://github.com/GRousselet/rogme/issues
