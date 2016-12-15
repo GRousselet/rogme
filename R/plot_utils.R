@@ -163,8 +163,8 @@ plot_dec_links <- function(p,
   p
 }
 
-#' All labels of differences to shift function
-#'
+#' Add difference labels to shift function
+#' @export
 add_sf_lab <- function(p,
                        sf,
                        dec = seq(1,9),
