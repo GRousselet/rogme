@@ -86,6 +86,9 @@ plot_mean_bar <- function(p,
 
 #' Add deciles to plot + links between deciles
 #'
+#' Used in README to demonstrate the shift function.
+#'
+#' @export
 plot_dec_links <- function(p,
                            sf = sf,
                            dec_col = "grey21",
@@ -167,6 +170,7 @@ plot_dec_links <- function(p,
 #'
 #' Add labels of difference values to shift function plot.
 #' Used in README.md file to illustrate the shift function.
+#'
 #' @export
 add_sf_lab <- function(p,
                        sf,
