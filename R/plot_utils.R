@@ -103,11 +103,11 @@ plot_dec_links <- function(p,
                            rect_col = NULL,
                            add_lab = FALSE,
                            labres = 2){
-  p <- p + plot_dec_bars(p,
-                         col = dec_col,
-                         width = dec_width,
-                         dec_size = dec_size,
-                         md_size = md_size)
+  p <- plot_dec_bars(p,
+                     col = dec_col,
+                     width = dec_width,
+                     dec_size = dec_size,
+                     md_size = md_size)
   # extract vectors from shift function -------------------------
   g1 <- sf[[1]] # group 1 deciles
   g2 <- sf[[2]] # group 2 deciles
