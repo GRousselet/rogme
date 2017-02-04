@@ -8,25 +8,36 @@ shifthd_pbci(data = df, formula = obs ~ gr, q = seq(0.1, 0.9, 0.1),
   nboot = 2000, alpha = 0.05, adj_ci = TRUE)
 }
 \arguments{
-\item{q}{Quantiles to estimate - default = deciles 0.1:0.1:.9.
-Other suggestions}
+\item{data}{A data frame in tidy format. Column 1 describes the two groups;
+column 2 contains the values for each group. A properly formatted data
+frame can be created using \code{link{mkt2}} or \code{link{mkt2d}}. Missing
+values are not allowed.}
+
+\item{formula}{A formula with format response variable ∼ predictor variable,
+where ~ (tilde) means "is modeled as a function of".}
+
+\item{q}{Quantiles to estimate - default = deciles 0.1:0.1:.9.}
 
 \item{nboot}{Number of bootstrap samples - default = 2000}
 
 \item{alpha}{Expected long-run type I error rate - default = 0.05}
 
-\item{x, y}{Vectors; no missing values are allowed}
+\item{adj_ci}{Adjust confidence intervals & p values for multiple comparisons - default = TRUE}
 }
 \value{
 A data frame with one row per decile.
 The columns are: \itemize{
-  \item Column 1 = quantiles for group 1
-  \item Column 2 = quantiles for group 2
-  \item Column 3 = differences (column 1 - column 2)
-  \item Column 4 = lower bounds of the confidence intervals
-  \item Column 5 = upper bounds of the confidence intervals
-  \item Column 6 = p-values based on Hochberg's method
-  \item Column 7 = critical p-values based on Hochberg's method
+  \item Column 1 = quantiles
+  \item Column 2 = number of observations in group 1
+  \item Column 3 = number of observations in group 2
+  \item Column 4 = quantiles for group 1
+  \item Column 5 = quantiles for group 2
+  \item Column 6 = quantile differences (column 4 - column 5)
+  \item Column 7 = lower bounds of the confidence intervals
+  \item Column 8 = upper bounds of the confidence intervals
+  \item Column 9 = critical p-values based on Hochberg's method
+  \item Column 10 = p-values based on Hochberg's method
+  \item Column 11 = significance 0/1
   }
 }
 \description{

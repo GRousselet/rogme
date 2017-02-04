@@ -9,14 +9,15 @@ shifthd(data = df, formula = obs ~ gr, nboot = 200)
 shifthd(data = df, formula = obs ~ gr, nboot = 200)
 }
 \arguments{
+\item{data}{A data frame in tidy format. Column 1 describes the two groups;
+column 2 contains the values for each group. A properly formatted data
+frame can be created using \code{link{mkt2}}. Missing values are not
+allowed.}
+
 \item{formula}{A formula with format response variable ∼ predictor variable,
 where ~ (tilde) means "is modeled as a function of".}
 
 \item{nboot}{The number of bootstrap samples - default = 200.}
-
-\item{df}{A data frame in tidy format. Column 1 describes the two groups;
-column 2 contains the values for each group. A properly formatted data
-frame can be created using \code{link{mkt2}}.}
 
 \item{df}{A data frame in tidy format. Column 1 describes the two groups;
 column 2 contains the values for each group. A properly formatted

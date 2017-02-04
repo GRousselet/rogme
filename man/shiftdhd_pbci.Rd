@@ -2,50 +2,66 @@
 % Please edit documentation in R/shift_function_calc.R
 \name{shiftdhd_pbci}
 \alias{shiftdhd_pbci}
-\title{Shift function for two depend groups (pbci methods)}
+\title{Shift function for two depend groups (pbci method)}
 \usage{
-shiftdhd_pbci()
+shiftdhd_pbci(data = df, formula = obs ~ gr, q = seq(0.1, 0.9, 0.1),
+  nboot = 1000, alpha = 0.05)
+}
+\arguments{
+\item{data}{A data frame in tidy format. Column 1 describes the two groups;
+column 2 contains the values for each group. A properly formatted data
+frame can be created using \code{link{mkt2}} or \code{link{mkt2d}}. Missing
+values are not allowed.}
+
+\item{formula}{A formula with format response variable ∼ predictor variable,
+where ~ (tilde) means "is modeled as a function of".}
+
+\item{q}{Quantiles to estimate - default = deciles 0.1:0.1:.9.}
+
+\item{nboot}{Number of bootstrap samples - default = 1000}
+
+\item{alpha}{Expected long-run type I error rate - default = 0.05}
+}
+\value{
+A data frame with one row per decile.
+The columns are: \itemize{
+  \item Column 1 = quantiles
+  \item Column 2 = number of observations
+  \item Column 3 = quantiles for group 1
+  \item Column 4 = quantiles for group 2
+  \item Column 5 = quantile differences (column 3 - column 4)
+  \item Column 6 = lower bounds of the confidence intervals
+  \item Column 7 = upper bounds of the confidence intervals
+  \item Column 8 = critical p-values based on Hochberg's method
+  \item Column 9 = p-values
+  \item Column 10 = significance 0/1
+  }
 }
 \description{
-This version of the shift function
-Computes a shift function for two dependent groups by comparing
-the quantiles of the marginal distributions using the
+Compute a shift function for two dependent groups using the
 Harrell-Davis quantile estimator in conjunction with a percentile
 bootstrap approach.
+Unlike \code{\link{shiftdhd}}: \itemize{
+\item The confidence intervals are calculated using a percentile bootstrap of
+the quantiles, instead of a percentile bootstrap of the standard error of
+the difference of the quantiles.
+\item The quantiles can be specified and are not limited to the deciles.
+\item Tied values are allowed.
 }
-\details{
-INPUTS:
-- x & y are vectors of the same length without missing values
-- q = quantiles to estimate - default = 0.1:0.1:.9 (deciles)
-- nboot = number of bootstrap samples - default = 2000
-- alpha = expected long-run type I error rate - default = 0.05
-- plotit = 1 to get a figure; 0 otherwise by default
-
-OUTPUTS:
- - xd & yd = vectors of quantiles
-- delta = vector of differences between quantiles (x-y)
-- deltaCI = matrix quantiles x low/high bounds of the confidence
-intervals of the quantile differences
-
-Unlike shiftdhd:
-- the confidence intervals are not corrected for multiple comparisons
-(the R version provides corrected critical p values - here i've decided
-not to provide p values at all - the goal is to understand how
-distributions differ, not to make binary decisions)
-- the confidence intervals are calculated using a percentile bootstrap of
-  the quantiles, instead of a percentile bootstrap of the standard error of the quantiles
-- the quantiles to compare can be specified and are not limited to the
-  deciles
-- Tied values are allowed
-
-Unlike Rand Wilcox's Dqcomhd R function, no p value is returned.
- Extensive experience suggests humans cannot be trusted with p values.
+The confidence intervals are not corrected for multiple comparisons, the p
+values are.
+Examples of quantile sequences, from sparse to dense: \itemize{
+\item \code{q = c(.25,.5,.75)}
+\item \code{q = c(.1,.25,.5,.75,.9)}
+\item \code{q = seq(.1, .9, .1)}
+\item \code{q = seq(.05, .95, .05)}
+}
 }
 \section{Note}{
 
-Adaptation of Rand Wilcox's Dqcomhd, bootdpci & rmmcppb R functions,
-http://dornsife.usc.edu/labs/rwilcox/software/
-From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
+Adaptation of Rand Wilcox's `Dqcomhd`, `bootdpci` & `rmmcppb` R functions
+(\url{http://dornsife.usc.edu/labs/rwilcox/software/}).
+From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}.
 }
 \references{
 Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
@@ -53,6 +69,7 @@ Comparing two dependent groups via quantiles.
 J Appl Stat, 39, 2655-2664.
 }
 \seealso{
-HD, SHIFTDHD, SHIFTHD_PBCI
+\code{hd}, \code{shiftdhd} for the pbse method for dependent
+  groups, \code{shifthd_pbci} for dependent groups
 }
 
