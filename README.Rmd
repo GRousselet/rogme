@@ -109,7 +109,7 @@ cowplot::plot_grid(ps, p, psf, labels=c("A", "B", "C"), ncol = 1, nrow = 3,
                    rel_heights = c(1, 1, 1), label_size = 20, hjust = -0.5, scale=.95)
 ```
 
-
+data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAJCAYAAAD6reaeAAAAN0lEQVR42mNggIJJ02f+Z0AGE6fN/A8ShEvAOAg86z/DfyyAASvA1D4Toh1ZAK4dIjEL0zxkAQAPeFlrV0HzRgAAAABJRU5ErkJggg==
 
 
 

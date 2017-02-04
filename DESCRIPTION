@@ -6,8 +6,8 @@ Authors@R: c(person("Guillaume", "Rousselet", email = "Guillaume.Rousselet@glasg
              person("Rand", "Wilcox", email = "rwilcox@usc.edu", role = "aut"))
 Maintainer: Guillaume Rousselet <Guillaume.Rousselet@glasgow.ac.uk>
 Description: Robust methods to compare and visualise groups of continuous
-    variables. Based on Rand Wilcox's shift function and difference asymmetry
-    function. The outputs of these core tools can be visualised using graphical
+    variables. Based on Rand Wilcox's shift functions and difference asymmetry
+    functions. The outputs of these core tools can be visualised using graphical
     representations based on ggplot2.
 Depends:
     R (>= 3.3.2),
