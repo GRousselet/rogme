@@ -211,6 +211,7 @@ shiftdhd <- function(data = df, formula = obs ~ gr, nboot = 200){
 #' J Stat Comput Sim, 84, 1543-1551.
 #' @seealso \code{hd}, \code{shifthd} for the pbse method for independent
 #'   groups, \code{shiftdhd_pbci} for dependent groups
+#' @export
 shifthd_pbci <- function(data = df,
                          formula = obs ~ gr,
                          q = seq(.1, .9, .1),
@@ -331,6 +332,7 @@ shifthd_pbci <- function(data = df,
 #' J Appl Stat, 39, 2655-2664.
 #' @seealso \code{hd}, \code{shiftdhd} for the pbse method for dependent
 #'   groups, \code{shifthd_pbci} for dependent groups
+#' @export
 shiftdhd_pbci <- function(data = df,
                           formula = obs ~ gr,
                           q = seq(.1, .9, .1),

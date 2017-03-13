@@ -1,7 +1,8 @@
-#' Add bars marking quantiles to plot
+#' Add bars marking quantiles
 #' Default to deciles.
 #' To plot the deciles with a different bar size for the median,
 #' use \code{\link{plot_dec_bars}}.
+#' @export
 plot_hd_bars <- function(p,
                             q_seq = seq(.1,.9,.1),
                             col = "grey21",
@@ -21,13 +22,14 @@ plot_hd_bars <- function(p,
 }
 
 #' Add bars marking the deciles to plot
-#'
+#' @export
 plot_dec_bars <- function(p,
-                          q_seq = seq(.1,.9,.1),
                           col = "grey21",
                           width = 0.5,
                           dec_size = 0.5,
-                          md_size = 1){
+                          md_size = 1,
+                          alpha = 1){
+  q_seq <- seq(.1,.9,.1)
   size_seq <- c(rep(dec_size,4), md_size, rep(dec_size,4))
   for (qi in 1:length(q_seq)){
     p <- p + stat_summary(geom = "errorbar",
@@ -37,7 +39,8 @@ plot_dec_bars <- function(p,
                           fun.args = list(q = q_seq[[qi]]),
                           colour = col,
                           width = width,
-                          size = size_seq[[qi]])
+                          size = size_seq[[qi]],
+                          alpha = alpha)
   }
   p
 }

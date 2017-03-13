@@ -4,8 +4,8 @@
 \alias{plot_dec_bars}
 \title{Add bars marking the deciles to plot}
 \usage{
-plot_dec_bars(p, q_seq = seq(0.1, 0.9, 0.1), col = "grey21", width = 0.5,
-  dec_size = 0.5, md_size = 1)
+plot_dec_bars(p, col = "grey21", width = 0.5, dec_size = 0.5,
+  md_size = 1, alpha = 1)
 }
 \description{
 Add bars marking the deciles to plot

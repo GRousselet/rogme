@@ -57,9 +57,7 @@ plot_kde_rug_dec1 <- function(data=df,fill.colour="grey30",fill.alpha=.3){
 #' Scatterplots for 2 groups
 #'
 #' \code{plot_scat2} produces scatterplots for 2 marginal distributions. #' The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
-#'
-#' @export
-plot_scat2 <- function(data = df,
+plot_scat2_sina <- function(data = df,
                        symb_size = 2,
                        symb_stroke = 1,
                        symb_shape = c(21,21),
@@ -70,14 +68,16 @@ plot_scat2 <- function(data = df,
                        ylabel = NULL,
                        binwidth = NULL,
                        bins = NULL,
-                       maxwidth = NULL){
+                       maxwidth = NULL,
+                       scale = TRUE){
   xplot = names(data)[1]
   yplot = names(data)[2]
   p <- ggplot(data, aes_string(x = xplot, y = yplot, fill = xplot,
                                colour = xplot, shape = xplot))
   p <- p + ggforce::geom_sina(size = symb_size, stroke = symb_stroke,
                               alpha = symb_alpha, binwidth = binwidth,
-                              bins = bins, maxwidth = maxwidth) +
+                              bins = bins, maxwidth = maxwidth,
+                              scale = scale) +
     theme_bw() +
     scale_colour_manual(values = symb_col) +
     scale_fill_manual(values = symb_fil) +
@@ -97,10 +97,48 @@ plot_scat2 <- function(data = df,
   p
 }
 
-plot_dec_ci <- function(out=out,plotzero=TRUE,xtitle="Differences",hjust=-.05,vjust=.2,size=6){
-  # Plot deciles and their confidence intervals
-  # using the output of `deciles_pbci` from `wilcox_modified.txt`
-  # GAR, University of Glasgow, 2016-07-15
+#' Scatterplots for 2 groups
+#'
+#' \code{plot_scat2} produces scatterplots for 2 marginal distributions.
+#' The scatterplots are jittered using \code{\link[ggbeeswarm]{geom_quasirandom}}.
+#' @export
+plot_scat2 <- function(data = df,
+                       xlabel = NULL,
+                       ylabel = NULL,
+                       ...){
+  xplot = names(data)[1]
+  yplot = names(data)[2]
+  p <- ggplot(data, aes_string(x = xplot, y = yplot, fill = xplot,
+                               colour = xplot, shape = xplot))
+  p <- p + ggbeeswarm::geom_quasirandom(...) +
+    theme_bw() +
+    # scale_colour_manual(values = symb_col) +
+    # scale_fill_manual(values = symb_fil) +
+    # scale_shape_manual(values = symb_shape) +
+    theme(legend.position = "none") +
+    theme(axis.title.x = element_text(size=16,face="bold"),
+          axis.title.y = element_text(size=16,face="bold"),
+          axis.text.x = element_text(size=14),
+          axis.text.y = element_text(size=14))
+  # override axis labels
+  if (!is.null(xlabel)){
+    p <- p + xlab(xlabel)
+  }
+  if (!is.null(ylabel)){
+    p <- p + ylab(ylabel)
+  }
+  p
+}
+
+# Plot deciles and their confidence intervals
+# using the output of `quantiles_pbci`
+# GAR, University of Glasgow, 2016-07-15
+plot_dec_ci <- function(out=out,
+                        plotzero=TRUE,
+                        xtitle="Differences",
+                        hjust=-.05,
+                        vjust=.2,
+                        size=6){
   md <- out$est_q[5] # median
   md.c <- as.character(round(md, digits=1)) # turn into characters
   lo.c <- as.character(round(out$ci.low[5], digits=1)) # turn into characters

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_utils.R
 \name{plot_hd_bars}
 \alias{plot_hd_bars}
-\title{Add bars marking quantiles to plot
+\title{Add bars marking quantiles
 Default to deciles.
 To plot the deciles with a different bar size for the median,
 use \code{\link{plot_dec_bars}}.}
@@ -11,7 +11,7 @@ plot_hd_bars(p, q_seq = seq(0.1, 0.9, 0.1), col = "grey21", width = 0.5,
   size = 0.5)
 }
 \description{
-Add bars marking quantiles to plot
+Add bars marking quantiles
 Default to deciles.
 To plot the deciles with a different bar size for the median,
 use \code{\link{plot_dec_bars}}.

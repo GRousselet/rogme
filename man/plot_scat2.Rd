@@ -4,12 +4,10 @@
 \alias{plot_scat2}
 \title{Scatterplots for 2 groups}
 \usage{
-plot_scat2(data = df, symb_size = 2, symb_stroke = 1, symb_shape = c(21,
-  21), symb_alpha = 0.2, symb_col = c("black", "black"),
-  symb_fil = c("grey70", "grey70"), xlabel = NULL, ylabel = NULL,
-  binwidth = NULL, bins = NULL, maxwidth = NULL)
+plot_scat2(data = df, xlabel = NULL, ylabel = NULL, ...)
 }
 \description{
-\code{plot_scat2} produces scatterplots for 2 marginal distributions. #' The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
+\code{plot_scat2} produces scatterplots for 2 marginal distributions.
+The scatterplots are jittered using \code{\link[ggbeeswarm]{geom_quasirandom}}.
 }
 
