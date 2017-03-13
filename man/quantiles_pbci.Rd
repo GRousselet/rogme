@@ -2,19 +2,18 @@
 % Please edit documentation in R/stats.R
 \name{quantiles_pbci}
 \alias{quantiles_pbci}
-\title{Merges `deciles` & `qcipb` from `Rallfun-v31.txt`
-Compute percentile bootstrap confidence intervals of quantiles, `quant`,
-estimated using the Harrell-Davis estimator.
-Default to deciles
-GAR, University of Glasgow, 2016-07-15}
+\title{Percentile bootstrap confidence intervals of quantiles}
 \usage{
 quantiles_pbci(x, q = seq(1, 9)/10, nboot = 2000, alpha = 0.05)
 }
 \description{
-Merges `deciles` & `qcipb` from `Rallfun-v31.txt`
-Compute percentile bootstrap confidence intervals of quantiles, `quant`,
+Compute percentile bootstrap confidence intervals of quantiles,
 estimated using the Harrell-Davis estimator.
-Default to deciles
-GAR, University of Glasgow, 2016-07-15
+Default to deciles.
+}
+\section{Note}{
+
+Combine functions \code{deciles} & \code{qcipb} from
+Rallfun-v31.txt - see \url{https://github.com/nicebread/WRS}.
 }
 

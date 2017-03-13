@@ -26,27 +26,31 @@ q1469 <- function(x){
   xq
 }
 
-#' Merges `deciles` & `qcipb` from `Rallfun-v31.txt`
-#' Compute percentile bootstrap confidence intervals of quantiles, `quant`,
+#' Percentile bootstrap confidence intervals of quantiles
+#'
+#' Compute percentile bootstrap confidence intervals of quantiles,
 #' estimated using the Harrell-Davis estimator.
-#' Default to deciles
-#' GAR, University of Glasgow, 2016-07-15
+#' Default to deciles.
+#' @section Note:
+#' Combine functions \code{deciles} & \code{qcipb} from
+#' Rallfun-v31.txt - see \url{https://github.com/nicebread/WRS}.
+#' @export
 quantiles_pbci <- function(x, q = seq(1,9) / 10, nboot = 2000, alpha = 0.05){
-  low<-round((alpha/2)*nboot)
-  up<-nboot-low
-  low<-low+1
-  x=elimna(x)
-  nq=length(q)
-  output=matrix(NA,ncol=4,nrow=nq)
-  dimnames(output)=list(NULL,c("quantile","est_q","ci.low","ci.up"))
-  bdata<-matrix(sample(x,size=length(x)*nboot,replace=TRUE),nrow=nboot) # bootstrap samples
+  low <- round((alpha/2)*nboot)
+  up <- nboot-low
+  low <- low+1
+  x <- x[!is.na(x)]
+  nq <- length(q)
+  output = matrix(NA,ncol=4,nrow=nq)
+  dimnames(output) = list(NULL,c("quantile","est_q","ci.low","ci.up"))
+  bdata <- matrix(sample(x,size=length(x)*nboot,replace=TRUE),nrow=nboot) # bootstrap samples
   for (qi in 1:nq){
-    output[qi,1]=q[qi]
-    output[qi,2]=hd(x,q=q[qi])
-    bvec<-apply(bdata,1,hd,q=q[qi])
-    bvec<-sort(bvec)
-    output[qi,3]=bvec[low]
-    output[qi,4]=bvec[up]
+    output[qi,1] = q[qi]
+    output[qi,2] = hd(x,q=q[qi])
+    bvec <- apply(bdata,1,hd,q=q[qi])
+    bvec <- sort(bvec)
+    output[qi,3] = bvec[low]
+    output[qi,4] = bvec[up]
   }
   output <- data.frame(output)
   print(output)
