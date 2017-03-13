@@ -196,8 +196,8 @@ shiftdhd <- function(data = df, formula = obs ~ gr, nboot = 200){
 #'   \item Column 6 = quantile differences (column 4 - column 5)
 #'   \item Column 7 = lower bounds of the confidence intervals
 #'   \item Column 8 = upper bounds of the confidence intervals
-#'   \item Column 9 = critical p-values based on Hochberg's method
-#'   \item Column 10 = p-values based on Hochberg's method
+#'   \item Column 9 = critical p_values based on Hochberg's method
+#'   \item Column 10 = p_values based on Hochberg's method
 #'   \item Column 11 = significance 0/1
 #'   }
 #' @section Note:
@@ -223,6 +223,8 @@ shifthd_pbci <- function(data = df,
   #df <- na.omit(df) # remove NA
   x <- out$x
   y <- out$y
+  nx <- length(x)
+  ny <- length(y)
   gr_name1 <- out$gr_name1
   gr_name2 <- out$gr_name2
   # declare matrix of results
@@ -233,21 +235,21 @@ shifthd_pbci <- function(data = df,
   # loop through quantiles
   for(i in 1:length(q)){
     output[i,1] = q[i]
-    output[i,2] = length(elimna(x))
-    output[i,3] = length(elimna(y))
+    output[i,2] = nx
+    output[i,3] = ny
     output[i,4] = hd(x, q = q[i])
     output[i,5] = hd(y, q = q[i])
     output[i,6] = output[i,4]-output[i,5]
     #  bootstrap
-    datax <- matrix(sample(x, size = length(x) * nboot, replace = TRUE), nrow = nboot)
-    datay <- matrix(sample(y, size = length(y) * nboot, replace = TRUE), nrow = nboot)
+    datax <- matrix(sample(x, size = nx * nboot, replace = TRUE), nrow = nboot)
+    datay <- matrix(sample(y, size = ny * nboot, replace = TRUE), nrow = nboot)
     bvecx <- apply(datax, 1, hd, q = q[i])
     bvecy <- apply(datay, 1, hd, q = q[i])
     bvec <- sort(bvecx - bvecy)
     temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
     output[i,7] = bvec[low] # ci_lower
     output[i,8] = bvec[up] # ci_upper
-    output[i,10] = 2*(min(temp,1-temp)) # p-value
+    output[i,10] = 2*(min(temp,1-temp)) # p_value
   }
   temp = order(output[,10], decreasing=TRUE)
   zvec = alpha / c(1:length(q))
@@ -259,23 +261,23 @@ shifthd_pbci <- function(data = df,
       low <- round((alpha / 2) * nboot) + 1
       up <- nboot - low
       #  bootstrap
-      datax <- matrix(sample(x, size = length(x) * nboot, replace = TRUE), nrow = nboot)
-      datay <- matrix(sample(y, size = length(y) * nboot, replace = TRUE), nrow = nboot)
+      datax <- matrix(sample(x, size = nx * nboot, replace = TRUE), nrow = nboot)
+      datay <- matrix(sample(y, size = ny * nboot, replace = TRUE), nrow = nboot)
       bvecx <- apply(datax, 1, hd, q = q[i])
       bvecy <- apply(datay, 1, hd, q = q[i])
       bvec <- sort(bvecx - bvecy)
       temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
       output[i,7] = bvec[low] # ci_lower
       output[i,8] = bvec[up] # ci_upper
-      output[i,10] = 2*(min(temp,1-temp)) # p-value
+      output[i,10] = 2*(min(temp,1-temp)) # p_value
     }
   }
   # make data frame
-  out <- data.frame(m)
+  out <- data.frame(output)
   names(out) <- c('q', 'n1', 'n2', gr_name1, gr_name2, 'difference',
-                  'ci_lower', 'ci_upper', 'p_crit', 'p-value')
+                  'ci_lower', 'ci_upper', 'p_crit', 'p_value')
   # add sig column
-  dplyr::mutate(out, sig = p-value <= p_crit)
+  dplyr::mutate(out, sig = p_value <= p_crit)
   out
 }
 
@@ -317,8 +319,8 @@ shifthd_pbci <- function(data = df,
 #'   \item Column 5 = quantile differences (column 3 - column 4)
 #'   \item Column 6 = lower bounds of the confidence intervals
 #'   \item Column 7 = upper bounds of the confidence intervals
-#'   \item Column 8 = critical p-values based on Hochberg's method
-#'   \item Column 9 = p-values
+#'   \item Column 8 = critical p_values based on Hochberg's method
+#'   \item Column 9 = p_values
 #'   \item Column 10 = significance 0/1
 #'   }
 #' @section Note:
@@ -367,16 +369,16 @@ shiftdhd_pbci <- function(data = df,
     temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
     output[i,6] = bvec[low] # ci_lower
     output[i,7] = bvec[up] # ci_upper
-    output[i,9] = 2*(min(temp,1-temp)) # p-value
+    output[i,9] = 2*(min(temp,1-temp)) # p_value
   }
   temp = order(output[,9], decreasing=TRUE)
   zvec = alpha / c(1:length(q))
   output[temp,8] = zvec # p_crit
   # make data frame
-  out <- data.frame(m)
+  out <- data.frame(output)
   names(out) <- c('q', 'n', gr_name1, gr_name2, 'difference',
-    'ci_lower', 'ci_upper', 'p_crit', 'p-value')
+    'ci_lower', 'ci_upper', 'p_crit', 'p_value')
   # add sig column
-  dplyr::mutate(out, sig = p-value <= p_crit)
+  dplyr::mutate(out, sig = p_value <= p_crit)
   out
 }

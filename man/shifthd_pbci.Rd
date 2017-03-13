@@ -35,8 +35,8 @@ The columns are: \itemize{
   \item Column 6 = quantile differences (column 4 - column 5)
   \item Column 7 = lower bounds of the confidence intervals
   \item Column 8 = upper bounds of the confidence intervals
-  \item Column 9 = critical p-values based on Hochberg's method
-  \item Column 10 = p-values based on Hochberg's method
+  \item Column 9 = critical p_values based on Hochberg's method
+  \item Column 10 = p_values based on Hochberg's method
   \item Column 11 = significance 0/1
   }
 }

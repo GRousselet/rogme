@@ -76,13 +76,20 @@ plot_sf <- function(data = df,
     if (is.null(symb_fill)){
       symb_fill <- c("darkviolet","darkorange2")
     }
+    if (sum(unique(data$sign)) == 1){
+      if (unique(data$sign) == -1){
+        symb_fill <- symb_fill[1]
+      } else {
+        symb_fill <- symb_fill[2]
+      }
+    }
     if (is.null(dec_line_col)){
       dec_line_col <- "grey50"
     }
     if (is.null(theme2_alpha)){
       theme2_alpha <- c(0.4, 1)
     }
-      }
+  }
   # -----
   if (plot_theme == 3){ # add code of deciles to data frame
     data$deco <- c(seq(1,5),seq(4,1))
@@ -162,34 +169,145 @@ plot_sf <- function(data = df,
 }
 
 #' Plot shift function generated with shifthd_pbci or shiftdhd_pbci
-#'
+#' Assumes the median was estimated and is the middle value.
+#' See details in \code{plot_sf}.
 #' @export
-plot_pbsf <- function(df = data){
-  # Plot shift function using output from qcomhd or Dqcomhd
-  # GAR, University of Glasgow, 2016-09-30
+plot_pbsf <- function(data = df,
+  plot_theme = 1,
+  xlabel = "Group 1 quantiles",
+  ylabel = "Quantile differences",
+  symb_col = NULL,
+  symb_fill = NULL,
+  symb_size = 5,
+  symb_shape = 21,
+  diffint_col = NULL,
+  diffint_size = .5,
+  dec_line_col = NULL,
+  dec_line_alpha = .5,
+  dec_line_size = 1.5,
+  theme2_alpha = NULL){
   ylim <- max(max(abs(data$ci_upper)),max(abs(data$ci_lower)))
   ylim <- c(-ylim,ylim)
-  #xintercept <- data[5,2] # get median of group 1
-  #xbreaks <- data[,1] # get deciles of group 1
-  point.size = 4
-  if (length(data$q)>10) point.size = 2
-  xplot = names(data)[2]
-  xlabel = paste(toupper(substr(xplot,1,1)),substr(xplot,2,nchar(xplot)-1),sep="")
-  xlabel = paste(xlabel,substr(xplot,nchar(xplot),nchar(xplot)),"quantiles",sep=" ")
-  p <- ggplot(data, aes_string(x=xplot, y="difference")) +
-    geom_hline(yintercept=0,linetype=2,alpha=0.5) + # x=0 reference line
-    #  geom_vline(xintercept=xintercept,linetype=2,alpha=0.5) + # y=median reference line
-    geom_linerange(aes(ymin=ci_lower, ymax=ci_upper), colour="#009E73") +
-    geom_line(colour="#009E73", linetype="solid", size=1.5) +
-    geom_point(colour="#009E73", size=point.size, shape=21, fill="white") + #999999
+  midpt <- (nrow(data)-1) / 2 + 1
+  xintercept <- data[midpt,4] # get median of group 1
+  #xbreaks <- data[,1] # get quantiles of group 1
+  xplot = names(data)[4]
+  # xlabel = paste(toupper(substr(xplot,1,1)),substr(xplot,2,nchar(xplot)-1),sep="")
+  # xlabel = paste(xlabel,substr(xplot,nchar(xplot),nchar(xplot)),"quantiles",sep=" ")
+  # -------------------
+  # get theme specific formatting
+  if (plot_theme == 1){
+    if (is.null(symb_col)){
+      symb_col <- "#009E73"
+    }
+    if (is.null(symb_fill)){
+      symb_fill <- "white"
+    }
+    if (is.null(diffint_col)){
+      diffint_col <- "#009E73"
+    }
+    if (is.null(dec_line_col)){
+      dec_line_col <- "#009E73"
+    }
+  }
+  # ------
+  if (plot_theme == 2){
+    data$sign <- sign(data$difference) # add difference signs to data frame
+    data$deco <- c(seq(1,midpt),seq(midpt-1,1)) # add code of quantiles to data frame
+    if (is.null(symb_col)){
+      symb_col <- "black"
+    }
+    if (is.null(symb_fill)){
+      symb_fill <- c("darkviolet","darkorange2")
+    }
+    if (sum(unique(data$sign)) == 1){
+      if (unique(data$sign) == -1){
+        symb_fill <- symb_fill[1]
+      } else {
+        symb_fill <- symb_fill[2]
+      }
+    }
+    if (is.null(dec_line_col)){
+      dec_line_col <- "grey50"
+    }
+    if (is.null(theme2_alpha)){
+      theme2_alpha <- c(0.4, 1)
+    }
+  }
+  # -----
+  if (plot_theme == 3){ # add code of quantiles to data frame
+    data$deco <- c(seq(1,midpt),seq(midpt-1,1))
+    if (is.null(symb_col)){
+      symb_col <- "black"
+    }
+    if (is.null(symb_fill)){
+      symb_fill <- c("white","grey30")
+    }
+    if (is.null(diffint_col)){
+      diffint_col <- "black"
+    }
+    if (is.null(dec_line_col)){
+      dec_line_col <- "grey50"
+    }
+  }
+  # -------------------
+  p <- ggplot(data, aes_string(x = xplot, y = "difference")) +
+    # x=0 reference line
+    geom_hline(yintercept = 0, linetype = 2, alpha = 0.5) +
+    # y=median reference line
+    geom_vline(xintercept = xintercept, linetype = 2, alpha = 0.5) +
     xlab(xlabel) +
-    ylab("Quantile differences") +
+    ylab(ylabel) +
     theme_bw() +
     theme(axis.text.x = element_text(size=14),
       axis.text.y = element_text(size=14),
       axis.title.x = element_text(size=16,face="bold"),
       axis.title.y = element_text(size=16,face="bold")) +
-    scale_y_continuous(limits = ylim) #+
+    scale_y_continuous(limits = ylim)
   #scale_x_continuous(breaks = xbreaks)
+  # --------------------
+  # apply theme
+  if (plot_theme == 1){ # default with one colour
+    p <- p +
+      # vertical bars for uncertainty intervals
+      geom_linerange(aes(ymin = ci_lower, ymax = ci_upper), colour = diffint_col,
+        size = diffint_size) +
+      # line joining the quantiles
+      geom_line(colour = dec_line_col, alpha = dec_line_alpha, linetype = "solid",
+        size = dec_line_size) +
+      # symbols marking the quantiles
+      geom_point(colour = symb_col, size = symb_size, shape = symb_shape, fill = symb_fill)
+  }
+  if (plot_theme == 2){ # colour code the difference sign
+    p <- p +
+      # vertical bars for uncertainty intervals
+      geom_linerange(aes(ymin = ci_lower, ymax = ci_upper), colour = "white",
+        size = diffint_size) +
+      geom_linerange(aes(ymin = ci_lower, ymax = ci_upper, colour = factor(sign),
+        alpha = factor(deco)), size = diffint_size) +
+      scale_color_manual(values = symb_fill, guide = FALSE) +
+      scale_alpha_discrete(range = theme2_alpha, guide = FALSE) +
+      # line joining the quantiles
+      geom_line(colour = dec_line_col, alpha = dec_line_alpha, linetype = "solid",
+        size = dec_line_size) +
+      # symbols marking the quantiles
+      geom_point(colour = "black", fill = "white", size = symb_size, shape = symb_shape) +
+      geom_point(aes(fill = factor(sign), alpha = factor(deco)), colour = symb_col,
+        size = symb_size, shape = symb_shape) +
+      scale_fill_manual(values = symb_fill, guide = FALSE) +
+      scale_alpha_discrete(range = theme2_alpha, guide = FALSE)
+  }
+  if (plot_theme == 3){ # greyscale gradient for the quantiles
+    p <- p +
+      # vertical bars for uncertainty intervals
+      geom_linerange(aes(ymin = ci_lower, ymax = ci_upper), colour = diffint_col,
+        size = diffint_size) +
+      # line joining the quantiles
+      geom_line(colour = dec_line_col, alpha = dec_line_alpha, linetype = "solid",
+        size = dec_line_size) +
+      # symbols marking the quantiles
+      geom_point(aes(fill = deco), colour="black", size = symb_size, shape = symb_shape) +
+      scale_fill_gradient(low = symb_fill[1], high = symb_fill[2], guide = FALSE)
+  }
   p
 }
