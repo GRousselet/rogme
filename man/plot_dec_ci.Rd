@@ -7,7 +7,8 @@ using the output of `quantiles_pbci`
 GAR, University of Glasgow, 2016-07-15}
 \usage{
 plot_dec_ci(out = out, plotzero = TRUE, xtitle = "Differences",
-  hjust = -0.05, vjust = 0.2, size = 6)
+  hjust = -0.05, vjust = 0.2, size_text = 6, colour_dec = "#009E73",
+  fill_dec = "white", colour_line = "#009E73")
 }
 \description{
 Plot deciles and their confidence intervals

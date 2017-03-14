@@ -134,12 +134,15 @@ plot_scat2 <- function(data = df,
 #' using the output of `quantiles_pbci`
 #' GAR, University of Glasgow, 2016-07-15
 #' @export
-plot_dec_ci <- function(out=out,
-                        plotzero=TRUE,
-                        xtitle="Differences",
-                        hjust=-.05,
-                        vjust=.2,
-                        size=6){
+plot_dec_ci <- function(out = out,
+                        plotzero = TRUE,
+                        xtitle = "Differences",
+                        hjust = -.05,
+                        vjust = .2,
+                        size_text = 6,
+                        colour_dec = "#009E73",
+                        fill_dec = "white",
+                        colour_line = "#009E73"){
   md <- out$est_q[5] # median
   md.c <- as.character(round(md, digits=1)) # turn into characters
   lo.c <- as.character(round(out$ci.low[5], digits=1)) # turn into characters
@@ -150,8 +153,8 @@ plot_dec_ci <- function(out=out,
   if (plotzero){
     p <- p + geom_abline(intercept = 0, slope = 0,colour="black",size=.5,linetype=1)
   }
-  p <- p + geom_linerange(aes(ymin=ci.low, ymax=ci.up), colour="#009E73",size=1) +
-    geom_point(colour="#009E73", size=4, shape=21, fill="white") +
+  p <- p + geom_linerange(aes(ymin=ci.low, ymax=ci.up), colour=colour_line,size=1) +
+    geom_point(colour=colour_dec, size=4, shape=21, fill=fill_dec) +
     theme_bw() +
     labs(x="Deciles") +
     labs(y=xtitle) +
@@ -161,7 +164,7 @@ plot_dec_ci <- function(out=out,
           axis.title.y = element_text(size=16,face="bold")) +
     scale_x_continuous(breaks=seq(1,9,1)) +
     annotate("text", x = 5, y = out$ci.up[5], label = caption[1],
-             hjust = hjust, vjust = vjust, size = size) +
+             hjust = hjust, vjust = vjust, size = size_text) +
     coord_flip()
   p
 }
