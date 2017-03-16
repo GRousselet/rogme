@@ -75,8 +75,11 @@ plot_sf <- function(data = df,
     }
     if (is.null(symb_fill)){
       symb_fill <- c("darkviolet","darkorange2")
+      if (length(unique(data$sign)) == 3){
+        symb_fill <- c("darkviolet",dec_line_col,"darkorange2")
+      }
     }
-    if (sum(unique(data$sign)) == 1){
+    if (length(unique(data$sign)) == 1){
       if (unique(data$sign) == -1){
         symb_fill <- symb_fill[1]
       } else {
@@ -168,7 +171,9 @@ plot_sf <- function(data = df,
   p
 }
 
-#' Plot shift function generated with shifthd_pbci or shiftdhd_pbci
+#' Plot percentile bootstrap shift function
+#'
+#' Plot shift function generated with shifthd_pbci or shiftdhd_pbci.
 #' Assumes the median was estimated and is the middle value.
 #' See details in \code{plot_sf}.
 #' @export
@@ -185,13 +190,18 @@ plot_pbsf <- function(data = df,
   dec_line_col = NULL,
   dec_line_alpha = .5,
   dec_line_size = 1.5,
-  theme2_alpha = NULL){
+  theme2_alpha = NULL,
+  dep = FALSE){
   ylim <- max(max(abs(data$ci_upper)),max(abs(data$ci_lower)))
   ylim <- c(-ylim,ylim)
   midpt <- (nrow(data)-1) / 2 + 1
+  if(dep==TRUE){
+    xintercept <- data[midpt,3] # get median of group 1
+    xplot = names(data)[3]
+  } else {
   xintercept <- data[midpt,4] # get median of group 1
-  #xbreaks <- data[,1] # get quantiles of group 1
   xplot = names(data)[4]
+  }
   # xlabel = paste(toupper(substr(xplot,1,1)),substr(xplot,2,nchar(xplot)-1),sep="")
   # xlabel = paste(xlabel,substr(xplot,nchar(xplot),nchar(xplot)),"quantiles",sep=" ")
   # -------------------
@@ -219,8 +229,11 @@ plot_pbsf <- function(data = df,
     }
     if (is.null(symb_fill)){
       symb_fill <- c("darkviolet","darkorange2")
+      if (length(unique(data$sign)) == 3){
+        symb_fill <- c("darkviolet",dec_line_col,"darkorange2")
+      }
     }
-    if (sum(unique(data$sign)) == 1){
+    if (length(unique(data$sign)) == 1){
       if (unique(data$sign) == -1){
         symb_fill <- symb_fill[1]
       } else {

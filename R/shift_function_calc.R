@@ -365,7 +365,7 @@ shiftdhd_pbci <- function(data = df,
     xmat <- matrix(x[bootsample], nrow = nboot, ncol = n)
     ymat <- matrix(y[bootsample], nrow = nboot, ncol = n)
     bvec <- apply(xmat, 1, hd, q = q[i]) - apply(ymat, 1, hd, q = q[i])
-    bvec <- sort(bvec[,1] - bvec[,2])
+    bvec <- sort(bvec)
     temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
     output[i,6] = bvec[low] # ci_lower
     output[i,7] = bvec[up] # ci_upper

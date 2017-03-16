@@ -2,18 +2,16 @@
 % Please edit documentation in R/shift_function_plot.R
 \name{plot_pbsf}
 \alias{plot_pbsf}
-\title{Plot shift function generated with shifthd_pbci or shiftdhd_pbci
-Assumes the median was estimated and is the middle value.
-See details in \code{plot_sf}.}
+\title{Plot percentile bootstrap shift function}
 \usage{
 plot_pbsf(data = df, plot_theme = 1, xlabel = "Group 1 quantiles",
   ylabel = "Quantile differences", symb_col = NULL, symb_fill = NULL,
   symb_size = 5, symb_shape = 21, diffint_col = NULL,
   diffint_size = 0.5, dec_line_col = NULL, dec_line_alpha = 0.5,
-  dec_line_size = 1.5, theme2_alpha = NULL)
+  dec_line_size = 1.5, theme2_alpha = NULL, dep = FALSE)
 }
 \description{
-Plot shift function generated with shifthd_pbci or shiftdhd_pbci
+Plot shift function generated with shifthd_pbci or shiftdhd_pbci.
 Assumes the median was estimated and is the middle value.
 See details in \code{plot_sf}.
 }
