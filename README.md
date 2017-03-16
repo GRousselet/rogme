@@ -22,9 +22,11 @@ The approach behind the package is described here:
 
 [Modern graphical methods to compare two groups of observations](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)
 
+The second reference contains extensive examples using `rogme`.
+
 `rogme` uses `ggplot2` for graphical representations, and the main statistical functions were developed by Rand Wilcox, as part of his [`WRS`](https://dornsife.usc.edu/labs/rwilcox/software/) package.
 
-The main tool in `rogme` is the shift function. A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available soon.
+The main tool in `rogme` is the [shift function](https://garstats.wordpress.com/2016/07/12/shift-function/). A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available eventually.
 
 Shift function demo
 -------------------
@@ -49,7 +51,11 @@ First, we generate the 1D scatterplots for the two groups.
 #> scatterplots alone
 ps <- plot_scat2(df,
                  xlabel = "",
-                 ylabel = "Scores (a.u.)")
+                 ylabel = "Scores (a.u.)",
+                 alpha = 1,
+                 shape = 21,
+                 colour = "grey10",
+                 fill = "grey90") # scatterplots
 ps <- ps + coord_flip()
 ps
 ```
@@ -83,19 +89,17 @@ Third, we make 1D scatterplots with deciles and colour coded differences.
 p <- plot_scat2(df,
                 xlabel = "",
                 ylabel = "Scores (a.u.)",
-                symb_alpha = .5,
-                symb_col = c("grey70","grey70"),
-                symb_fil = c("grey90","grey90")) # scatterplots
-
-p <- plot_dec_links(p, 
-                    sf = sf,
+                alpha = .3,
+                shape = 21,
+                colour = "grey10",
+                fill = "grey90") # scatterplots
+p <- plot_dec_links(p, sf,
                     dec_size = 1,
                     md_size = 1.5,
                     add_rect = TRUE,
                     rect_alpha = 0.1,
                     rect_col = "grey50",
                     add_lab = TRUE) # superimposed deciles + rectangle
-
 p <- p + coord_flip() # flip axes
 p
 ```
@@ -111,3 +115,11 @@ cowplot::plot_grid(ps, p, psf, labels=c("A", "B", "C"), ncol = 1, nrow = 3,
 ```
 
 ![](README-files/README-unnamed-chunk-7-1.png)
+
+**Panel A** illustrates two distributions, both n = 1000, that differ in spread. The observations in the scatterplots were jittered based on their local density, as implemented in `ggbeeswarm::geom_quasirandom`.
+
+**Panel B** illustrates the same data from panel A. The dark vertical lines mark the deciles of the distributions. The thicker vertical line in each distribution is the median. Between distributions, the matching deciles are joined by coloured lined. If the decile difference between group 1 and group 2 is positive, the line is orange; if it is negative, the line is purple. The values of the differences for deciles 1 and 9 are indicated in the superimposed labels.
+
+**Panel C** focuses on the portion of the x-axis marked by the grey shaded area at the bottom of panel B. It shows the deciles of group 1 on the x-axis – the same values that are shown for group 1 in panel B. The y-axis shows the differences between deciles: the difference is large and positive for decile 1; it then progressively decreases to reach almost zero for decile 5 (the median); it becomes progressively more negative for higher deciles. Thus, for each decile the shift function illustrates by how much one distribution needs to be shifted to match another one. In our example, we illustrate by how much we need to shift deciles from group 2 to match deciles from group 1.
+
+More generally, a shift function shows quantile differences as a function of quantiles in one group. It estimates how and by how much two distributions differ. It is thus a powerful alternative to the traditional t-test on means, which focuses on only one, non-robust, quantity. Quantiles are robust, intuitive and informative.
