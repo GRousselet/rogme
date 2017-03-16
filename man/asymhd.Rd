@@ -4,20 +4,31 @@
 \alias{asymhd}
 \title{Difference asymmetry function for two independent groups}
 \usage{
-asymhd()
+asymhd(x, y, qseq = seq(5, 40, 5)/100, alpha = 0.05, nboot = 1000)
+}
+\arguments{
+\item{x, y}{Two vectors. Missing values are automatically removed.}
+
+\item{alpha}{Expected long-run type I error rate - default = 0.05.}
+
+\item{nboot}{Number of bootstrap samples - default = 1000.}
+
+\item{q}{Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.}
 }
 \description{
 The difference asymmetry function provides perspective on the degree a distribution
 is symmetric about zero, by quantifying the sum of q and 1-q quantiles of the
 distribution of all pairwise differences between two independent groups x and y.
- If the distributions of x and y are identical, then the
- distribution of all pairwise differences is symmetric about zero.
+If the distributions of x and y are identical, then the
+distribution of all pairwise differences is symmetric about zero.
+In particular, the sum of q and 1-q quantiles should be zero.
 If the distribution is symmetric the function should be approximately a horizontal line.
 If in addition the median of the difference scores is zero, the horizontal line will
 intersect the y-axis at zero.
 Confidence intervals and p values are returned for each quantile sum.
 The FWE is controlled via Hochberg's method, which is used to determine critical
 p values based on the argument alpha.
+To plot the results use \code{\link{plot_diff_asym}}.
 }
 \section{Note}{
 
@@ -31,6 +42,6 @@ Comparing two independent groups via the lower and upper quantiles.
 J Stat Comput Sim, 84, 1543-1551.
 }
 \seealso{
-\code{\link{hd}}, \code{\link{diff_asym}}
+\code{\link{hd}}, \code{\link{allpdiff}}, \code{\link{asymdhd}}
 }
 

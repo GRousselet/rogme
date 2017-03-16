@@ -4,16 +4,16 @@
 \alias{asymdhd}
 \title{Difference asymmetry function for two dependent groups or a single distribution}
 \usage{
-asymdhd()
+asymdhd(x, qseq = seq(5, 40, 5)/100, alpha = 0.05, nboot = 1000)
 }
 \arguments{
-\item{x}{A a vector of pairwise differences.}
+\item{x}{A vector of pairwise differences.}
 
-\item{q}{Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.}
+\item{alpha}{Expected long-run type I error rate - default = 0.05.}
 
 \item{nboot}{Number of bootstrap samples - default = 1000.}
 
-\item{alpha}{Expected long-run type I error rate - default = 0.05.}
+\item{q}{Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.}
 }
 \value{
 saved in structure diff_asym_res with fields:
@@ -27,15 +27,18 @@ saved in structure diff_asym_res with fields:
 - pval = p value
 }
 \description{
-\code{diff_asym} computes a difference asymmetry function for two dependent
+\code{asymdhd} computes a difference asymmetry function for two dependent
 groups or a single distribution. The difference asymmetry function provides
 perspective on the degree a distribution is symmetric about zero, by
-quantifying the sum of q and 1-q quantiles. If the distribution is symmetric
-the function should be approximately a horizontal line. If in addition the
-median of the difference scores is zero, the horizontal line will intersect
-the y-axis at zero. Confidence intervals and p values are returned for each
+quantifying the sum of q and 1-q quantiles. If the groups do not differ, then
+the difference scores should be symmetric about zero. In particular, the sum
+of q and 1-q quantiles should be zero. If the distribution is symmetric the
+function should be approximately a horizontal line. If in addition the median
+of the difference scores is zero, the horizontal line will intersect the
+y-axis at zero. Confidence intervals and p values are returned for each
 quantile sum. The FWE is controlled via Hochberg's method, which is used to
-determine critical p values based on the argument alpha.
+determine critical p values based on the argument alpha. To plot the results
+use \code{\link{plot_diff_asym}}.
 }
 \section{Note}{
 
@@ -47,6 +50,6 @@ http://dornsife.usc.edu/labs/rwilcox/software/.
 Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 Comparing two dependent groups via quantiles.
 J Appl Stat, 39, 2655-2664.
-#' @seealso \code{\link{hd}}, \code{\link{diffall_asym}}
+#' @seealso \code{\link{hd}}, \code{\link{asymhd}}
 }
 
