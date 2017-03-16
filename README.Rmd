@@ -33,10 +33,12 @@ The approach behind the package is described here:
 
 [Modern graphical methods to compare two groups of observations](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)
 
+The second reference contains extensive examples using `rogme`.
+
 `rogme` uses `ggplot2` for graphical representations, and the main statistical
 functions were developed by Rand Wilcox, as part of his [`WRS`](https://dornsife.usc.edu/labs/rwilcox/software/) package.
 
-The main tool in `rogme` is the shift function. A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available soon.
+The main tool in `rogme` is the shift function. A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available eventually.
 
 ## Shift function demo
 
@@ -57,7 +59,11 @@ First, we generate the 1D scatterplots for the two groups.
 #> scatterplots alone
 ps <- plot_scat2(df,
                  xlabel = "",
-                 ylabel = "Scores (a.u.)")
+                 ylabel = "Scores (a.u.)",
+                 alpha = 1,
+                 shape = 21,
+                 colour = "grey10",
+                 fill = "grey90") # scatterplots
 ps <- ps + coord_flip()
 ps
 ```
@@ -85,19 +91,17 @@ Third, we make 1D scatterplots with deciles and colour coded differences.
 p <- plot_scat2(df,
                 xlabel = "",
                 ylabel = "Scores (a.u.)",
-                symb_alpha = .5,
-                symb_col = c("grey70","grey70"),
-                symb_fil = c("grey90","grey90")) # scatterplots
-
-p <- plot_dec_links(p, 
-                    sf = sf,
-                    dec_size = 1,
-                    md_size = 1.5,
-                    add_rect = TRUE,
-                    rect_alpha = 0.1,
-                    rect_col = "grey50",
-                    add_lab = TRUE) # superimposed deciles + rectangle
-
+                alpha = .3,
+                shape = 21,
+                colour = "grey10",
+                fill = "grey90") # scatterplots
+p <- plot_dec_links(p, sf,
+                            dec_size = 1,
+                            md_size = 1.5,
+                            add_rect = TRUE,
+                            rect_alpha = 0.1,
+                            rect_col = "grey50",
+                            add_lab = TRUE) # superimposed deciles + rectangle
 p <- p + coord_flip() # flip axes
 p
 ```

@@ -24,7 +24,7 @@ The approach behind the package is described here:
 
 `rogme` uses `ggplot2` for graphical representations, and the main statistical functions were developed by Rand Wilcox, as part of his [`WRS`](https://dornsife.usc.edu/labs/rwilcox/software/) package.
 
-The main tool in `rogme` is the shift function. A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available soon.
+The main tool in `rogme` is the shift function. A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available eventually.
 
 Shift function demo
 -------------------
@@ -49,7 +49,11 @@ First, we generate the 1D scatterplots for the two groups.
 #> scatterplots alone
 ps <- plot_scat2(df,
                  xlabel = "",
-                 ylabel = "Scores (a.u.)")
+                 ylabel = "Scores (a.u.)",
+                 alpha = 1,
+                 shape = 21,
+                 colour = "grey10",
+                 fill = "grey90") # scatterplots
 ps <- ps + coord_flip()
 ps
 ```
@@ -86,6 +90,7 @@ p <- plot_scat2(df,
                 symb_alpha = .5,
                 symb_col = c("grey70","grey70"),
                 symb_fil = c("grey90","grey90")) # scatterplots
+#> Warning: Ignoring unknown parameters: symb_alpha, symb_col, symb_fil
 
 p <- plot_dec_links(p, 
                     sf = sf,
@@ -111,3 +116,5 @@ cowplot::plot_grid(ps, p, psf, labels=c("A", "B", "C"), ncol = 1, nrow = 3,
 ```
 
 ![](README-files/README-unnamed-chunk-7-1.png)
+
+<data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAJCAYAAAD6reaeAAAAN0lEQVR42mNggIJJ02f+Z0AGE6fN/A8ShEvAOAg86z/DfyyAASvA1D4Toh1ZAK4dIjEL0zxkAQAPeFlrV0HzRgAAAABJRU5ErkJggg>==
