@@ -249,3 +249,166 @@ kswsig <- function(m, n, val){
   kswsig
 }
 # ==========================================================================
+
+# ==========================================================================
+# FUNCTIONS FOR CLIFF'S DELTA TEST
+
+#' P value of Cliff's delta test
+#'
+#' Compute Cliff's analog of WMW test & associated p value
+#'
+#' \code{cidv2} returns a list containing the value of the test statistic, its
+#' confidence interval, and its p value.
+#'
+#' @param x,y Two vectors. Missing values are automatically removed.
+#' @param alpha Alpha significance level.
+#' @seealso This function uses the function cid.
+#' @section Note:
+#' From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
+#' @references
+#' Cliff, N. (1996) Ordinal methods for behavioral data analysis. Erlbaum, Mahwah, N.J.
+#' Wilcox, R.R. (2011) Inferences about a Probabilistic Measure of Effect Size When Dealing with More Than Two Groups. Journal of Data Science, 9, 471-486.
+#' @export
+cidv2 <- function(x,y,alpha=.05){
+  nullval <- 0
+  ci <- cid(x,y,alpha=alpha)
+  alph<-c(1:99)/100
+  for(i in 1:99){
+    irem<-i
+    chkit <- cid(x,y,alpha=alph[i])
+    if(chkit[[3]]>nullval || chkit[[4]]<nullval)break
+  }
+  p.value<-irem/100
+  if(p.value<=.1){
+    iup<-(irem+1)/100
+    alph<-seq(.001,iup,.001)
+    for(i in 1:length(alph)){
+      p.value<-alph[i]
+      chkit<-cid(x,y,alpha=alph[i])
+      if(chkit[[3]]>nullval || chkit[[4]]<nullval)break
+    }}
+  if(p.value<=.001){
+    alph<-seq(.0001,.001,.0001)
+    for(i in 1:length(alph)){
+      p.value<-alph[i]
+      chkit<-cid(x,y,alpha=alph[i])
+      if(chkit[[3]]>nullval || chkit[[4]]<nullval)break
+    }}
+  phat<-(1-ci$d)/2
+  pci=c((1-ci$cu)/2,(1-ci$cl)/2)
+  d.ci=c(ci$cl,ci$cu)
+  dval=cid(x,y)$summary.dvals
+  list(n1=length(elimna(x)),n2=length(elimna(y)),d.hat=ci$d,d.ci=d.ci,p.value=p.value,p.hat=phat,p.ci=pci,summary.dvals=dval)
+}
+
+#' Cliff's delta test
+#'
+#' Compute Cliff's analog of WMW test. Compute a confidence interval for delta
+#' using the method in Cliff, 1996, p. 140, eq 5.12.
+#' The null hypothesis is that for two independent group, P(X<Y)=P(X>Y).
+#' This function reports a 1-alpha confidence interval for
+#' P(X>Y)-P(X<Y).
+#'
+#' \code{cid} returns a list containing the value of the test statistic, its
+#' confidence interval, and its p value.
+#'
+#' @param x,y Two vectors. Missing values are automatically removed.
+#' @param alpha Alpha significance level.
+#' @seealso To compute a p value, use \code{cidv2}.
+#' @section Note:
+#' From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
+#' @references
+#' Cliff, N. (1996) Ordinal methods for behavioral data analysis. Erlbaum, Mahwah, N.J.
+#' @export
+cid <- function(x, y, alpha=.05){
+  x<-x[!is.na(x)]
+  y<-y[!is.na(y)]
+  m<-outer(x,y,FUN="-")
+  msave<-m
+  m<-sign(m)
+  d<-mean(m)
+  phat<-(1-d)/2
+  flag=T
+  if(phat==0 || phat==1)flag=F
+  q0<-sum(msave==0)/length(msave)
+  qxly<-sum(msave<0)/length(msave)
+  qxgy<-sum(msave>0)/length(msave)
+  c.sum<-matrix(c(qxly,q0,qxgy),nrow=1,ncol=3)
+  dimnames(c.sum)<-list(NULL,c("P(X<Y)","P(X=Y)","P(X>Y)"))
+  if(flag){
+    sigdih<-sum((m-d)^2)/(length(x)*length(y)-1)
+    di<-NA
+    for (i in 1:length(x))di[i]<-sum(x[i]>y)/length(y)-sum(x[i]<y)/length(y)
+    dh<-NA
+    for (i in 1:length(y))dh[i]<-sum(y[i]>x)/length(x)-sum(y[i]<x)/length(x)
+    sdi<-var(di)
+    sdh<-var(dh)
+    sh<-((length(y)-1)*sdi+(length(x)-1)*sdh+sigdih)/(length(x)*length(y))
+    zv<-qnorm(alpha/2)
+    cu<-(d-d^3-zv*sqrt(sh)*sqrt((1-d^2)^2+zv^2*sh))/(1-d^2+zv^2*sh)
+    cl<-(d-d^3+zv*sqrt(sh)*sqrt((1-d^2)^2+zv^2*sh))/(1-d^2+zv^2*sh)
+  }
+  if(!flag){
+    sh=NULL
+    nm=max(c(length(x),length(y)))
+    if(phat==1)bci=binomci(nm,nm,alpha=alpha)
+    if(phat==0)bci=binomci(0,nm,alpha=alpha)
+  }
+  if(flag)pci=c((1-cu)/2,(1-cl)/2)
+  if(!flag){
+    pci=bci$ci
+    cl=1-2*pci[2]
+    cu=1-2*pci[1]
+  }
+  list(n1=length(x),n2=length(y),cl=cl,cu=cu,d=d,sqse.d=sh,phat=phat,summary.dvals=c.sum,ci.p=pci)
+}
+
+binomci <- function(x=sum(y),nn=length(y),y=NULL,n=NA,alpha=.05){
+  #  Compute a 1-alpha confidence interval for p, the probability of
+  #  success for a binomial distribution, using Pratt's method
+  #
+  #  y is a vector of 1s and 0s.
+  #  x is the number of successes observed among n trials
+  #
+  # From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
+  if(!is.null(y)){
+    y=elimna(y)
+    nn=length(y)
+  }
+  if(nn==1)stop("Something is wrong: number of observations is only 1")
+  n<-nn
+  if(x!=n && x!=0){
+    z<-qnorm(1-alpha/2)
+    A<-((x+1)/(n-x))^2
+    B<-81*(x+1)*(n-x)-9*n-8
+    C<-(0-3)*z*sqrt(9*(x+1)*(n-x)*(9*n+5-z^2)+n+1)
+    D<-81*(x+1)^2-9*(x+1)*(2+z^2)+1
+    E<-1+A*((B+C)/D)^3
+    upper<-1/E
+    A<-(x/(n-x-1))^2
+    B<-81*x*(n-x-1)-9*n-8
+    C<-3*z*sqrt(9*x*(n-x-1)*(9*n+5-z^2)+n+1)
+    D<-81*x^2-9*x*(2+z^2)+1
+    E<-1+A*((B+C)/D)^3
+    lower<-1/E
+  }
+  if(x==0){
+    lower<-0
+    upper<-1-alpha^(1/n)
+  }
+  if(x==1){
+    upper<-1-(alpha/2)^(1/n)
+    lower<-1-(1-alpha/2)^(1/n)
+  }
+  if(x==n-1){
+    lower<-(alpha/2)^(1/n)
+    upper<-(1-alpha/2)^(1/n)
+  }
+  if(x==n){
+    lower<-alpha^(1/n)
+    upper<-1
+  }
+  phat<-x/n
+  list(phat=phat,ci=c(lower,upper),n=n)
+}
+# ==========================================================================

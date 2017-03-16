@@ -105,3 +105,21 @@ subset_data2 <- function(data, formula){
   # outputs
   out <- list(x = x, y = y, gr_name1 = gr_name1, gr_name2 = gr_name2)
 }
+
+elimna <- function(m){
+  #
+  # remove any rows of data having missing values
+  #
+  # From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
+  if(is.list(m)){
+    for(j in 1:length(m))m[[j]]=na.omit(m[[j]])
+    elimna=m
+  }
+  if(!is.list(m)){
+    if(is.null(dim(m)))m<-as.matrix(m)
+    ikeep<-c(1:nrow(m))
+    for(i in 1:nrow(m))if(sum(is.na(m[i,])>=1))ikeep[i]<-0
+    elimna<-m[ikeep[ikeep>=1],]
+  }
+  elimna
+}

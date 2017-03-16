@@ -174,13 +174,26 @@ plot_dec_ci <- function(out = out,
 
 
 # ----------------------------------------------------------------------------
-plot_scat2d <- function(df=df,xname="condition1",yname="condition2",min.x=NA,min.y=NA,max.x=NA,max.y=NA,axis.steps=2){
-  # Scatterplot of paired observations +
-  # no effect reference line +
-  # quartiles of each condition
-  # input is a data frame with 3 columns: participant, condition1, condition 2
-  # GAR, University of Glasgow, 2016-07-15
-
+#' Plot paired observations
+#'
+#' Scatterplot of paired observations with reference line of no effect.
+#' Quartiles of each condition are superimposed.
+#' Input is a data frame with 3 columns: participant, condition1, condition 2
+#' @export
+plot_scat2d <- function(df=df,
+                        xname="condition1",
+                        yname="condition2",
+                        min.x=NA,
+                        min.y=NA,
+                        max.x=NA,
+                        max.y=NA,
+                        axis.steps=2,
+                        psize=5,
+                        pstroke=1,
+                        pshape=21,
+                        pcolour="black",
+                        pfill="#ffb347",
+                        palpha=.5){
   # make data.frames for plotting quartile segments
   hd1.5<-hd(df[,2],.5)
   hd1.25<-hd(df[,2],.25)
@@ -208,7 +221,12 @@ plot_scat2d <- function(df=df,xname="condition1",yname="condition2",min.x=NA,min
   # scatterplot of paired observations -----------------
   p <- ggplot(df, aes_string(x=xname,y=yname)) +
     geom_abline(intercept = 0) +
-    geom_point(size=5,stroke=1,shape=21,colour="black",fill="#ffb347",alpha=.5) +
+    geom_point(size=psize,
+               stroke=pstroke,
+               shape=pshape,
+               colour=pcolour,
+               fill=pfill,
+               alpha=palpha) +
     theme_bw() +
     theme(axis.text.x = element_text(size=14),
           axis.text.y = element_text(size=14),
