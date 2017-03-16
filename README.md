@@ -26,7 +26,45 @@ The second reference contains extensive examples using `rogme`.
 
 `rogme` uses `ggplot2` for graphical representations, and the main statistical functions were developed by Rand Wilcox, as part of his [`WRS`](https://dornsife.usc.edu/labs/rwilcox/software/) package.
 
-The main tool in `rogme` is the [shift function](https://garstats.wordpress.com/2016/07/12/shift-function/). A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available eventually.
+The main tool in `rogme` is the [shift function](https://garstats.wordpress.com/2016/07/12/shift-function/). A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. By default, the deciles are used. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available eventually.
+
+Functions
+---------
+
+All the functions rely on the [Harrell-Davis quantile estimator](https://garstats.wordpress.com/2016/06/09/the-harrell-davis-quantile-estimator/), computed by the `hd()` function.
+
+### Shift function
+
+In the `WRS` package, the shift function can be calculated using:
+
+-   `shifthd()` or `qcomhd()` for independent groups
+-   `shiftdhd()` or `Dqcomhd()` for dependent groups
+
+These functions can also produce non-ggplot figures.
+
+In `rogme`, the shift function can be calculated using:
+
+-   `shifthd()` or `shifthd_pbci()` for independent groups
+-   `shiftdhd()` or `shiftdhd_pbci()` for dependent groups
+
+Illustrations of the results is handled separately by `plot_sf()` and `plot_pbsf()`.
+
+You can see the shift function in action [here](https://garstats.wordpress.com/2016/07/12/shift-function/) and [here](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13100/full).
+
+### Difference asymmetry function
+
+The difference asymmetry function is another powerful graphical and inferential tool. In the `WRS` package it is calculated using:
+
+-   `qwmwhd()` for independent groups
+-   `difQpci()` for dependent groups
+
+In `rogme`, these functions have been renamed:
+
+-   `asymhd()` for independent groups
+-   `asymdhd()` for dependent groups
+-   `plot_diff_asym()` to plot the results
+
+You can see the difference asymmetry function in action [here](https://garstats.wordpress.com/2016/07/19/typical-differences/).
 
 Shift function demo
 -------------------
