@@ -15,4 +15,3 @@ Plot deciles and their confidence intervals
 using the output of `quantiles_pbci`
 GAR, University of Glasgow, 2016-07-15
 }
-

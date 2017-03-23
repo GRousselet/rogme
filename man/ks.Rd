@@ -28,7 +28,7 @@ approximate .05 critical value, and the exact significance level if sig=T.
 
 From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
 }
+
 \seealso{
 This function uses the functions ecdf, kstiesig, kssig and kswsig
 }
-

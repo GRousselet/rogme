@@ -14,4 +14,3 @@ plot_diff_asym(data = df, xlabel = "Quantiles",
 Plot difference asymmetry function using output from
 Rand Wilcox's qwmwhd or difQpci functions
 }
-

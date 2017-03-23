@@ -15,4 +15,3 @@ Plot shift function generated with shifthd_pbci or shiftdhd_pbci.
 Assumes the median was estimated and is the middle value.
 See details in \code{plot_sf}.
 }
-

@@ -47,6 +47,7 @@ The same bootstrap samples are used for each quantile and for each group.
  Modified from Rallfun-v32.txt - see
   \url{https://github.com/nicebread/WRS/}.
 }
+
 \examples{
 out <- shiftdhd(df, formula = obs ~ gr) # use the default parameters
 out <- shiftdhd(df, formula = obs ~ gr, nboot = 500) # specify the number of bootstrap samples
@@ -61,4 +62,3 @@ Harrell, F.E. & Davis, C.E. (1982) A new distribution-free
 \seealso{
 \code{\link{shifthd}} for independent groups.
 }
-

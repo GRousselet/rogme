@@ -63,6 +63,7 @@ Adaptation of Rand Wilcox's `Dqcomhd`, `bootdpci` & `rmmcppb` R functions
 (\url{http://dornsife.usc.edu/labs/rwilcox/software/}).
 From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}.
 }
+
 \references{
 Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 Comparing two dependent groups via quantiles.
@@ -72,4 +73,3 @@ J Appl Stat, 39, 2655-2664.
 \code{hd}, \code{shiftdhd} for the pbse method for dependent
   groups, \code{shifthd_pbci} for dependent groups
 }
-

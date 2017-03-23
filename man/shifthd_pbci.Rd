@@ -64,6 +64,7 @@ Adaptation of Rand Wilcox's `qcomhd` & `pb2gen` R functions
 (\url{http://dornsife.usc.edu/labs/rwilcox/software/}).
 From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}.
 }
+
 \references{
 Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 Comparing two independent groups via the lower and upper quantiles.
@@ -73,4 +74,3 @@ J Stat Comput Sim, 84, 1543-1551.
 \code{hd}, \code{shifthd} for the pbse method for independent
   groups, \code{shiftdhd_pbci} for dependent groups
 }
-

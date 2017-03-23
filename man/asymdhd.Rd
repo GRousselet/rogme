@@ -46,10 +46,12 @@ This function combines Rand Wilcox's difQpci and Dqdif R functions,
 from Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/},
 http://dornsife.usc.edu/labs/rwilcox/software/.
 }
+
 \references{
 Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 Comparing two dependent groups via quantiles.
 J Appl Stat, 39, 2655-2664.
-#' @seealso \code{\link{hd}}, \code{\link{asymhd}}
 }
-
+\seealso{
+\code{\link{hd}}, \code{\link{asymhd}}
+}

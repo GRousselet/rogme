@@ -28,6 +28,7 @@
 #' Comparing two independent groups via the lower and upper quantiles.
 #' J Stat Comput Sim, 84, 1543-1551.
 #' @seealso \code{\link{hd}}, \code{\link{allpdiff}}, \code{\link{asymdhd}}
+#' @export
 asymhd <- function(x, y,
                    qseq = seq(5,40,5)/100,
                    alpha = .05,
@@ -124,7 +125,8 @@ asymhd <- function(x, y,
 #' Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 #' Comparing two dependent groups via quantiles.
 #' J Appl Stat, 39, 2655-2664.
-#' #' @seealso \code{\link{hd}}, \code{\link{asymhd}}
+#' @seealso \code{\link{hd}}, \code{\link{asymhd}}
+#' @export
 asymdhd <- function(x,
                     qseq = seq(5,40,5)/100,
                     alpha = .05,

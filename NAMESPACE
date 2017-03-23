@@ -2,6 +2,8 @@
 
 export(add_sf_lab)
 export(allpdiff)
+export(asymdhd)
+export(asymhd)
 export(cid)
 export(cidv2)
 export(hd)
