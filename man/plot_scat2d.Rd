@@ -14,3 +14,4 @@ Scatterplot of paired observations with reference line of no effect.
 Quartiles of each condition are superimposed.
 Input is a data frame with 3 columns: participant, condition1, condition 2
 }
+

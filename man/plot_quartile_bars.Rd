@@ -10,3 +10,4 @@ plot_quartile_bars(p, q_seq = c(0.25, 0.5, 0.75), col = "grey21",
 \description{
 Add bars marking the quartiles to plot
 }
+

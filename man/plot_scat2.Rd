@@ -10,3 +10,4 @@ plot_scat2(data = df, xlabel = NULL, ylabel = NULL, ...)
 \code{plot_scat2} produces scatterplots for 2 marginal distributions.
 The scatterplots are jittered using \code{\link[ggbeeswarm]{geom_quasirandom}}.
 }
+

@@ -26,10 +26,10 @@ confidence interval, and its p value.
 
 From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
 }
-
 \references{
 Cliff, N. (1996) Ordinal methods for behavioral data analysis. Erlbaum, Mahwah, N.J.
 }
 \seealso{
-To compute a p value, use \code{cidv2}.
+To compute a p value, use \code{\link{cidv2}} \code{\link{allpdiff_hdpbci}}
 }
+

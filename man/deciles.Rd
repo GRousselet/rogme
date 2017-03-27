@@ -10,3 +10,4 @@ deciles(x)
 Estimate the deciles for the data in vector x using the Harrell-Davis
 estimate of the qth quantile.
 }
+

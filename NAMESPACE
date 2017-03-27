@@ -2,11 +2,13 @@
 
 export(add_sf_lab)
 export(allpdiff)
+export(allpdiff_hdpbci)
 export(asymdhd)
 export(asymhd)
 export(cid)
 export(cidv2)
 export(hd)
+export(hdpbci)
 export(ks)
 export(mkt1)
 export(mkt2)

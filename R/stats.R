@@ -80,6 +80,52 @@ allpdiff <- function(x, y, paired = FALSE, na.rm = TRUE){
   out <- as.vector(outer(x,y,FUN="-"))
 }
 
+#' Confidence interval of the median of all pairwise differences
+#'
+#' Compute a confidence interval for the quantile (default to median)
+#' of the distribution of D=X-Y (all pairwise differences),
+#' where X and Y are two independent random variables.
+#' The Harrell-Davis estimator is used.
+#' If the distribution of X and Y are identical, then in particular the
+#' median of the distribution of D=X-Y is approximately zero.
+#' @param x,y Two vectors of continuous variables.
+#' @param alpha Alpha level - default = 0.05, which means that a 95% confidence
+#'   interval is computed.
+#' @param q Quantile between 0 and 1 - default - 0.5, which means that the median of the distribution is estimated.
+#' @param nboot Number of bootstrap samples - default = 600.
+#' @return A list with variables: \code{q} \code{estimate}, \code{ci}, \code{n}
+#' @section Note: Adaptation of \code{cbmhd} from Rallfun-v33.txt. See
+#'   \url{https://github.com/nicebread/WRS/}
+#' @seealso \code{\link{hd}} \code{\link{hdpbci}} \code{\link{cid}} \code{\link{allpdiff}}
+#' @export
+allpdiff_hdpbci <- function(x,y,alpha=.05,q=.5,nboot=600){
+  if(q>=1)stop("q should be less than 1")
+  if(q<=0)stop("q should be greater than 0")
+  x<-x[!is.na(x)]
+  y<-y[!is.na(y)]
+  n1 = length(x)
+  n2 = length(y)
+  m <- outer(x, y, FUN = "-")
+  n = n1*n2
+  estimate = hd(m,q)
+  # Bootstrap samples
+  data1 <- matrix(sample(n1, size = n1*nboot, replace = TRUE), nrow = nboot)
+  data2 <- matrix(sample(n2, size = n2*nboot, replace = TRUE), nrow = nboot)
+  bvec=NA
+  for(i in 1:nboot){
+    mb = outer(x[data1[i,]],y[data2[i,]],"-")
+    bvec [i] = hd(mb,q)
+  }
+  sbv = sort(bvec)
+  ilow <- round((alpha/2) * nboot)
+  ihi <- nboot - ilow
+  ilow <- ilow+1
+  ci = sbv[ilow]
+  ci[2] = sbv[ihi]
+  list(q = q, estimate = estimate, ci = ci, n = n)
+}
+
+
 #' Harrell-Davis quantile estimator
 #'
 #' Compute the Harrell-Davis estimate of the qth quantile.
@@ -107,6 +153,43 @@ hd <- function(x,q=.5,na.rm=TRUE){
   y <- sort(x)
   hd <- sum(w * y) # weighted sum
   hd
+}
+
+#' Bootstrap confidence interval of the qth quantile
+#'
+#' Compute a percentile bootstrap confidence interval for the qth quantile via
+#' the Harrell--Davis estimator. Appears to be best method when there are tied
+#' values.
+#' @param x A vector of continuous observations.
+#' @param q A quantile between 0 and 1 - default = 0.5, meaning a confidence
+#'   interval for the median is computed.
+#' @param alpha Alpha level - default = 0.05, such that a 95% confidence
+#'   interval is computed.
+#' @param nboot Number of bootstrap samples - default = 2000.
+#' @param nv Null value when computing a p-value.
+#' @return A list with variables: \code{q} \code{estimate}, \code{ci}, \code{n},
+#'   \code{p.value}
+#' @section Note: Adaptation of \code{qcipb} from Rallfun-v33.txt. See
+#'   \url{https://github.com/nicebread/WRS/}
+#' @seealso \code{\link{hd}}
+#' @export
+hdpbci <- function(x, q = .5, alpha = .05, nboot = 2000, nv = 0){
+  x = elimna(x)
+  # Compute quantile
+  estimate = hd(x,q=q)
+  # Bootstrap estimates
+  data <- matrix(sample(x,size=length(x)*nboot,replace=TRUE),nrow=nboot)
+  bvec <- apply(data,1,hd,q=q)
+  # Bootstrap confidence intervals
+  bvec <- sort(bvec)
+  low <- round((alpha/2)*nboot)
+  up <- nboot-low
+  low <- low+1
+  # P value
+  pv = mean(bvec>nv) + .5*mean(bvec==nv)
+  pv = 2*min(c(pv,1-pv))
+  # Outputs
+  list(q=q, estimate=estimate, ci=c(bvec[low],bvec[up]), n=length(x), p.value=pv)
 }
 
 # ==========================================================================
@@ -314,7 +397,7 @@ cidv2 <- function(x,y,alpha=.05){
 #'
 #' @param x,y Two vectors. Missing values are automatically removed.
 #' @param alpha Alpha significance level.
-#' @seealso To compute a p value, use \code{cidv2}.
+#' @seealso To compute a p value, use \code{\link{cidv2}} \code{\link{allpdiff_hdpbci}}
 #' @section Note:
 #' From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
 #' @references

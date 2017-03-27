@@ -11,3 +11,4 @@ add_sf_lab(p, sf, dec = seq(1, 9), labres = 2, link_col = c("darkviolet",
 Add labels of difference values to shift function plot.
 Used in README.md file to illustrate the shift function.
 }
+

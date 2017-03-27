@@ -18,3 +18,4 @@ kswsig(m, n, val)
 Compute significance level of the weighted
 Kolmogorov-Smirnov test statistic
 }
+

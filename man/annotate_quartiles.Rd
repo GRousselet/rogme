@@ -9,3 +9,4 @@ annotate_quartiles(p, data, x = 0, hjust = 0, vjust = 0, size = 10)
 \description{
 Add text annotation of quartiles
 }
+

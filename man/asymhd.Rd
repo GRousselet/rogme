@@ -36,7 +36,6 @@ This function combines Rand Wilcox's qwmwhd & cbmhd R functions,
 from Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/},
 http://dornsife.usc.edu/labs/rwilcox/software/.
 }
-
 \references{
 Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 Comparing two independent groups via the lower and upper quantiles.
@@ -45,3 +44,4 @@ J Stat Comput Sim, 84, 1543-1551.
 \seealso{
 \code{\link{hd}}, \code{\link{allpdiff}}, \code{\link{asymdhd}}
 }
+

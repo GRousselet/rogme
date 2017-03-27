@@ -16,3 +16,4 @@ Default to deciles.
 To plot the deciles with a different bar size for the median,
 use \code{\link{plot_dec_bars}}.
 }
+

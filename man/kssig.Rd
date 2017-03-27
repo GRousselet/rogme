@@ -15,3 +15,4 @@ m=sample size of first group
 n=sample size of second group
 val=observed value of test statistic
 }
+

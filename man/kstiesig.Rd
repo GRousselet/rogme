@@ -12,3 +12,4 @@ for the data in vectors x and y at val, the observed value of the
 test statistic.
 \code{kstiesig} allows ties among values.
 }
+
