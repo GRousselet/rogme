@@ -126,6 +126,43 @@ allpdiff_hdpbci <- function(x,y,alpha=.05,q=.5,nboot=600){
 }
 
 
+#' Compare two independent groups using percentile bootstrap
+#'
+#' Compute a bootstrap confidence interval for the
+#' the difference between any two parameters corresponding to
+#' independent groups.
+#' By default, the Harrell-Davis estimates of the median are compared.
+#' @param x,y Two vectors of continuous variables.
+#' @param alpha Alpha level - default = 0.05, which means that a 95% confidence
+#'   interval is computed.
+#' @param nboot Number of bootstrap samples - default = 2000.
+#' @return A list with variables: \code{est.1} \code{est.2}, \code{est.diff} \code{ci}, \code{p.value}, \code{sq.se}, \code{n1}, \code{n2}
+#' @section Note: Adaptation of \code{pb2gen} from Rallfun-v33.txt. See
+#'   \url{https://github.com/nicebread/WRS/}
+#' @seealso \code{\link{hd}}
+#' @export
+pb2gen <- function(x, y, alpha = .05, nboot = 2000, est = hd,...){
+  x<-x[!is.na(x)] # Remove any missing values in x
+  y<-y[!is.na(y)] # Remove any missing values in y
+# Bootstrap samples
+  datax <- matrix(sample(x,size=length(x)*nboot,replace=TRUE),nrow=nboot)
+  datay <- matrix(sample(y,size=length(y)*nboot,replace=TRUE),nrow=nboot)
+  bvecx <- apply(datax,1,est,...)
+  bvecy <- apply(datay,1,est,...)
+  # Bootstrap confidence interval
+  bvec <- sort(bvecx - bvecy)
+  low <- round((alpha/2)*nboot)+1
+  up <- nboot-low
+  # P value
+  temp <- sum(bvec<0)/nboot+sum(bvec==0)/(2*nboot)
+  sig.level<-2*(min(temp,1-temp))
+  # Bootstrap estimate of the standard error of the difference
+  se <- var(bvec)
+  # Output
+  list(est.1=est(x,...),est.2=est(y,...),est.dif=est(x,...)-est(y,...),ci=c(bvec[low],bvec[up]),p.value=sig.level,sq.se=se,n1=length(x),n2=length(y))
+}
+
+
 #' Harrell-Davis quantile estimator
 #'
 #' Compute the Harrell-Davis estimate of the qth quantile.
