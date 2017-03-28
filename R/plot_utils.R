@@ -46,7 +46,7 @@ plot_dec_bars <- function(p,
 }
 
 #' Add bars marking the quartiles to plot
-#'
+#' @export
 plot_quartile_bars <- function(p,
                                q_seq = c(.25, .5, .75),
                                col = "grey21",
@@ -68,7 +68,7 @@ plot_quartile_bars <- function(p,
 }
 
 #' Add bar marking the mean
-#'
+#' @export
 plot_mean_bar <- function(p,
                           col = "grey21",
                           width = 0.5,
