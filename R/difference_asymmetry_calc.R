@@ -142,7 +142,7 @@ asymdhd <- function(x,
     output[i,2] = hd(dif,q=q)
     output[i,3] = hd(dif,q=1-q)
     # bootstrap samples
-    data <- matrix(sample(n,size=n*nboot,replace=TRUE),nrow=nboot)
+    data <- matrix(sample(nv,size=nv*nboot,replace=TRUE),nrow=nboot)
     for(ib in 1:nboot){
       bvec[ib] <- hd(dif[data[ib,]],q=q) + hd(dif[data[ib,]],q=1-q)
     }
