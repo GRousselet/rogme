@@ -6,12 +6,15 @@
 \usage{
 plot_scat2d(df = df, xname = "condition1", yname = "condition2",
   min.x = NA, min.y = NA, max.x = NA, max.y = NA, axis.steps = 2,
-  psize = 5, pstroke = 1, pshape = 21, pcolour = "black",
-  pfill = "#ffb347", palpha = 0.5)
+  size_p = 5, stroke_p = 1, shape_p = 21, colour_p = "black",
+  fill_p = "#ffb347", alpha_p = 0.5, linetype_q = "dashed", size_q = 1,
+  alpha_q = 0.5, colour_q = "black")
 }
 \description{
 Scatterplot of paired observations with reference line of no effect.
 Quartiles of each condition are superimposed.
-Input is a data frame with 3 columns: participant, condition1, condition 2
+Input is a data frame with 3 columns: participant, condition1, condition 2.
+Parameters _p control the scatterplot.
+Parameters _q control the segments marking the quartiles.
 }
 

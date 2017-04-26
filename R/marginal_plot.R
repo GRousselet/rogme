@@ -196,22 +196,28 @@ plot_dec_ci <- function(out = out,
 #'
 #' Scatterplot of paired observations with reference line of no effect.
 #' Quartiles of each condition are superimposed.
-#' Input is a data frame with 3 columns: participant, condition1, condition 2
+#' Input is a data frame with 3 columns: participant, condition1, condition 2.
+#' Parameters _p control the scatterplot.
+#' Parameters _q control the segments marking the quartiles.
 #' @export
-plot_scat2d <- function(df=df,
-                        xname="condition1",
-                        yname="condition2",
-                        min.x=NA,
-                        min.y=NA,
-                        max.x=NA,
-                        max.y=NA,
-                        axis.steps=2,
-                        psize=5,
-                        pstroke=1,
-                        pshape=21,
-                        pcolour="black",
-                        pfill="#ffb347",
-                        palpha=.5){
+plot_scat2d <- function(df = df,
+                        xname = "condition1",
+                        yname = "condition2",
+                        min.x = NA,
+                        min.y = NA,
+                        max.x = NA,
+                        max.y = NA,
+                        axis.steps = 2,
+                        size_p = 5,
+                        stroke_p = 1,
+                        shape_p = 21,
+                        colour_p = "black",
+                        fill_p = "#ffb347",
+                        alpha_p = .5,
+                        linetype_q = "dashed",
+                        size_q = 1,
+                        alpha_q = .5,
+                        colour_q = "black"){
   # make data.frames for plotting quartile segments
   hd1.5<-hd(df[,2],.5)
   hd1.25<-hd(df[,2],.25)
@@ -239,12 +245,12 @@ plot_scat2d <- function(df=df,
   # scatterplot of paired observations -----------------
   p <- ggplot(df, aes_string(x=xname,y=yname)) +
     geom_abline(intercept = 0) +
-    geom_point(size=psize,
-               stroke=pstroke,
-               shape=pshape,
-               colour=pcolour,
-               fill=pfill,
-               alpha=palpha) +
+    geom_point(size=size_p,
+               stroke=stroke_p,
+               shape=shape_p,
+               colour=colour_p,
+               fill=fill_p,
+               alpha=alpha_p) +
     theme_bw() +
     theme(axis.text.x = element_text(size=14),
           axis.text.y = element_text(size=14),
@@ -255,19 +261,12 @@ plot_scat2d <- function(df=df,
     labs(title="Paired observations") +
     scale_x_continuous(limits=c(floor(min.x), ceiling(max.x)),breaks=seq(floor(min.x),ceiling(max.x),axis.steps)) +
     scale_y_continuous(limits=c(floor(min.y), ceiling(max.y)),breaks=seq(floor(min.y),ceiling(max.y),axis.steps)) +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.5,linetype="dashed",size=1,alpha=.5,colour="black") +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.25,linetype="dashed",size=.5,alpha=.5,colour="black") +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.75,linetype="dashed",size=.5,alpha=.5,colour="black") +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.5,linetype="dashed",size=1,alpha=.5,colour="black") +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.25,linetype="dashed",size=.5,alpha=.5,colour="black") +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.75,linetype="dashed",size=.5,alpha=.5,colour="black")
-
-  #   geom_vline(xintercept=hd(df$condition1,.5),linetype="dashed", size=1, alpha=.3, colour="black") +
-  #   geom_vline(xintercept=hd(df$condition1,.25),linetype="dashed", size=.5, alpha=.3, colour="black") +
-  #   geom_vline(xintercept=hd(df$condition1,.75),linetype="dashed", size=.5, alpha=.3, colour="black") +
-  #   geom_hline(yintercept=hd(df$condition2,.5),linetype="dashed", size=1, alpha=.3, colour="black") +
-  #   geom_hline(yintercept=hd(df$condition2,.25),linetype="dashed", size=.5, alpha=.3, colour="black") +
-  #   geom_hline(yintercept=hd(df$condition2,.75),linetype="dashed", size=.5, alpha=.3, colour="black")
+    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
+    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
+    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
+    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
+    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
+    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q)
   p
 }
 # ----------------------------------------------------------------------------
