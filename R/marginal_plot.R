@@ -130,9 +130,11 @@ plot_scat2 <- function(data = df,
   p
 }
 
+#' Plot deciles and confidence intervals
+#'
 #' Plot deciles and their confidence intervals
 #' using the output of `quantiles_pbci`
-#' GAR, University of Glasgow, 2016-07-15
+#'
 #' @export
 plot_dec_ci <- function(out = out,
                         plotzero = TRUE,
@@ -142,19 +144,35 @@ plot_dec_ci <- function(out = out,
                         size_text = 6,
                         colour_dec = "#009E73",
                         fill_dec = "white",
-                        colour_line = "#009E73"){
+                        size_dec = 4,
+                        shape_dec = 21,
+                        colour_line = "#009E73",
+                        size_line = 1,
+                        linetype_line = 2,
+                        colour_zero = "black",
+                        size_zero = .5,
+                        linetype_zero = 1){
   md <- out$est_q[5] # median
   md.c <- as.character(round(md, digits=1)) # turn into characters
   lo.c <- as.character(round(out$ci.low[5], digits=1)) # turn into characters
   up.c <- as.character(round(out$ci.up[5], digits=1)) # turn into characters
   caption <- paste("Median = \n ",md.c," [",lo.c,", ",up.c,"]",sep="")
   p <- ggplot(data=out, aes(x=quantile*10, y=est_q)) +
-    geom_abline(intercept = md, slope = 0,colour="black",size=.5,linetype=2)
+    geom_abline(intercept = md, slope = 0,
+                colour = colour_line,
+                size = size_line,
+                linetype = linetype_line)
   if (plotzero){
-    p <- p + geom_abline(intercept = 0, slope = 0,colour="black",size=.5,linetype=1)
+    p <- p + geom_abline(intercept = 0, slope = 0,
+                         colour = colour_zero,
+                         size = size_zero,
+                         linetype = linetype_zero)
   }
   p <- p + geom_linerange(aes(ymin=ci.low, ymax=ci.up), colour=colour_line,size=1) +
-    geom_point(colour=colour_dec, size=4, shape=21, fill=fill_dec) +
+    geom_point(colour = colour_dec,
+               size = size_dec,
+               shape = shape_dec,
+               fill = fill_dec) +
     theme_bw() +
     labs(x="Deciles") +
     labs(y=xtitle) +
