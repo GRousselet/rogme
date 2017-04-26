@@ -2,13 +2,13 @@ Package: rogme
 Type: Package
 Title: Robust Graphical Methods For Group Comparisons
 Version: 0.1.0.9000
+Date: 2016-12-15 
 Authors@R: c(person("Guillaume", "Rousselet", email = "Guillaume.Rousselet@glasgow.ac.uk", role = c("aut", "cre")),
              person("Rand", "Wilcox", email = "rwilcox@usc.edu", role = "aut"))
 Maintainer: Guillaume Rousselet <Guillaume.Rousselet@glasgow.ac.uk>
 Description: Robust methods to compare and visualise groups of continuous
-    variables. Based on Rand Wilcox's shift functions and difference asymmetry
-    functions. The outputs of these core tools can be visualised using graphical
-    representations based on ggplot2.
+    variables. Based on Rand Wilcox's shift functions, difference asymmetry
+    functions, and tools for quantile estimation. The outputs of these core tools can be visualised using graphical representations based on ggplot2.
 Depends:
     R (>= 3.3.2),
     ggplot2 (>= 2.2.0)
