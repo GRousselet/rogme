@@ -20,7 +20,7 @@ The approach behind the package is described here:
 
 [A few simple steps to improve the description of group results in neuroscience](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13400/full)
 
-[Modern graphical methods to compare two groups of observations](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)
+[Beyond differences in means: robust graphical methods to compare two groups in neuroscience](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)
 
 The second reference contains extensive examples using `rogme`.
 
@@ -148,8 +148,12 @@ Finally, we combine the three plots into one figure.
 
 ``` r
 library(cowplot)
+#> Warning: `legend.margin` must be specified using `margin()`. For the old
+#> behavior use legend.spacing
 cowplot::plot_grid(ps, p, psf, labels=c("A", "B", "C"), ncol = 1, nrow = 3,
                    rel_heights = c(1, 1, 1), label_size = 20, hjust = -0.5, scale=.95)
+#> Warning: `panel.margin` is deprecated. Please use `panel.spacing` property
+#> instead
 ```
 
 ![](README-files/README-unnamed-chunk-7-1.png)

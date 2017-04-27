@@ -31,7 +31,7 @@ The approach behind the package is described here:
 
 [A few simple steps to improve the description of group results in neuroscience](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13400/full)
 
-[Modern graphical methods to compare two groups of observations](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)
+[Beyond differences in means: robust graphical methods to compare two groups in neuroscience](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)
 
 The second reference contains extensive examples using `rogme`.
 
