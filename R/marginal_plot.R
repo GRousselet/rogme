@@ -195,10 +195,20 @@ plot_dec_ci <- function(out = out,
 #' Plot paired observations
 #'
 #' Scatterplot of paired observations with reference line of no effect.
-#' Quartiles of each condition are superimposed.
+#' Quartiles of each condition are superimposed. Quartiles are estimated using the
+#' Harrell-Davis estimator.
 #' Input is a data frame with 3 columns: participant, condition1, condition 2.
-#' Parameters _p control the scatterplot.
-#' Parameters _q control the segments marking the quartiles.
+#' @param df Data frame with paired observations in columns 2 and 3.
+#' @param colour_p Colour parameter of the scatterplot.
+#' @param fill_p Fill parameter of the scatterplot and so on.
+#' @param colour_q Colour of the segments marking the quartiles.
+#' @param linetype_q Linetype of the segments marking the quartiles and so on.
+#' @examples
+#' plot_scat2d(df, xname='c1', yname='c2') # basic call
+#' plot_scat2d(df, xname='c1', yname='c2', size_q=1) # specify size of quartile segments
+#' plot_scat2d(df, xname='c1', yname='c2', size_q=c(1,2,1)) # use thicker line for median
+#' @note To do: make string version so it all works using xname and yname.
+#' @seealso \code{\link{hd}}
 #' @export
 plot_scat2d <- function(df = df,
                         xname = "condition1",
@@ -229,6 +239,21 @@ plot_scat2d <- function(df = df,
   df.25<-data.frame(hd1=hd1.25,hd2=hd2.25)
   df.75<-data.frame(hd1=hd1.75,hd2=hd2.75)
 
+  # quartile plot parameters
+  if(length(linetype_q)==1){
+    linetype_q = rep(linetype_q,3)
+  }
+  if(length(size_q)==1){
+    size_q = rep(size_q,3)
+  }
+  if(length(alpha_q)==1){
+    alpha_q = rep(alpha_q,3)
+  }
+  if(length(colour_q)==1){
+    colour_q = rep(colour_q,3)
+  }
+
+  # plot limits
   if (is.na(min.x)){
     min.x <- min(df[,2],df[,3])
   }
@@ -244,7 +269,18 @@ plot_scat2d <- function(df = df,
 
   # scatterplot of paired observations -----------------
   p <- ggplot(df, aes_string(x=xname,y=yname)) +
+    # reference line
     geom_abline(intercept = 0) +
+    # quartiles
+    scale_x_continuous(limits=c(floor(min.x), ceiling(max.x)),breaks=seq(floor(min.x),ceiling(max.x),axis.steps)) +
+    scale_y_continuous(limits=c(floor(min.y), ceiling(max.y)),breaks=seq(floor(min.y),ceiling(max.y),axis.steps)) +
+    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
+    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
+    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
+    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
+    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
+    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
+    # scatterplot
     geom_point(size=size_p,
                stroke=stroke_p,
                shape=shape_p,
@@ -258,15 +294,7 @@ plot_scat2d <- function(df = df,
           axis.title.y = element_text(size=16,face="bold"),
           legend.title = element_blank(),
           plot.title = element_text(size=20)) +
-    labs(title="Paired observations") +
-    scale_x_continuous(limits=c(floor(min.x), ceiling(max.x)),breaks=seq(floor(min.x),ceiling(max.x),axis.steps)) +
-    scale_y_continuous(limits=c(floor(min.y), ceiling(max.y)),breaks=seq(floor(min.y),ceiling(max.y),axis.steps)) +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q) +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q,size=size_q,alpha=alpha_q,colour=colour_q)
+    labs(title="Paired observations")
   p
 }
 # ----------------------------------------------------------------------------
