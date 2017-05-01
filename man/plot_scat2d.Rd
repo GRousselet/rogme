@@ -4,14 +4,16 @@
 \alias{plot_scat2d}
 \title{Plot paired observations}
 \usage{
-plot_scat2d(df = df, xname = "condition1", yname = "condition2",
+plot_scat2d(df = df, xcol = "condition1", ycol = "condition2",
   min.x = NA, min.y = NA, max.x = NA, max.y = NA, axis.steps = 2,
   size_p = 5, stroke_p = 1, shape_p = 21, colour_p = "black",
   fill_p = "#ffb347", alpha_p = 0.5, linetype_q = "dashed", size_q = 1,
   alpha_q = 0.5, colour_q = "black")
 }
 \arguments{
-\item{df}{Data frame with paired observations in columns 2 and 3.}
+\item{df}{Data frame with paired observations in two columns.}
+
+\item{xcol, ycol}{Names of columns of paired observations.}
 
 \item{colour_p}{Colour parameter of the scatterplot.}
 
@@ -25,15 +27,11 @@ plot_scat2d(df = df, xname = "condition1", yname = "condition2",
 Scatterplot of paired observations with reference line of no effect.
 Quartiles of each condition are superimposed. Quartiles are estimated using the
 Harrell-Davis estimator.
-Input is a data frame with 3 columns: participant, condition1, condition 2.
-}
-\note{
-To do: make string version so it all works using xname and yname.
 }
 \examples{
-plot_scat2d(df, xname='c1', yname='c2') # basic call
-plot_scat2d(df, xname='c1', yname='c2', size_q=1) # specify size of quartile segments
-plot_scat2d(df, xname='c1', yname='c2', size_q=c(1,2,1)) # use thicker line for median
+plot_scat2d(df, xcol='c1', ycol='c2') # basic call
+plot_scat2d(df, xcol='c1', ycol='c2', size_q=1) # specify size of quartile segments
+plot_scat2d(df, xcol='c1', ycol='c2', size_q=c(1,2,1)) # use thicker line for median
 }
 \seealso{
 \code{\link{hd}}

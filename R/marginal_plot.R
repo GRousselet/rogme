@@ -197,22 +197,22 @@ plot_dec_ci <- function(out = out,
 #' Scatterplot of paired observations with reference line of no effect.
 #' Quartiles of each condition are superimposed. Quartiles are estimated using the
 #' Harrell-Davis estimator.
-#' Input is a data frame with 3 columns: participant, condition1, condition 2.
-#' @param df Data frame with paired observations in columns 2 and 3.
+#' @param df Data frame with paired observations in two columns.
+#' @param xcol,ycol Names of columns of paired observations.
 #' @param colour_p Colour parameter of the scatterplot.
 #' @param fill_p Fill parameter of the scatterplot and so on.
 #' @param colour_q Colour of the segments marking the quartiles.
 #' @param linetype_q Linetype of the segments marking the quartiles and so on.
 #' @examples
-#' plot_scat2d(df, xname='c1', yname='c2') # basic call
-#' plot_scat2d(df, xname='c1', yname='c2', size_q=1) # specify size of quartile segments
-#' plot_scat2d(df, xname='c1', yname='c2', size_q=c(1,2,1)) # use thicker line for median
-#' @note To do: make string version so it all works using xname and yname.
+#' plot_scat2d(df, xcol='c1', ycol='c2') # basic call
+#' plot_scat2d(df, xcol='c1', ycol='c2', size_q=1) # specify size of quartile segments
+#' plot_scat2d(df, xcol='c1', ycol='c2', size_q=c(1,2,1)) # use thicker line for median
+#' plot_scat2d(df, xcol='c1', ycol='c2', linetype_q = "longdash") # specify linetype - default = dashed
 #' @seealso \code{\link{hd}}
 #' @export
 plot_scat2d <- function(df = df,
-                        xname = "condition1",
-                        yname = "condition2",
+                        xcol = "condition1",
+                        ycol = "condition2",
                         min.x = NA,
                         min.y = NA,
                         max.x = NA,
@@ -229,14 +229,14 @@ plot_scat2d <- function(df = df,
                         alpha_q = .5,
                         colour_q = "black"){
   # make data.frames for plotting quartile segments
-  hd1.5<-hd(df[,2],.5)
-  hd1.25<-hd(df[,2],.25)
-  hd1.75<-hd(df[,2],.75)
-  hd2.5<-hd(df[,3],.5)
-  hd2.25<-hd(df[,3],.25)
-  hd2.75<-hd(df[,3],.75)
-  df.5<-data.frame(hd1=hd1.5,hd2=hd2.5)
+  hd1.25<-hd(df[[xcol]],.25)
+  hd1.5<-hd(df[[xcol]],.5)
+  hd1.75<-hd(df[[xcol]],.75)
+  hd2.25<-hd(df[[ycol]],.25)
+  hd2.5<-hd(df[[ycol]],.5)
+  hd2.75<-hd(df[[ycol]],.75)
   df.25<-data.frame(hd1=hd1.25,hd2=hd2.25)
+  df.5<-data.frame(hd1=hd1.5,hd2=hd2.5)
   df.75<-data.frame(hd1=hd1.75,hd2=hd2.75)
 
   # quartile plot parameters
@@ -268,7 +268,7 @@ plot_scat2d <- function(df = df,
   }
 
   # scatterplot of paired observations -----------------
-  p <- ggplot(df, aes_string(x=xname,y=yname)) +
+  p <- ggplot(df, aes_string(x=xcol,y=ycol)) +
     # reference line
     geom_abline(intercept = 0) +
     # quartiles
