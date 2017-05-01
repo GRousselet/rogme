@@ -32,6 +32,7 @@ Harrell-Davis estimator.
 plot_scat2d(df, xcol='c1', ycol='c2') # basic call
 plot_scat2d(df, xcol='c1', ycol='c2', size_q=1) # specify size of quartile segments
 plot_scat2d(df, xcol='c1', ycol='c2', size_q=c(1,2,1)) # use thicker line for median
+plot_scat2d(df, xcol='c1', ycol='c2', linetype_q = "longdash") # specify linetype - default = dashed
 }
 \seealso{
 \code{\link{hd}}
