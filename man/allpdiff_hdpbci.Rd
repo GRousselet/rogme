@@ -31,7 +31,7 @@ median of the distribution of D=X-Y is approximately zero.
  Adaptation of \code{cbmhd} from Rallfun-v33.txt. See
   \url{https://github.com/nicebread/WRS/}
 }
+
 \seealso{
 \code{\link{hd}} \code{\link{hdpbci}} \code{\link{cid}} \code{\link{allpdiff}}
 }
-

@@ -32,7 +32,7 @@ values.
  Adaptation of \code{qcipb} from Rallfun-v33.txt. See
   \url{https://github.com/nicebread/WRS/}
 }
+
 \seealso{
 \code{\link{hd}}
 }
-

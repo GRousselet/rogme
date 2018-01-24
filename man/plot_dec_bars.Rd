@@ -10,4 +10,3 @@ plot_dec_bars(p, col = "grey21", width = 0.5, dec_size = 0.5,
 \description{
 Add bars marking the deciles to plot
 }
-

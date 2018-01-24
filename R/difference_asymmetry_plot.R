@@ -1,7 +1,8 @@
 #' Plot difference asymmetry function
 #'
 #' Plot difference asymmetry function using output from
-#' Rand Wilcox's qwmwhd or difQpci functions
+#' Rand Wilcox's qwmwhd or difQpci functions. For naming consistency,
+#' these functions have been renamed `asymhd` and `asymdhd` in `rogme`.
 #' @export
 plot_diff_asym <- function(data = df,
                            xlabel = "Quantiles",

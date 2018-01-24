@@ -1,7 +1,7 @@
 Package: rogme
 Type: Package
 Title: Robust Graphical Methods For Group Comparisons
-Version: 0.1.0.9000
+Version: 0.1.1
 Date: 2016-12-15 
 Authors@R: c(person("Guillaume", "Rousselet", email = "Guillaume.Rousselet@glasgow.ac.uk", role = c("aut", "cre")),
              person("Rand", "Wilcox", email = "rwilcox@usc.edu", role = "aut"))
@@ -20,7 +20,7 @@ Imports:
     ggbeeswarm (>= 0.5.3)
 License: MIT | file LICENSE
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 URL: https://github.com/GRousselet/rogme
 BugReports: https://github.com/GRousselet/rogme/issues

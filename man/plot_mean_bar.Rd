@@ -9,4 +9,3 @@ plot_mean_bar(p, col = "grey21", width = 0.5, size = 0.5)
 \description{
 Add bar marking the mean
 }
-

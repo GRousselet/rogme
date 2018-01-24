@@ -55,4 +55,3 @@ Several themes are available:
   \item Theme 3 uses a greyscale gradient to code the deciles.
   }
 }
-

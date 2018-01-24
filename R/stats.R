@@ -21,6 +21,7 @@ deciles <- function(x){
 #'
 #' Estimate the deciles for the data in vector x using the Harrell-Davis
 #' estimate of the qth quantile. Modified from \code{deciles} to return only
+#' @export
 q1469 <- function(x){
   xq <- deciles(x)[c(seq(1,4),seq(6,9))]
   xq

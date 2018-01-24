@@ -14,4 +14,3 @@ plot_dec_ci(out = out, plotzero = TRUE, xtitle = "Differences",
 Plot deciles and their confidence intervals
 using the output of `quantiles_pbci`
 }
-

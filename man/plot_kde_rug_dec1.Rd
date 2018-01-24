@@ -10,4 +10,3 @@ plot_kde_rug_dec1(data = df, fill.colour = "grey30", fill.alpha = 0.3)
 Plot kernel density estimate + rug plot + superimposed deciles
 for 1 group stored in a data frame
 }
-

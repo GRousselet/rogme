@@ -22,6 +22,7 @@ confidence interval, and its p value.
 
 From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
 }
+
 \references{
 Cliff, N. (1996) Ordinal methods for behavioral data analysis. Erlbaum, Mahwah, N.J.
 Wilcox, R.R. (2011) Inferences about a Probabilistic Measure of Effect Size When Dealing with More Than Two Groups. Journal of Data Science, 9, 471-486.
@@ -29,4 +30,3 @@ Wilcox, R.R. (2011) Inferences about a Probabilistic Measure of Effect Size When
 \seealso{
 This function uses the function cid.
 }
-

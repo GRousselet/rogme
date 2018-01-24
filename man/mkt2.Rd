@@ -52,4 +52,3 @@ df <- mkt2(x, y)
 9  Group2    14
 10 Group2    15
 }
-

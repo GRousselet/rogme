@@ -11,6 +11,6 @@ plot_scat2_sina(data = df, symb_size = 2, symb_stroke = 1,
   scale = TRUE)
 }
 \description{
-\code{plot_scat2} produces scatterplots for 2 marginal distributions. #' The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
+\code{plot_scat2} produces scatterplots for 2 marginal distributions.
+The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
 }
-

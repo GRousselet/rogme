@@ -29,4 +29,3 @@ hd(x, q = 0.75) # estimate the third quartile
 \references{
 Harrell, F.E. & Davis, C.E. (1982) A new distribution-free quantile estimator. Biometrika, 69, 635-640.
 }
-

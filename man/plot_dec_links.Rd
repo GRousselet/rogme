@@ -12,4 +12,3 @@ plot_dec_links(p, sf = sf, dec_col = "grey21", dec_width = 0.5,
 \description{
 Used in README to demonstrate the shift function.
 }
-

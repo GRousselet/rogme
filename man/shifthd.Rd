@@ -47,6 +47,7 @@ Independent bootstrap samples are used for each quantile and for each group.
  Modified from Rallfun-v32.txt - see
   \url{https://github.com/nicebread/WRS/}.
 }
+
 \examples{
 out <- shifthd(df) # use the default parameters
 out <- shifthd(df, nboot=500) # specify the number of bootstrap samples
@@ -62,4 +63,3 @@ Statistical Society. Series D (The Statistician), 44, 91-99.
 \seealso{
 \code{\link{shiftdhd}} for dependent groups.
 }
-

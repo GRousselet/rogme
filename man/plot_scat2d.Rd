@@ -37,4 +37,3 @@ plot_scat2d(df, xcol='c1', ycol='c2', linetype_q = "longdash") # specify linetyp
 \seealso{
 \code{\link{hd}}
 }
-

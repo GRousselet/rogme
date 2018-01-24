@@ -27,7 +27,7 @@ By default, the Harrell-Davis estimates of the median are compared.
  Adaptation of \code{pb2gen} from Rallfun-v33.txt. See
   \url{https://github.com/nicebread/WRS/}
 }
+
 \seealso{
 \code{\link{hd}}
 }
-

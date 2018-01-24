@@ -13,4 +13,3 @@ Compute empirical cdf
  Compute the empirical cdf for data in x evaluated at val.
  That is, estimate P(X <= val)
 }
-

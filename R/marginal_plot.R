@@ -8,7 +8,7 @@ plot_kde_rug_dec2 <- function(data = df){
   cdat <- plyr::ddply(data, "gr", summarise, deciles = q1469(data))
   hd05 <- plyr::ddply(data, "gr", summarise, hd = hd(data,0.5))
   #cc <- "grey80" # colour to plot deciles
-  p <- ggplot(data, aes(x=data, fill=gr)) + geom_density(alpha=.3) +
+  p <- ggplot(data, aes(x=obs, fill=gr)) + geom_density(alpha=.3) +
     facet_grid(gr ~ .) +
     geom_vline(data=hd05, aes(xintercept=hd,  colour=gr),
                linetype="solid", size=2, alpha=.5) + # thicker median
@@ -37,7 +37,7 @@ plot_kde_rug_dec1 <- function(data=df,fill.colour="grey30",fill.alpha=.3){
   cdat <- plyr::ddply(data, "gr", summarise, deciles=q1469(data))
   hd05 <- plyr::ddply(data, "gr", summarise, hd=hd(data,0.5))
   cc <- "grey80" # colour to plot deciles
-  p <- ggplot(data, aes(x=data)) +
+  p <- ggplot(data, aes(x=obs)) +
     geom_density(alpha=fill.alpha,fill=fill.colour,colour="black") +
     geom_vline(xintercept=hd05$hd, colour="black", linetype="solid",
                size=2, alpha=0.5) + # thicker median
@@ -56,7 +56,8 @@ plot_kde_rug_dec1 <- function(data=df,fill.colour="grey30",fill.alpha=.3){
 
 #' Scatterplots for 2 groups
 #'
-#' \code{plot_scat2} produces scatterplots for 2 marginal distributions. #' The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
+#' \code{plot_scat2} produces scatterplots for 2 marginal distributions.
+#' The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
 plot_scat2_sina <- function(data = df,
                        symb_size = 2,
                        symb_stroke = 1,

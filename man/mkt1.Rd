@@ -4,7 +4,7 @@
 \alias{mkt1}
 \title{Make tibble (data frame) for one group}
 \usage{
-mkt1(x, name = c("data", "gr"))
+mkt1(x, name = c("obs", "gr"))
 }
 \arguments{
 \item{x}{A vector.}
@@ -44,4 +44,3 @@ df <- mkt1(x)
 4  Group1     4
 5  Group1     5
 }
-

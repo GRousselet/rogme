@@ -1,0 +1,22 @@
+citHeader("To cite rogme in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Beyond differences in means: robust graphical methods to compare two groups in neuroscience",
+  author       = personList(as.person("Guillaume A Rousselet"),
+                   as.person("Cyril R Pernet"), as.person("Rand R Wilcox")),
+  journal      = "European Journal of Neuroscience",
+  year         = "2017",
+  volume       = "46",
+  number       = "2",
+  pages        = "1738--1748",
+  url          = "https://www.ncbi.nlm.nih.gov/pubmed/28544058",
+
+  textVersion  =
+  paste("Guillaume A Rousselet, Cyril R Pernet, Rand R Wilcox (2017).",
+        "Beyond differences in means: robust graphical methods to compare two groups in neuroscience.",
+        "European Journal of Neuroscience, 46(2), 1738-1748.",
+        "URL https://www.ncbi.nlm.nih.gov/pubmed/28544058.")
+)
+
+citFooter("The article is also available on figshare: https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970")
+

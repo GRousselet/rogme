@@ -12,6 +12,6 @@ plot_diff_asym(data = df, xlabel = "Quantiles",
 }
 \description{
 Plot difference asymmetry function using output from
-Rand Wilcox's qwmwhd or difQpci functions
+Rand Wilcox's qwmwhd or difQpci functions. For naming consistency,
+these functions have been renamed `asymhd` and `asymdhd` in `rogme`.
 }
-
