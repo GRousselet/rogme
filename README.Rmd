@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 ```
 
 # rogme
-Robust Graphical Methods For Group Comparisons
+Robust Graphical Methods For Group Comparisons (v. 0.1.1)
 
 The `rogme` R package provides graphical tools to compare groups of continous observations. The goal is to illustrate and quantify how and by how much groups differ.
 The current version of the package is limited to comparing two groups.
