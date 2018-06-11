@@ -5,8 +5,8 @@
 #'
 #' @export
 plot_kde_rug_dec2 <- function(data = df){
-  cdat <- plyr::ddply(data, "gr", summarise, deciles = q1469(data))
-  hd05 <- plyr::ddply(data, "gr", summarise, hd = hd(data,0.5))
+  cdat <- plyr::ddply(data, "gr", summarise, deciles = q1469(obs))
+  hd05 <- plyr::ddply(data, "gr", summarise, hd = hd(obs,0.5))
   #cc <- "grey80" # colour to plot deciles
   p <- ggplot(data, aes(x=obs, fill=gr)) + geom_density(alpha=.3) +
     facet_grid(gr ~ .) +
@@ -34,8 +34,8 @@ plot_kde_rug_dec2 <- function(data = df){
 #'
 #' @export
 plot_kde_rug_dec1 <- function(data=df,fill.colour="grey30",fill.alpha=.3){
-  cdat <- plyr::ddply(data, "gr", summarise, deciles=q1469(data))
-  hd05 <- plyr::ddply(data, "gr", summarise, hd=hd(data,0.5))
+  cdat <- plyr::ddply(data, "gr", summarise, deciles=q1469(obs))
+  hd05 <- plyr::ddply(data, "gr", summarise, hd=hd(obs,0.5))
   cc <- "grey80" # colour to plot deciles
   p <- ggplot(data, aes(x=obs)) +
     geom_density(alpha=fill.alpha,fill=fill.colour,colour="black") +
