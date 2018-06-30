@@ -93,7 +93,6 @@ subset_data2 <- function(data, formula){
   vars <- all.vars(formula)
   param_col_name <- vars[2]
   obs_col_name <- vars[1]
-  # gr_names <- names(table(data[,param_col_name]))
   gr_names <- levels(data[[param_col_name]])
   gr_name1 <- gr_names[[1]]
   gr_name2 <- gr_names[[2]]
@@ -102,14 +101,38 @@ subset_data2 <- function(data, formula){
   y <- data[mm[,2]==1,obs_col_name]
   x <- x[[1]]
   y <- y[[1]]
-  # x <- dplyr::filter_(data,lazyeval::interp(~ a == b, a = as.name(param_col_name),
-  #                                         b = gr_name1))
-  # x <- dplyr::collect(dplyr::select_(x, .dots = list(obs_col_name)))[[1]]
-  # y <- dplyr::filter_(data,lazyeval::interp(~ a == b, a = as.name(param_col_name),
-  #                                         b = gr_name2))
-  # y <- dplyr::collect(dplyr::select_(y, .dots = list(obs_col_name)))[[1]]
   # outputs
   out <- list(x = x, y = y, gr_name1 = gr_name1, gr_name2 = gr_name2)
+}
+
+subset_formula <- function(data, formula){
+  vars <- all.vars(formula)
+  param_col_name <- vars[2]
+  obs_col_name <- vars[1]
+  # check that the columns exist
+  if (!(param_col_name %in% colnames(data))) {
+    stop(paste0(param_col_name," does not exist"))
+  }
+  if (!(obs_col_name %in% colnames(data))) {
+    stop(paste0(obs_col_name," does not exist"))
+  }
+  # check that param_col is a factor
+  stopifnot(is.factor(data[[param_col_name]]))
+  # check that obs_col is numeric
+  stopifnot(is.numeric(data[[obs_col_name]]))
+  # get levels of param_col_name
+  gr_names <- levels(data[[param_col_name]])
+  # gr_name1 <- gr_names[[1]]
+  # gr_name2 <- gr_names[[2]]
+  # mm <- model.matrix(formula, data = data)
+  # x <- data[mm[,2]==0,obs_col_name]
+  # y <- data[mm[,2]==1,obs_col_name]
+  # x <- x[[1]]
+  # y <- y[[1]]
+  # outputs
+  out <- list(param_col_name = param_col_name,
+              obs_col_name = obs_col_name,
+              gr_names = gr_names)
 }
 
 elimna <- function(m){
