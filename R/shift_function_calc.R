@@ -1,8 +1,9 @@
 #' Shift function for two independent groups (pbse method)
 #'
-#' \code{shifthd} returns a shift function for two independent groups.
-#' \code{shifthd} \strong{works exclusively with deciles and with alpha = 0.05},
-#' so that only 95\% confidence intervals can be computed. To use other quantiles
+#' \code{shifthd} returns a shift function for two independent groups or
+#' multiple shift functions for pairs of independent groups. \code{shifthd}
+#' \strong{works exclusively with deciles and with alpha = 0.05}, so that only
+#' 95\% confidence intervals can be computed. To use other quantiles
 #' and other alpha levels, see \code{\link{shifthd_pbci}}. Plot the shift
 #' function using \code{plot_sf}.
 #'
@@ -15,19 +16,22 @@
 #' coverage is .95.
 #'
 #' The deciles are estimated using the Harrell-Davis quantile estimator of the
-#' qth quantile is used. The default number of bootstrap samples is nboot = 200.
+#' qth quantile. The default number of bootstrap samples is nboot = 200.
 #' Independent bootstrap samples are used for each quantile and for each group.
 #'
 #' @section Note: Modified from Rallfun-v32.txt - see
 #'   \url{https://github.com/nicebread/WRS/}.
 #'
 #' @references Harrell, F.E. & Davis, C.E. (1982) A new distribution-free
-#' quantile estimator. Biometrika, 69, 635-640. Wilcox, R.R. (1995) Comparing
-#' Two Independent Groups Via Multiple Quantiles. Journal of the Royal
-#' Statistical Society. Series D (The Statistician), 44, 91-99.
-#' @param data A data frame in long format. One column is a factor describing the two groups;
-#'   another column contains the values for each group. A properly formatted data
-#'   frame can be created using \code{\link[rogme]{mkt2}}. Missing values are not
+#' quantile estimator. Biometrika, 69, 635-640.
+#'
+#' Wilcox, R.R. (1995) Comparing Two Independent Groups Via Multiple Quantiles.
+#' Journal of the Royal Statistical Society. Series D (The Statistician), 44,
+#' 91-99.
+#'
+#' @param data A data frame in long format. One column is a factor describing the groups;
+#'   another column contains the values/observations for each group. A properly formatted data
+#'   frame can be created using \code{\link{mkt2}}. Missing values are not
 #'   allowed.
 #' @param formula A formula with format response variable ∼ predictor variable,
 #'   where ~ (tilde) means "is modeled as a function of".
@@ -35,6 +39,7 @@
 #' @param todo A list of comparisons to perform - default = NULL.
 #' @param doall Set to TRUE to compute all comparisons - default = FALSE. Not
 #'   executed if a \code{todo} list is provided.
+#'
 #' @return A list of data frames, one data frame per comparison. Each data frame
 #'   has one row per decile. The columns are: \itemize{ \item Column 1 = deciles
 #'   for group 1 \item Column 2 = deciles for group 2
@@ -43,17 +48,20 @@
 #'   confidence intervals }
 #'
 #' @seealso \code{\link{shiftdhd}} for dependent groups.
+#'
 #' \code{\link{plot_sf}} to plot the results.
 #'
 #' @examples
 #' set.seed(21) # generate data
-#' g1 <- rnorm(1000) + 6
-#' g2 <- rnorm(1000) * 1.5 + 6
-#' df <- mkt2(g1, g2) # make tibble
-#' out <- shifthd(df) # use the default parameters
-#' out <- shifthd(df, nboot = 500) # specify the number of bootstrap samples
-#' out <- shifthd(df, todo = list(c("g1","g2"),c("g2","g1"))) # specify list of comparisons
+#' n <- 100 # sample size
+#' df <- tibble(gr = c(rep("group1",n),rep("group2",n),rep("group3",n)),
+#'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
+#'
+#' out <- shifthd(df, obs ~ gr) # use the default parameters
+#' out <- shifthd(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
+#' out <- shifthd(df, obs ~ gr, todo = list(c("g1","g2"),c("g3","g1"))) # specify list of comparisons
 #' out <- shifthd(df, doall = TRUE) # compute all comparisons
+#'
 #' @export
 shifthd <- function(data = df,
                     formula = obs ~ gr,
@@ -112,10 +120,12 @@ shifthd <- function(data = df,
 
 #' Shift function for two dependent groups (pbse methods)
 #'
-#' \code{shiftdhd} returns a shift function for two dependent groups.
+#' \code{shiftdhd} returns a shift function for two dependent groups or
+#' multiple shift functions for pairs of dependent groups.
 #' \code{shiftdhd} \strong{works exclusively with deciles and with alpha =
 #' 0.05}, so that only 95\% confidence intervals can be computed. To use other
-#' quantiles and other alpha levels, see \code{\link{shiftdhd_pbci}}.
+#' quantiles and other alpha levels, see \code{\link{shiftdhd_pbci}}. Plot the shift
+#' function using \code{plot_sf}.
 #'
 #' A shift function shows the difference between the quantiles of two groups as
 #' a function of the quantiles of one group. For inferences, the function
@@ -126,7 +136,7 @@ shifthd <- function(data = df,
 #' coverage is .95.
 #'
 #' The deciles are estimated using the Harrell-Davis quantile estimator of the
-#' qth quantile is used. The default number of bootstrap samples is nboot = 200.
+#' qth quantile. The default number of bootstrap samples is nboot = 200.
 #' The same bootstrap samples are used for each quantile and for each group.
 #'
 #' @section Note: Modified from Rallfun-v32.txt - see
@@ -134,17 +144,22 @@ shifthd <- function(data = df,
 #'
 #' @references Harrell, F.E. & Davis, C.E. (1982) A new distribution-free
 #'   quantile estimator. Biometrika, 69, 635-640.
+#'
 #'   Wilcox, R.R. (2012) Introduction to robust estimation and hypothesis
 #'   testing. Academic Press, San Diego, CA.
 #'
-#' @param data A data frame in tidy format. Column 1 describes the two groups;
-#'   column 2 contains the values for each group. A properly formatted data
+#' @param data A data frame in long format. One column is a factor describing the conditions;
+#'   another column contains the values/observations for each condition. A properly formatted data
 #'   frame can be created using \code{link{mkt2}} or \code{link{mkt2d}}. Missing
 #'   values are not allowed.
 #' @param formula A formula with format response variable ∼ predictor variable,
 #'   where ~ (tilde) means "is modeled as a function of".
 #' @param nboot The number of bootstrap samples - default = 200.
-#' @return A data frame with one row per decile. The columns are: \itemize{
+#' @param todo A list of comparisons to perform - default = NULL.
+#' @param doall Set to TRUE to compute all comparisons - default = FALSE. Not
+#'   executed if a \code{todo} list is provided.
+#'
+#' @return A list of data frames, one data frame per comparison. Each data frame has one row per decile. The columns are: \itemize{
 #'   \item Column 1 = deciles for group 1 \item Column 2 = deciles for group 2
 #'   \item Column 3 = differences (column 1 - column 2) \item Column 4 = lower
 #'   bounds of the confidence intervals \item Column 5 = upper bounds of the
@@ -152,37 +167,67 @@ shifthd <- function(data = df,
 #'
 #' @seealso \code{\link{shifthd}} for independent groups.
 #'
+#' \code{\link{plot_sf}} to plot the results.
+#'
 #' @examples
-#' out <- shiftdhd(df, formula = obs ~ gr) # use the default parameters
-#' out <- shiftdhd(df, formula = obs ~ gr, nboot = 500) # specify the number of bootstrap samples
+#' set.seed(21) # generate data
+#' n <- 100 # sample size
+#' C1 <- rnorm(100)
+#' df2 <- tibble(condition = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
+#'               data = c(C1+6, C1+rnorm(100)+4, C1*5+rnorm(100))) # make tibble
+#'
+#' out <- shiftdhd(df, obs ~ cond) # use the default parameters
+#' out <- shiftdhd(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
+#' out <- shiftdhd(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # specify list of comparisons
+#' out <- shiftdhd(df, doall = TRUE) # compute all comparisons
 #'
 #' @export
-shiftdhd <- function(data = df, formula = obs ~ gr, nboot = 200){
+shiftdhd <- function(data = df,
+                     formula = obs ~ cond,
+                     nboot = 200,
+                     todo = NULL,
+                     doall = FALSE){
   # subset data
-  out <- subset_data2(data, formula)
-  #df <- na.omit(df) # remove NA
-  x <- out$x
-  y <- out$y
-  gr_name1 <- out$gr_name1
-  gr_name2 <- out$gr_name2
-  # factor to correct for multiple comparisons
-  crit <- 37 / length(x)^(1.4) + 2.75
-  m <- matrix(0,9,5) # declare matrix of results
-  data <- matrix(sample(length(x),size=length(x)*nboot,replace=TRUE),nrow=nboot)
-  xmat <- matrix(x[data],nrow=nboot,ncol=length(x))
-  ymat <- matrix(y[data],nrow=nboot,ncol=length(x))
-  for (d in 1:9){
-    q <- d/10
-    bvec <- apply(xmat, 1, hd, q) - apply(ymat, 1, hd, q)
-    se <- sqrt(var(bvec))
-    m[d,1]=hd(x,q)
-    m[d,2]=hd(y,q)
-    m[d,3]<-m[d,1]-m[d,2]
-    m[d,4]<-m[d,3]-crit*se
-    m[d,5]<-m[d,3]+crit*se
+  subf <- subset_formula(data, formula)
+  if (length(todo)==0) { # no comparison is specified
+    if (doall == FALSE) { # do not perform all comparisons
+      if (length(subf$gr_names) > 2) {
+        warning(paste0("Parameter column ",subf$param_col_name," contains more than 2 levels. The shift function is computed based on the first 2 levels."))
+      }
+      todo <- list(subf$gr_names[1:2])
+    }
+    if (doall == TRUE) { # perform all comparisons
+      todo <- lapply(apply(combn(subf$gr_names, 2),2,list),unlist)
+    }
   }
-  out <- data.frame(m)
-  names(out) <- c(gr_name1, gr_name2, 'difference', 'ci_lower', 'ci_upper')
+  out <- vector("list", length(todo)) # declare list of shift functions
+  for(comp in 1:length(todo)){ # for each comparison
+    x <- data[data[[subf$param_col_name]] == todo[[comp]][1], subf$obs_col_name][[1]]
+    y <- data[data[[subf$param_col_name]] == todo[[comp]][2], subf$obs_col_name][[1]]
+    gr_name1 <- todo[[comp]][1]
+    gr_name2 <- todo[[comp]][2]
+    # factor to correct for multiple comparisons
+    crit <- 37 / length(x)^(1.4) + 2.75
+    m <- matrix(0,9,5) # declare matrix of results
+    # same bootstrap samples for all deciles and conditions (resample pairs)
+    bootsamp <- matrix(sample(length(x),size=length(x)*nboot,replace=TRUE),nrow=nboot)
+    xmat <- matrix(x[bootsamp],nrow=nboot,ncol=length(x))
+    ymat <- matrix(y[bootsamp],nrow=nboot,ncol=length(x))
+    for (d in 1:9){ # decile loop
+      q <- d/10
+      bvec <- apply(xmat, 1, hd, q) - apply(ymat, 1, hd, q)
+      se <- sqrt(var(bvec))
+      m[d,1]=hd(x,q)
+      m[d,2]=hd(y,q)
+      m[d,3]<-m[d,1]-m[d,2]
+      m[d,4]<-m[d,3]-crit*se
+      m[d,5]<-m[d,3]+crit*se
+    }
+    tmp <- data.frame(m)
+    names(tmp) <- c(gr_name1, gr_name2, 'difference', 'ci_lower', 'ci_upper')
+    out[[comp]] <- tmp
+    names(out)[comp] <- paste0(gr_name1, " - ",gr_name2)
+  }
   out
 }
 
