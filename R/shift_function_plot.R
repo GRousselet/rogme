@@ -29,11 +29,14 @@
 #' @examples
 #' plot_sf(out) # default plot
 #' plot_sf(out, plot_theme = 2) # specify theme
-#' plist <- plot_sf(out) # output list of plot handles
+#' plist <- plot_sf(out) # output list of plot objects
 #'
 #' # The plots can then be combined using gridExtra or cowplot - for instance:
 #' library(gridExtra)
 #' do.call("grid.arrange", c(plist, ncol=2))
+#' # To extract one object and for instance change a label:
+#' p <- plist[[1]]
+#' p + labs(y = "Difference")
 #' @export
 plot_sf <- function(data = df_list,
                     plot_theme = 1,
@@ -112,7 +115,7 @@ plot_sf <- function(data = df_list,
     }
   }
   # -------------------
-  plist <- vector("list", length(data)) # declare list of plot handles
+  plist <- list() #vector("list", length(data)) # declare list of plot objects
   for (pc in 1:length(data)) {
     df <- data[[pc]]
     ylim <- max(max(abs(df$ci_upper)),max(abs(df$ci_lower)))

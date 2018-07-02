@@ -73,7 +73,7 @@ shifthd <- function(data = df,
   if (length(todo)==0) { # no comparison is specified
     if (doall == FALSE) { # do not perform all comparisons
       if (length(subf$gr_names) > 2) {
-        warning(paste0("Parameter column ",subf$param_col_name," contains more than 2 levels. The shift function is computed based on the first 2 levels."))
+        warning(paste0("Parameter column ",subf$param_col_name," contains more than 2 levels. The shift function is computed based on the first 2 levels: ",subf$gr_names[1], " vs. ",subf$gr_names[2]))
       }
       todo <- list(subf$gr_names[1:2])
     }
@@ -174,7 +174,7 @@ shifthd <- function(data = df,
 #' n <- 100 # sample size
 #' C1 <- rnorm(100)
 #' df2 <- tibble(condition = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
-#'               data = c(C1+6, C1+rnorm(100)+4, C1*5+rnorm(100))) # make tibble
+#'               data = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
 #'
 #' out <- shiftdhd(df, obs ~ cond) # use the default parameters
 #' out <- shiftdhd(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
@@ -189,10 +189,14 @@ shiftdhd <- function(data = df,
                      doall = FALSE){
   # subset data
   subf <- subset_formula(data, formula)
+  # check all conditions have the same length
+  if (length(unique(dplyr::summarise(dplyr::group_by(data, subf$param_col_name), n = n())[[2]])) > 1) {
+    stop("All conditions must have the same length")
+  }
   if (length(todo)==0) { # no comparison is specified
     if (doall == FALSE) { # do not perform all comparisons
       if (length(subf$gr_names) > 2) {
-        warning(paste0("Parameter column ",subf$param_col_name," contains more than 2 levels. The shift function is computed based on the first 2 levels."))
+        warning(paste0("Parameter column ",subf$param_col_name," contains more than 2 levels. The shift function is computed based on the first 2 levels: ",subf$gr_names[1], " vs. ",subf$gr_names[2]))
       }
       todo <- list(subf$gr_names[1:2])
     }
@@ -234,7 +238,7 @@ shiftdhd <- function(data = df,
 # ===============================================================
 #' Shift function for two independent groups (pbci method)
 #'
-#' Compute a shift function for two independent groups using the
+#' Compute a shift function for two or more independent groups using the
 #' Harrell-Davis quantile estimator in conjunction with a percentile
 #' bootstrap approach.
 #' Unlike \code{\link{shifthd}}: \itemize{
@@ -250,29 +254,30 @@ shiftdhd <- function(data = df,
 #' \item \code{q = seq(.1, .9, .1)}
 #' \item \code{q = seq(.05, .95, .05)}
 #' }
-#' @param data A data frame in tidy format. Column 1 describes the two groups;
-#'   column 2 contains the values for each group. A properly formatted data
-#'   frame can be created using \code{link{mkt2}} or \code{link{mkt2d}}. Missing
-#'   values are not allowed.
+#' @param data A data frame in long format. One column is a factor describing the groups;
+#'   another column contains the values/observations for each group. A properly formatted data
+#'   frame can be created using \code{\link{mkt2}}. Missing values are not
+#'   allowed.
 #' @param formula A formula with format response variable ∼ predictor variable,
 #'   where ~ (tilde) means "is modeled as a function of".
 #' @param q Quantiles to estimate - default = deciles 0.1:0.1:.9.
 #' @param nboot Number of bootstrap samples - default = 2000
 #' @param alpha Expected long-run type I error rate - default = 0.05
 #' @param adj_ci Adjust confidence intervals & p values for multiple comparisons - default = TRUE
-#' @return A data frame with one row per decile.
-#' The columns are: \itemize{
+#' @param todo A list of comparisons to perform - default = NULL.
+#' @param doall Set to TRUE to compute all comparisons - default = FALSE. Not
+#'   executed if a \code{todo} list is provided.
+#' @return A list of data frames, one data frame per comparison. Each data frame
+#'   has one row per decile. The columns are: \itemize{
 #'   \item Column 1 = quantiles
-#'   \item Column 2 = number of observations in group 1
-#'   \item Column 3 = number of observations in group 2
-#'   \item Column 4 = quantiles for group 1
-#'   \item Column 5 = quantiles for group 2
-#'   \item Column 6 = quantile differences (column 4 - column 5)
-#'   \item Column 7 = lower bounds of the confidence intervals
-#'   \item Column 8 = upper bounds of the confidence intervals
-#'   \item Column 9 = critical p_values based on Hochberg's method
-#'   \item Column 10 = p_values based on Hochberg's method
-#'   \item Column 11 = significance 0/1
+#'   \item Column 2 = quantiles for group 1
+#'   \item Column 3 = quantiles for group 2
+#'   \item Column 4 = quantile differences (column 4 - column 5)
+#'   \item Column 5 = lower bounds of the confidence intervals
+#'   \item Column 6 = upper bounds of the confidence intervals
+#'   \item Column 7 = critical p_values based on Hochberg's method
+#'   \item Column 8 = p_values (based on Hochberg's method if adj_ci = TRUE)
+#'   \item Column 9 = significance 0/1
 #'   }
 #' @section Note:
 #' Adaptation of Rand Wilcox's `qcomhd` & `pb2gen` R functions
@@ -283,57 +288,51 @@ shiftdhd <- function(data = df,
 #' Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 #' Comparing two independent groups via the lower and upper quantiles.
 #' J Stat Comput Sim, 84, 1543-1551.
-#' @seealso \code{hd}, \code{shifthd} for the pbse method for independent
-#'   groups, \code{shiftdhd_pbci} for dependent groups
+#'
+#' @seealso \code{\link{hd}}
+#'
+#' \code{\link{shifthd}} for the pbse method for independent groups,
+#'
+#' \code{\link{shiftdhd_pbci}} for dependent groups
+#'
 #' @export
 shifthd_pbci <- function(data = df,
                          formula = obs ~ gr,
                          q = seq(.1, .9, .1),
                          nboot = 2000,
                          alpha = 0.05,
-                         adj_ci = TRUE){
+                         adj_ci = TRUE,
+                         todo = NULL,
+                         doall = FALSE){
   # subset data
-  out <- subset_data2(data, formula)
-  #df <- na.omit(df) # remove NA
-  x <- out$x
-  y <- out$y
-  nx <- length(x)
-  ny <- length(y)
-  gr_name1 <- out$gr_name1
-  gr_name2 <- out$gr_name2
-  # declare matrix of results
-  output = matrix(0, nrow = length(q), ncol = 10)
+  subf <- subset_formula(data, formula)
+  if (length(todo)==0) { # no comparison is specified
+    if (doall == FALSE) { # do not perform all comparisons
+      if (length(subf$gr_names) > 2) {
+        warning(paste0("Parameter column ",subf$param_col_name," contains more than 2 levels. The shift function is computed based on the first 2 levels: ",subf$gr_names[1], " vs. ",subf$gr_names[2]))
+      }
+      todo <- list(subf$gr_names[1:2])
+    }
+    if (doall == TRUE) { # perform all comparisons
+      todo <- lapply(apply(combn(subf$gr_names, 2),2,list),unlist)
+    }
+  }
   # confidence interval's boundaries
   low <- round((alpha / 2) * nboot) + 1
   up <- nboot - low
-  # loop through quantiles
-  for(i in 1:length(q)){
-    output[i,1] = q[i]
-    output[i,2] = nx
-    output[i,3] = ny
-    output[i,4] = hd(x, q = q[i])
-    output[i,5] = hd(y, q = q[i])
-    output[i,6] = output[i,4]-output[i,5]
-    #  bootstrap
-    datax <- matrix(sample(x, size = nx * nboot, replace = TRUE), nrow = nboot)
-    datay <- matrix(sample(y, size = ny * nboot, replace = TRUE), nrow = nboot)
-    bvecx <- apply(datax, 1, hd, q = q[i])
-    bvecy <- apply(datay, 1, hd, q = q[i])
-    bvec <- sort(bvecx - bvecy)
-    temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
-    output[i,7] = bvec[low] # ci_lower
-    output[i,8] = bvec[up] # ci_upper
-    output[i,10] = 2*(min(temp,1-temp)) # p_value
-  }
-  temp = order(output[,10], decreasing=TRUE)
-  zvec = alpha / c(1:length(q))
-  output[temp,9] = zvec # p_crit
-  if(adj_ci){
+  out <- vector("list", length(todo)) # declare list of shift functions
+  for(comp in 1:length(todo)){ # for each comparison
+    x <- data[data[[subf$param_col_name]] == todo[[comp]][1], subf$obs_col_name][[1]]
+    y <- data[data[[subf$param_col_name]] == todo[[comp]][2], subf$obs_col_name][[1]]
+    gr_name1 <- todo[[comp]][1]
+    gr_name2 <- todo[[comp]][2]
+    output <- matrix(0,9,8) # declare matrix of results
+    # loop through quantiles
     for(i in 1:length(q)){
-      alpha = output[i,9]
-      # confidence interval's boundaries
-      low <- round((alpha / 2) * nboot) + 1
-      up <- nboot - low
+      output[i,1] = q[i]
+      output[i,2] = hd(x, q = q[i])
+      output[i,3] = hd(y, q = q[i])
+      output[i,4] = output[i,2]-output[i,3]
       #  bootstrap
       datax <- matrix(sample(x, size = nx * nboot, replace = TRUE), nrow = nboot)
       datay <- matrix(sample(y, size = ny * nboot, replace = TRUE), nrow = nboot)
@@ -341,17 +340,40 @@ shifthd_pbci <- function(data = df,
       bvecy <- apply(datay, 1, hd, q = q[i])
       bvec <- sort(bvecx - bvecy)
       temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
-      output[i,7] = bvec[low] # ci_lower
-      output[i,8] = bvec[up] # ci_upper
-      output[i,10] = 2*(min(temp,1-temp)) # p_value
+      output[i,5] = bvec[low] # ci_lower
+      output[i,6] = bvec[up] # ci_upper
+      output[i,8] = 2*(min(temp,1-temp)) # p_value
     }
+    temp = order(output[,8], decreasing=TRUE)
+    zvec = alpha / c(1:length(q))
+    output[temp,7] = zvec # p_crit
+    if(adj_ci){
+      for(i in 1:length(q)){
+        alpha = output[i,7]
+        # confidence interval's boundaries
+        low <- round((alpha / 2) * nboot) + 1
+        up <- nboot - low
+        #  bootstrap
+        datax <- matrix(sample(x, size = nx * nboot, replace = TRUE), nrow = nboot)
+        datay <- matrix(sample(y, size = ny * nboot, replace = TRUE), nrow = nboot)
+        bvecx <- apply(datax, 1, hd, q = q[i])
+        bvecy <- apply(datay, 1, hd, q = q[i])
+        bvec <- sort(bvecx - bvecy)
+        temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
+        output[i,5] = bvec[low] # ci_lower
+        output[i,6] = bvec[up] # ci_upper
+        output[i,8] = 2*(min(temp,1-temp)) # p_value
+      }
+    }
+    # make data frame
+    tmp <- data.frame(output)
+    names(tmp) <- c('q', gr_name1, gr_name2, 'difference',
+      'ci_lower', 'ci_upper', 'p_crit', 'p_value')
+    # add sig column
+    dplyr::mutate(tmp, sig = p_value <= p_crit)
+    out[[comp]] <- tmp
+    names(out)[comp] <- paste0(gr_name1, " - ",gr_name2)
   }
-  # make data frame
-  out <- data.frame(output)
-  names(out) <- c('q', 'n1', 'n2', gr_name1, gr_name2, 'difference',
-                  'ci_lower', 'ci_upper', 'p_crit', 'p_value')
-  # add sig column
-  dplyr::mutate(out, sig = p_value <= p_crit)
   out
 }
 
@@ -406,8 +428,10 @@ shifthd_pbci <- function(data = df,
 #' Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 #' Comparing two dependent groups via quantiles.
 #' J Appl Stat, 39, 2655-2664.
-#' @seealso \code{hd}, \code{shiftdhd} for the pbse method for dependent
-#'   groups, \code{shifthd_pbci} for dependent groups
+#'
+#' @seealso \code{\link{hd}}, \code{\link{shiftdhd}} for the pbse method for dependent
+#'   groups, \code{\link{shifthd_pbci}} for independent groups
+#'
 #' @export
 shiftdhd_pbci <- function(data = df,
                           formula = obs ~ gr,

@@ -117,9 +117,13 @@ subset_formula <- function(data, formula){
     stop(paste0(obs_col_name," does not exist"))
   }
   # check that param_col is a factor
-  stopifnot(is.factor(data[[param_col_name]]))
+  if(!is.factor(data[[param_col_name]])){
+    stop('The predictor column must be a factor')
+  }
   # check that obs_col is numeric
-  stopifnot(is.numeric(data[[obs_col_name]]))
+  if(!is.numeric(data[[obs_col_name]])){
+    stop('Data must be numeric')
+  }
   # get levels of param_col_name
   gr_names <- levels(data[[param_col_name]])
   # gr_name1 <- gr_names[[1]]
