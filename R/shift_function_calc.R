@@ -58,7 +58,7 @@
 #' @examples
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
-#' df <- tibble(gr = c(rep("group1",n),rep("group2",n),rep("group3",n)),
+#' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 #'
 #' out <- shifthd(df, obs ~ gr) # use the default parameters
@@ -311,6 +311,19 @@ shiftdhd <- function(data = df,
 #'
 #' \code{\link{shiftdhd_pbci}} for dependent groups
 #'
+#' @examples
+#' set.seed(21) # generate data
+#' n <- 100 # sample size
+#' C1 <- rnorm(100)
+#' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+#'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
+#'
+#' out <- shifthd_pbci(df, obs ~ cond) # use the default parameters
+#' out <- shifthd_pbci(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
+#' out <- shifthd_pbci(df, obs ~ cond, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
+#' out <- shifthd_pbci(df, obs ~ cond, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
+#' out <- shifthd_pbci(df, doall = TRUE) # compute all comparisons
+#'
 #' @export
 shifthd_pbci <- function(data = df,
                          formula = obs ~ gr,
@@ -454,9 +467,24 @@ shifthd_pbci <- function(data = df,
 #' Comparing two dependent groups via quantiles.
 #' J Appl Stat, 39, 2655-2664.
 #'
-#' @seealso \code{\link{hd}}, \code{\link{shiftdhd}} for the pbse method for dependent
-#'   groups, \code{\link{shifthd_pbci}} for independent groups
+#' @seealso \code{\link{hd}}
 #'
+#' \code{\link{shiftdhd}} for the pbse method for dependent groups
+#'
+#' \code{\link{shifthd_pbci}} for independent groups
+#'
+#' @examples
+#' set.seed(21) # generate data
+#' n <- 100 # sample size
+#' C1 <- rnorm(100)
+#' df2 <- tibble(condition = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
+#'               data = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
+#'
+#' out <- shiftdhd_pbci(df, obs ~ cond) # use the default parameters
+#' out <- shiftdhd_pbci(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
+#' out <- shiftdhd_pbci(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # specify list of comparisons
+#' out <- shiftdhd_pbci(df, obs ~ cond, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
+#' out <- shiftdhd_pbci(df, doall = TRUE) # compute all comparisons
 #' @export
 shiftdhd_pbci <- function(data = df,
                           formula = obs ~ gr,
