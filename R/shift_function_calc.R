@@ -115,8 +115,8 @@ shifthd <- function(data = df,
       m[d,2] <- hd(x,q)
       m[d,3] <- hd(y,q)
       m[d,4] <- m[d,2] - m[d,3]
-      m[d,5] <- m[d,3] - crit * sqrt(se.x + se.y)
-      m[d,6] <- m[d,3] + crit * sqrt(se.x + se.y)
+      m[d,5] <- m[d,4] - crit * sqrt(se.x + se.y)
+      m[d,6] <- m[d,4] + crit * sqrt(se.x + se.y)
     }
     tmp <- data.frame(m)
     names(tmp) <- c("q", gr_name1, gr_name2, 'difference', 'ci_lower', 'ci_upper')
@@ -236,12 +236,12 @@ shiftdhd <- function(data = df,
       q <- d/10
       bvec <- apply(xmat, 1, hd, q) - apply(ymat, 1, hd, q)
       se <- sqrt(var(bvec))
-      m[d,1]=q
-      m[d,2]=hd(x,q)
-      m[d,3]=hd(y,q)
-      m[d,4]<-m[d,2]-m[d,3]
-      m[d,5]<-m[d,4]-crit*se
-      m[d,6]<-m[d,4]+crit*se
+      m[d,1] <- q
+      m[d,2] <- hd(x,q)
+      m[d,3] <- hd(y,q)
+      m[d,4] <- m[d,2] - m[d,3]
+      m[d,5] <- m[d,4] - crit * se
+      m[d,6] <- m[d,4] + crit * se
     }
     tmp <- data.frame(m)
     names(tmp) <- c("q", gr_name1, gr_name2, 'difference', 'ci_lower', 'ci_upper')
