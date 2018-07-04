@@ -41,10 +41,14 @@
 #'   executed if a \code{todo} list is provided.
 #'
 #' @return A list of data frames, one data frame per comparison. Each data frame
-#'   has one row per decile. The columns are: \itemize{ \item Column 1 = deciles
-#'   for group 1 \item Column 2 = deciles for group 2
-#'   \item Column 3 = differences (column 1 - column 2) \item Column 4 = lower
-#'   bounds of the confidence intervals \item Column 5 = upper bounds of the
+#'   has one row per decile. The columns are: \itemize{
+#'   \item Column 1 = quantiles - seq(0.1, 0.9, 0.1)
+#'   \item Column 2 = deciles for group 1
+#'   \item Column 3 = deciles for group 2
+#'   \item Column 4 = differences (column 1 - column 2)
+#'   \item Column 5 = lower
+#'   bounds of the confidence intervals
+#'   \item Column 6 = upper bounds of the
 #'   confidence intervals }
 #'
 #' @seealso \code{\link{shiftdhd}} for dependent groups.
@@ -68,6 +72,10 @@ shifthd <- function(data = df,
                     nboot = 200,
                     todo = NULL,
                     doall = FALSE){
+  # check input is a data frame
+  if(!is.data.frame(data)){
+    stop("data must be a data frame")
+  }
   # subset data
   subf <- subset_formula(data, formula)
   if (length(todo)==0) { # no comparison is specified
@@ -89,7 +97,7 @@ shifthd <- function(data = df,
     gr_name2 <- todo[[comp]][2]
     # factor to correct for multiple comparisons
     crit <- 80.1 / (min(length(x), length(y)))^2 + 2.73
-    m <- matrix(0,9,5) # declare matrix of results
+    m <- matrix(0,9,6) # declare matrix of results
     # decile loop
     for (d in 1:9){
       q <- d/10
@@ -103,14 +111,15 @@ shifthd <- function(data = df,
         nrow = nboot) # bootstrap samples
       bvec <- apply(bootsamp, 1, hd, q)
       se.y <- var(bvec)
-      m[d,1] <- hd(x,q)
-      m[d,2] <- hd(y,q)
-      m[d,3] <- m[d,1] - m[d,2]
-      m[d,4] <- m[d,3] - crit * sqrt(se.x + se.y)
-      m[d,5] <- m[d,3] + crit * sqrt(se.x + se.y)
+      m[d,1] <- q
+      m[d,2] <- hd(x,q)
+      m[d,3] <- hd(y,q)
+      m[d,4] <- m[d,2] - m[d,3]
+      m[d,5] <- m[d,3] - crit * sqrt(se.x + se.y)
+      m[d,6] <- m[d,3] + crit * sqrt(se.x + se.y)
     }
     tmp <- data.frame(m)
-    names(tmp) <- c(gr_name1, gr_name2, 'difference', 'ci_lower', 'ci_upper')
+    names(tmp) <- c("q", gr_name1, gr_name2, 'difference', 'ci_lower', 'ci_upper')
     out[[comp]] <- tmp
     names(out)[comp] <- paste0(gr_name1, " - ",gr_name2)
   }
@@ -160,11 +169,12 @@ shifthd <- function(data = df,
 #'   executed if a \code{todo} list is provided.
 #'
 #' @return A list of data frames, one data frame per comparison. Each data frame has one row per decile. The columns are: \itemize{
-#'   \item Column 1 = deciles for group 1
-#'   \item Column 2 = deciles for group 2
-#'   \item Column 3 = differences (column 1 - column 2)
-#'   \item Column 4 = lower bounds of the confidence intervals
-#'   \item Column 5 = upper bounds of the confidence intervals }
+#'   \item Column 1 = quantiles - seq(0.1, 0.9, 0.1)
+#'   \item Column 2 = deciles for group 1
+#'   \item Column 3 = deciles for group 2
+#'   \item Column 4 = differences (column 1 - column 2)
+#'   \item Column 5 = lower bounds of the confidence intervals
+#'   \item Column 6 = upper bounds of the confidence intervals }
 #'
 #' @seealso \code{\link{shifthd}} for independent groups.
 #'
@@ -188,6 +198,10 @@ shiftdhd <- function(data = df,
                      nboot = 200,
                      todo = NULL,
                      doall = FALSE){
+  # check input is a data frame
+  if(!is.data.frame(data)){
+    stop("data must be a data frame")
+  }
   # subset data
   subf <- subset_formula(data, formula)
   # check all conditions have the same length
@@ -213,7 +227,7 @@ shiftdhd <- function(data = df,
     gr_name2 <- todo[[comp]][2]
     # factor to correct for multiple comparisons
     crit <- 37 / length(x)^(1.4) + 2.75
-    m <- matrix(0,9,5) # declare matrix of results
+    m <- matrix(0,9,6) # declare matrix of results
     # same bootstrap samples for all deciles and conditions (resample pairs)
     bootsamp <- matrix(sample(length(x),size=length(x)*nboot,replace=TRUE),nrow=nboot)
     xmat <- matrix(x[bootsamp],nrow=nboot,ncol=length(x))
@@ -222,14 +236,15 @@ shiftdhd <- function(data = df,
       q <- d/10
       bvec <- apply(xmat, 1, hd, q) - apply(ymat, 1, hd, q)
       se <- sqrt(var(bvec))
-      m[d,1]=hd(x,q)
-      m[d,2]=hd(y,q)
-      m[d,3]<-m[d,1]-m[d,2]
-      m[d,4]<-m[d,3]-crit*se
-      m[d,5]<-m[d,3]+crit*se
+      m[d,1]=q
+      m[d,2]=hd(x,q)
+      m[d,3]=hd(y,q)
+      m[d,4]<-m[d,2]-m[d,3]
+      m[d,5]<-m[d,4]-crit*se
+      m[d,6]<-m[d,4]+crit*se
     }
     tmp <- data.frame(m)
-    names(tmp) <- c(gr_name1, gr_name2, 'difference', 'ci_lower', 'ci_upper')
+    names(tmp) <- c("q", gr_name1, gr_name2, 'difference', 'ci_lower', 'ci_upper')
     out[[comp]] <- tmp
     names(out)[comp] <- paste0(gr_name1, " - ",gr_name2)
   }
@@ -305,6 +320,10 @@ shifthd_pbci <- function(data = df,
                          adj_ci = TRUE,
                          todo = NULL,
                          doall = FALSE){
+  # check input is a data frame
+  if(!is.data.frame(data)){
+    stop("data must be a data frame")
+  }
   # subset data
   subf <- subset_formula(data, formula)
   if (length(todo)==0) { # no comparison is specified
@@ -446,6 +465,10 @@ shiftdhd_pbci <- function(data = df,
                           alpha = 0.05,
                           todo = NULL,
                           doall = FALSE){
+  # check input is a data frame
+  if(!is.data.frame(data)){
+    stop("data must be a data frame")
+  }
   # subset data
   subf <- subset_formula(data, formula)
   if (length(todo)==0) { # no comparison is specified
