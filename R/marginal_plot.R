@@ -54,7 +54,7 @@ plot_kde_rug_dec1 <- function(data=df,fill.colour="grey30",fill.alpha=.3){
   p
 }
 
-#' Scatterplots for 2 groups
+#' Scatterplots for 2 groups **KEEP?**
 #'
 #' \code{plot_scat2} produces scatterplots for 2 marginal distributions.
 #' The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
@@ -98,17 +98,53 @@ plot_scat2_sina <- function(data = df,
   p
 }
 
-#' Scatterplots for 2 groups
+#' Plot one-dimensional scatterplots for 2 groups
 #'
 #' \code{plot_scat2} produces scatterplots for 2 marginal distributions.
 #' The scatterplots are jittered using \code{\link[ggbeeswarm]{geom_quasirandom}}.
+#'
+#' @param data A data frame in long format. One column is a factor describing the groups;
+#'   another column contains the values/observations for each group. A properly formatted data
+#'   frame can be created using \code{\link{mkt2}}. Missing values are not
+#'   allowed.
+#' @param formula A formula with format response variable ∼ predictor variable,
+#'   where ~ (tilde) means "is modeled as a function of".
+#' @param xlabel Option to set different name - default NULL to use data frame column names.
+#' @param ylabel Option to set different name - default NULL to use data frame column names.
+#' @param ... To pass other ggplot2 options.
+#'
+#' @return A ggplot object.
+#'
+#' @examples
+#' # generate data
+#' set.seed(21)
+#' g1 <- rnorm(1000) + 6
+#' g2 <- rnorm(1000) * 1.5 + 6
+#'
+#' # make tibble
+#' df <- mkt2(g1, g2)
+#' # make scatterplots
+#' ps <- plot_scat2(data = df,
+#'   formula = obs ~ gr,
+#'   xlabel = "",
+#'   ylabel = "Scores (a.u.)",
+#'   alpha = 1,
+#'   shape = 21,
+#'   colour = "grey10",
+#'   fill = "grey90") # scatterplots
+#' ps <- ps + coord_flip()
+#' ps
+#'
 #' @export
 plot_scat2 <- function(data = df,
+                       formula = obs ~ gr,
                        xlabel = NULL,
                        ylabel = NULL,
                        ...){
-  xplot = names(data)[1]
-  yplot = names(data)[2]
+  # subset formula
+  subf <- subset_formula(data, formula)
+  xplot = subf$param_col_name
+  yplot = subf$obs_col_name
   p <- ggplot(data, aes_string(x = xplot, y = yplot, fill = xplot,
                                colour = xplot, shape = xplot))
   p <- p + ggbeeswarm::geom_quasirandom(...) +
