@@ -499,6 +499,10 @@ shiftdhd_pbci <- function(data = df,
   }
   # subset data
   subf <- subset_formula(data, formula)
+  # check all conditions have the same length
+  if (length(unique(tapply(data[[subf$obs_col_name]], data[[subf$param_col_name]], length))) > 1) {
+    stop("All conditions must have the same length")
+  }
   if (length(todo)==0) { # no comparison is specified
     if (doall == FALSE) { # do not perform all comparisons
       if (length(subf$gr_names) > 2) {
