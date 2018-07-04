@@ -111,7 +111,7 @@ plot_scat2_sina <- function(data = df,
 #'   where ~ (tilde) means "is modeled as a function of".
 #' @param xlabel Option to set different name - default NULL to use data frame column names.
 #' @param ylabel Option to set different name - default NULL to use data frame column names.
-#' @param ... To pass other ggplot2 options.
+#' @param ... Input arguments for ggbeeswarm::geom_quasirandom
 #'
 #' @return A ggplot object.
 #'
