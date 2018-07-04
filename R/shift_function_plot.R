@@ -52,6 +52,15 @@ plot_sf <- function(data = df_list,
                     dec_line_size = 1.5,
                     theme2_alpha = NULL,
                     ...){
+  # check input is a list of data frames
+  if(!is.list(data)){
+    stop("data must be a list")
+  }
+  for (pc in 1:length(data)) {
+    if(!is.data.frame(data[[pc]])){
+      stop("input data list must contain data.frames")
+    }
+  }
   plist <- vector("list", length(data)) # declare list of plot objects
   for (pc in 1:length(data)) {
     df <- data[[pc]]
@@ -177,10 +186,10 @@ plot_sf <- function(data = df_list,
         geom_point(aes(fill = deco), colour="black", size = symb_size, shape = symb_shape) +
         scale_fill_gradient(low = symb_fill[1], high = symb_fill[2], guide = FALSE)
     }
-    print(p)
+    # print(p)
     plist[[pc]] <- p
   }
-  plist
+  suppressMessages(plist)
 }
 
 #' Plot percentile bootstrap shift function
@@ -238,7 +247,16 @@ plot_pbsf <- function(data = df,
                       dec_line_size = 1.5,
                       theme2_alpha = NULL,
                       ...){
-  plist <- list() #vector("list", length(data)) # declare list of plot objects
+  # check input is a list of data frames
+  if(!is.list(data)){
+    stop("data must be a list")
+  }
+  for (pc in 1:length(data)) {
+    if(!is.data.frame(data[[pc]])){
+      stop("input data list must contain data.frames")
+    }
+  }
+  plist <- vector("list", length(data)) # declare list of plot objects
   for (pc in 1:length(data)) {
     df <- data[[pc]]
     ylim <- max(max(abs(df$ci_upper)),max(abs(df$ci_lower)))
@@ -364,8 +382,8 @@ plot_pbsf <- function(data = df,
         geom_point(aes(fill = deco), colour="black", size = symb_size, shape = symb_shape) +
         scale_fill_gradient(low = symb_fill[1], high = symb_fill[2], guide = FALSE)
     }
-    print(p)
+    # print(p)
     plist[[pc]] <- p
   }
-  plist
+  suppressMessages(plist)
 }
