@@ -1,5 +1,5 @@
 #' Add bars marking quantiles to ggplot object created by \code{\link{plot_scat2}}.
-#' Used in README to demonstrate the shift function.
+#' Used in the README.md file to demonstrate the shift function.
 #'
 #' @param p A ggplot object returned by \code{\link{plot_scat2}}.
 #' @param q_seq A sequence of quantiles - default = deciles.
@@ -35,52 +35,6 @@ plot_hd_bars <- function(p,
   p
 }
 
-#' Add bars marking the deciles to plot
-#' @export
-plot_dec_bars <- function(p,
-                          col = "grey21",
-                          width = 0.5,
-                          dec_size = 0.5,
-                          md_size = 1,
-                          alpha = 1){
-  q_seq <- seq(.1,.9,.1)
-  size_seq <- c(rep(dec_size,4), md_size, rep(dec_size,4))
-  for (qi in 1:length(q_seq)){
-    p <- p + stat_summary(geom = "errorbar",
-                          fun.y = hd,
-                          fun.ymin = hd,
-                          fun.ymax = hd,
-                          fun.args = list(q = q_seq[[qi]]),
-                          colour = col,
-                          width = width,
-                          size = size_seq[[qi]],
-                          alpha = alpha)
-  }
-  p
-}
-
-#' Add bars marking the quartiles to plot
-#' @export
-plot_quartile_bars <- function(p,
-                               q_seq = c(.25, .5, .75),
-                               col = "grey21",
-                               width = 0.5,
-                               q_size = 0.5,
-                               md_size = 1){
-  size_seq <- c(q_size, md_size, q_size)
-  for (qi in 1:length(q_seq)){
-    p <- p + geom_errorbar(stat = "summary",
-                           fun.y = hd,
-                           fun.ymin = hd,
-                           fun.ymax = hd,
-                           fun.args = list(q = q_seq[[qi]]),
-                           colour = col,
-                           width = width,
-                           size = size_seq[[qi]])
-  }
-  p
-}
-
 #' Add bar marking the mean
 #' @export
 plot_mean_bar <- function(p,
@@ -97,84 +51,7 @@ plot_mean_bar <- function(p,
   p
 }
 
-# =================================================================================
-#' Add deciles to plot + links between deciles
-#'
-#' Used in README to demonstrate the shift function.
-#'
-#' @export
-plot_dec_links <- function(p,
-                           sf = sf,
-                           dec_col = "grey21",
-                           dec_width = 0.5,
-                           dec_size = 0.5,
-                           md_size = 1,
-                           link_col = c("darkviolet","darkorange2"),
-                           link_alpha = c(0.4, 1),
-                           add_rect = FALSE,
-                           rect_alpha = NULL,
-                           rect_col = NULL,
-                           add_lab = FALSE,
-                           labres = 2){
-  p <- plot_dec_bars(p,
-                     col = dec_col,
-                     width = dec_width,
-                     dec_size = dec_size,
-                     md_size = md_size)
-  # extract vectors from shift function -------------------------
-  g1 <- sf[[1]] # group 1 deciles
-  g2 <- sf[[2]] # group 2 deciles
-  diff <- sf[[3]] # differences
-  # create new variables ----------------------------------------
-  diff_sign <- (sign(diff) > 0) + 1 # difference signs c(-1,1) -> c(1,2)
-  deco <- c(seq(1,5),seq(4,1)) # code of deciles
-  alpha_seq <- seq(link_alpha[1], link_alpha[2], length.out = 5)
-  line_size <- c(dec_size,dec_size,dec_size,dec_size,
-                 md_size,
-                 dec_size,dec_size,dec_size,dec_size)
-  # add links ---------------------------------------------------
-  for (d in 1:9){
-  p <- p + annotate("segment",
-                    x = 1 + dec_width / 2,
-                    xend = 2 - dec_width / 2,
-                    y = g1[d],
-                    yend = g2[d],
-                    colour = link_col[diff_sign[d]],
-                    alpha = alpha_seq[deco[d]],
-                    size = line_size[d])
-  }
-  # add rectangle
-  if (add_rect == TRUE) {
-    if (is.null(rect_alpha)){
-      rect_alpha <- 0.2
-    }
-    if (is.null(rect_col)){
-      rect_col <- "grey30"
-    }
-  p <- p + annotate("rect", xmin = 0.4, xmax = 1.25, ymin = g1[1], ymax = g1[9],
-                       alpha = rect_alpha) # add rectangle
-  }
-  # add labels for differences between extreme deciles
-  if (add_lab == TRUE){
-    for (d in seq(1,9,8)){
-    # if (diff_sign[d] == 1){
-    #   cc <- link_col[2]
-    # } else {
-    #   cc <- link_col[1]
-    # }
-  p <- p + annotate("label",
-               x = 1.5,
-               y = min(g1[d],g2[d]) + abs(g1[d] - g2[d]) / 2,
-               label = round(diff[d],labres),
-               fill = link_col[diff_sign[d]],
-               colour = "white",
-               fontface = "bold",
-               alpha = alpha_seq[deco[d]])
-    } # for loop
-  } # if add_lab
-  p
-}
-# =================================================================================
+
 
 # =================================================================================
 #' Add bars marking quantiles + links between quantiles to ggplot object created
@@ -282,7 +159,7 @@ plot_hd_links <- function(p,
 #' Add difference labels to shift function
 #'
 #' Add labels of quantile difference values to one or more shift function plots.
-#' Used in README.md file to illustrate the shift function. Assumes an odd
+#' Used in the README.md file to illustrate the shift function. Assumes an odd
 #' number of quantiles with the median in the middle.
 #'
 #' @param p A list of ggplot objects generated by \code{\link{plot_sf}} or \code{\link{plot_pbsf}}.
@@ -293,7 +170,7 @@ plot_hd_links <- function(p,
 #' @param link_col Label colours for negative and positive values.
 #' @param link_alpha Alpha transparency of the labels - default = continuum between 0.4 and 1.
 #' @param y_lab_nudge Amount by which to nudge the labels along the y axis.
-#' @param size Text size - default = 5
+#' @param text_size Text size - default = 5
 #'
 #' @export
 add_sf_lab <- function(p,
