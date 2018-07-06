@@ -318,10 +318,10 @@ shiftdhd <- function(data = df,
 #' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 #'
-#' out <- shifthd_pbci(df, obs ~ cond) # use the default parameters
-#' out <- shifthd_pbci(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
-#' out <- shifthd_pbci(df, obs ~ cond, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
-#' out <- shifthd_pbci(df, obs ~ cond, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
+#' out <- shifthd_pbci(df, obs ~ gr) # use the default parameters
+#' out <- shifthd_pbci(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
+#' out <- shifthd_pbci(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
+#' out <- shifthd_pbci(df, obs ~ gr, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
 #' out <- shifthd_pbci(df, doall = TRUE) # compute all comparisons
 #'
 #' @export
@@ -477,8 +477,8 @@ shifthd_pbci <- function(data = df,
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
 #' C1 <- rnorm(100)
-#' df2 <- tibble(condition = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
-#'               data = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
+#' df2 <- tibble(cond = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
+#'               obs = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
 #'
 #' out <- shiftdhd_pbci(df, obs ~ cond) # use the default parameters
 #' out <- shiftdhd_pbci(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
