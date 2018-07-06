@@ -535,3 +535,74 @@ binomci <- function(x=sum(y),nn=length(y),y=NULL,n=NA,alpha=.05){
   list(phat=phat,ci=c(lower,upper),n=n)
 }
 # ==========================================================================
+
+#' Proportion of observations greater than a specified value
+#'
+#' For a vector x, return the proportion of observations greater than a specified value a: P(X>a).
+#' Also return the complementary proportions P(X<a) and P(X=a).
+#'
+#' @param x A numeric vector
+#' @param a Value for comparison  - default = 0
+#' @return A list of 3 elements: \itemize{
+#' \item \code{P(X>a)}
+#' \item \code{P(X=a)}
+#' \item \code{P(X<a)}
+#' }
+#'
+#' @seealso adapted from \code{\link{cid}}
+#' @section Note:
+#' From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
+#' @export
+pxgta <- function(x, a = 0){
+  x<-x[!is.na(x)]
+  if(!is.numeric(x)){
+    stop("input x must be numeric")
+  }
+  if(!is.numeric(a)){
+    stop("input a must be numeric")
+  }
+  pxlta <- sum(x < a) / length(x)
+  pa <- sum(x==a) / length(x)
+  pxgta <- sum(x > a) / length(x)
+  out <- list(pxlta, pa, pxgta)
+  names(out) <- c("P(X<a)","P(X=a)","P(X>a)")
+  out
+}
+
+#' Proportion of observations in x greater than observations in y
+#'
+#' For two vectors x and y, return the proportion of observations in x greater
+#' than observations in y: P(X>Y). Also return the complementary proportions
+#' P(X<Y) and P(X=Y). The proportions are determined by computing all pariwise
+#' differences between vectors.
+#'
+#' @param x A numeric vector
+#' @param y A numeric vector
+#' @return A list of 3 elements: \itemize{
+#' \item \code{P(X>Y)}
+#' \item \code{P(X=Y)}
+#' \item \code{P(X<Y)}
+#' }
+#'
+#' @seealso adapted from \code{\link{cid}}
+#' @section Note:
+#' From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
+#' @references
+#' Cliff, N. (1996) Ordinal methods for behavioral data analysis. Erlbaum, Mahwah, N.J.
+#' @export
+pxgty <- function(x, y){
+  x<-x[!is.na(x)]
+  if(!is.numeric(x)){
+    stop("input x must be numeric")
+  }
+  if(!is.numeric(y)){
+    stop("input y must be numeric")
+  }
+  m <- outer(x, y, FUN="-")
+  pxlty <- sum(m < 0) / length(m)
+  p0 <- sum(m==0) / length(m)
+  pxgty <- sum(m > 0) / length(m)
+  out <- list(pxlty, p0, pxgty)
+  names(out) <- c("P(X<Y)","P(X=0)","P(X>Y)")
+  out
+}
