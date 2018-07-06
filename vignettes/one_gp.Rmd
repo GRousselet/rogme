@@ -1,0 +1,115 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+## dependencies
+# library(rogme)
+devtools::load_all()
+library(cowplot)
+# library(ggbeeswarm)
+## ============================
+
+# --------------------------------------
+# Inference on the deciles of ERP onsets
+# --------------------------------------
+# load data from:
+# Bieniek, M.M., Bennett, P.J., Sekuler, A.B. & Rousselet, G.A. (2016)
+# A robust and representative lower bound on object processing speed in humans.
+# The European journal of neuroscience, 44, 1804-1814.
+load("ERP_onsets.RData") # onsets
+
+# -----------------------------------
+# Panel A: scatterplot + deciles
+# -----------------------------------
+
+df <- mkt1(onsets)
+xintercept <- hd(onsets)
+
+p <- ggplot(df, aes(x = data, y = gr,
+                    fill = gr,
+                    colour = gr,
+                    shape = gr))
+
+# add scatterplot
+p <- p +  ggbeeswarm::geom_quasirandom(fill = "grey90",
+                                       colour = "grey10",
+                                       shape = 21,
+                                       size = 3.5,
+                                       alpha = 1,
+                                       width = .3,
+                                       method = "quasirandom") + #"pseudorandom"
+  theme_bw() +
+  xlab("ERP onsets in ms") +
+  theme(legend.position = "none",
+        axis.title.x = element_text(size=16,face="bold"),
+        axis.text.x = element_text(size=14),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_x_continuous(breaks = seq(0, 300, 50), limits = c(50, 200))
+
+# add vertical lines marking the deciles
+sizeseq <- c(rep(.5,4),1,rep(.5,4)) #rep(.5,9)
+lineseq <- rep(1,9) #c(rep(1,4),2,rep(1,4))
+alphaseq <- rep(1,9) #c(rep(.5,4),1,rep(.5,4))
+
+q_seq <- seq(.1,.9,.1)
+for (qi in 1:length(q_seq)){
+  p <- p + geom_vline(xintercept = hd(onsets,q_seq[[qi]]),
+                      alpha = alphaseq[[qi]],
+                      size = sizeseq[[qi]],
+                      linetype = lineseq[[qi]],
+                      colour = "black") #grey5
+}
+p # one ERP onsets at 284 ms is masked
+
+# ---------------------------------------
+# Panel B: deciles + confidence intervals
+# ---------------------------------------
+
+# compute deciles + confidence intervals
+set.seed(7)
+out <- quantiles_pbci(onsets,q=seq(1,9)/10,nboot=2000,alpha=0.05)
+
+# decile plot
+decile_plot <- plot_dec_ci(out=out,plotzero=TRUE,xtitle="ERP onsets in ms",
+                           hjust=-.05,vjust=.5,size_text=5,
+                           colour_dec = "grey10",fill_dec = "grey90",
+                           colour_line = "grey10", linetype_line = 1, size_line = 1) +
+                scale_y_continuous(limits=c(50, 140),breaks=seq(50,140,10))
+decile_plot
+
+# combine scatterplots + decile plot
+cowplot::plot_grid(p, decile_plot,
+                             labels=c("A", "B"),
+                             ncol = 1,
+                             nrow = 2,
+                             rel_heights = c(1, 1.5),
+                             label_size = 20,
+                             hjust = -0.5,
+                             scale=.95,
+                             align = "v")
+
+```
+
+# References
+
+Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) 
+**Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
+The European journal of neuroscience, 46, 1738-1748. 
+[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)) [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]

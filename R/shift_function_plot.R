@@ -135,10 +135,10 @@ plot_sf <- function(data = df,
     # -------------------
     if (all.equal(df$q, seq(0.1,0.9,0.1))) {
       lab.x <- paste0("Deciles for ",names(df)[2])
-      lab.y <- paste0("Decile differences: ",names(df)[2]," - ",names(df)[3])
+      lab.y <- paste0("Decile differences:\n",names(df)[2]," - ",names(df)[3])
     } else {
       lab.x <- paste0("Quantiles for ",names(df)[2])
-      lab.y <- paste0("Quantile differences: ",names(df)[2]," - ",names(df)[3])
+      lab.y <- paste0("Quantile differences:\n",names(df)[2]," - ",names(df)[3])
     }
     p <- ggplot(df, aes_string(x = xplot, y = "difference")) +
       # x=0 reference line

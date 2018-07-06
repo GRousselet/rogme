@@ -1,0 +1,207 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+## dependencies
+library(rogme)
+library(cowplot)
+library(tidyr)
+library(ggbeeswarm)
+## ============================
+
+# --------------------------------
+# Dependent groups
+# --------------------------------
+
+# load data
+load("./data/paired_example.RData") # pdata
+df <- pdata
+
+# ----------------------------------------------------
+# independent stripcharts (1D scatterplots)
+# make long format
+df.long <- tidyr::gather(df,gr,data,condition1,condition2)
+df.long$participant <- as.factor(df.long$participant)
+df.long$gr <- as.factor(df.long$gr)
+
+# 1D scatterplots + superimposed deciles
+p <- ggplot(df.long, aes(x = gr,
+                         y = data,
+                         fill = gr,
+                         colour = gr,
+                         shape = gr)) +
+    ggbeeswarm::geom_quasirandom(alpha = 1,
+                                 shape = 21,
+                                 colour = "grey10",
+                                 fill = "grey90",
+                                 size = 3,
+                                 width = .2) +
+    theme_bw() +
+    theme(legend.position = "none") +
+    theme(axis.title.y = element_text(size=16,face="bold"),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size=14),
+        axis.text.y = element_text(size=14)) +
+    ylab("Scores (a.u.)") +
+    scale_x_discrete(labels = c("condition1" = "Condition 1","condition2" = "Condition 2")) +
+  scale_y_continuous(limits = c(0, 30))
+strip <- plot_dec_bars(p,
+                   col = "black",
+                   dec_size = 0.5,
+                   md_size = 1.5,
+                   alpha = 1)
+strip
+
+# t-test on means
+t.test(df$condition1,df$condition2,paired=TRUE)
+
+# percentile bootstrap confidence interval of the difference between
+# medians, treating the groups as independent
+pb2gen(df$condition1,df$condition2)
+
+# ------------------------------------
+# linked stripcharts -----------------
+# coloured lines linking paired observations
+pd <- position_dodge(width = 0.1)
+linkedstrip <- ggplot(df.long, aes(x=gr, y=data, group=participant)) +
+                geom_line(aes(colour=participant),size=1, alpha=.5,
+                          position=pd) +
+                theme_bw() +
+                theme(axis.text.x = element_text(size=14),
+                      axis.text.y = element_text(size=14),
+                      axis.title.x = element_blank(),
+                      axis.title.y = element_text(size=16,face="bold"),
+                      legend.position="none") +
+                # labs(title="Paired observations") +
+                ylab("Scores (a.u.)") +
+                scale_x_discrete(labels = c("condition1" = "Condition 1","condition2" = "Condition 2")) +
+                scale_y_continuous(limits=c(0, 30),breaks=seq(0,30,5))
+linkedstrip
+
+# ----------------------------------------------------
+# scatterplot of paired observations -----------------
+scatterdiff <- plot_scat2d(df=df,xcol="condition1",ycol="condition2",
+                               min.x=5,min.y=5,max.x=25,max.y=25,axis.steps=5,
+                           colour_p = "grey10",
+                           fill_p = "grey90",
+                           size_p = 4,
+                           alpha_p = 1,
+                           colour_q = "black",
+                           alpha_q = 1,
+                           linetype_q = "longdash",
+                           size_q = c(0.5,1,0.5)) +
+  xlab("Condition 1") +
+  ylab("Condition 2") +
+  theme(plot.title = element_blank())
+scatterdiff
+
+# set.seed(1)
+# dat<-data.frame(rnorm(10,20,20),rep(seq(5),2),rep(c("a","b"),5))
+# names(dat)<-c("number","factor_1","factor_2")
+# dat<-dat[order(dat$factor_1,dat$factor_2),]
+# dat<-dat[c(-3,-7),]
+# library(dplyr)
+# dat %>% 
+#   group_by(factor_1) %>% 
+#   summarize(diff=number[match('a',factor_2)]-number[match('b',factor_2)]) -> 
+#   d2
+# 
+# d2$diff[is.na(d2$diff)] <- 0
+# 
+# d2
+
+# ----------------------------------------------------
+# 1D scatterplot = stripchart of differences ---------
+paired_differences <- df.long$data[df.long$gr=="condition2"]-df.long$data[df.long$gr=="condition1"]
+diff <- mkt1(paired_differences)
+set.seed(8)
+diffstrip <- ggplot(diff, aes(x=gr,y=data,fill=gr,colour=gr,shape=gr)) +
+  geom_abline(intercept = 0, slope = 0, linetype = 2) +
+  ggbeeswarm::geom_quasirandom(alpha = 1,
+             shape = 21,
+             colour = "grey10",
+             fill = "grey90",
+             size = 4,
+             width = .1) +
+  theme_bw() +
+  theme(legend.position="none",
+        axis.ticks.x = element_line(colour="white"),
+        axis.text.x = element_text(size=14,colour="white"),
+        axis.text.y = element_text(size=14),
+        axis.title.x = element_text(size=16,face="bold",colour="white"),
+        axis.title.y = element_text(size=16,face="bold"),
+        plot.title = element_text(colour="black",size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()) +
+  xlab("Differences") +
+  ylab("Difference scores (a.u.)") +
+  scale_y_continuous(limits=c(-2, 7),breaks=seq(-2,7,1))
+diffstrip <- plot_dec_bars(diffstrip,
+                           col = "black",
+                           dec_size = 0.5,
+                           md_size = 1.5,
+                           alpha = 1)
+diffstrip
+
+# Compute confidence interval of the median of the paired differences
+out <- hdpbci(paired_differences)
+
+# --------------------------
+# compute shift function
+set.seed(7)
+g2 <- df.long$data[df.long$gr=="condition2"]
+g1 <- df.long$data[df.long$gr=="condition1"]
+df <- mkt2(g1,g2)
+sf <- shiftdhd(data = df, formula = obs ~ gr, nboot = 1000)
+
+# plot shift function
+psf <- plot_sf(sf, plot_theme = 2) +
+  scale_x_continuous(breaks = seq(6, 20, 2), limits = c(8, 20)) +
+  scale_y_continuous(breaks = seq(-8, 4, 2), limits = c(-8, 4))
+psf
+
+# --------------------------
+# asymmetry plot
+set.seed(7)
+dasym <- asymdhd(paired_differences, q = seq(5,40,5)/100, alpha = .05, nboot = 1000)
+
+# ggplot2 version
+diff_asym <- plot_diff_asym(data = dasym$output) +
+  scale_y_continuous(breaks = seq(-8, 8, 2), limits = c(-8, 8))
+diff_asym
+
+# --------------------------
+# combine plots
+cowplot::plot_grid(strip, linkedstrip, scatterdiff, diffstrip, psf, diff_asym,
+          labels=c("A", "B", "C", "D", "E", "F"),
+          ncol = 2,
+          nrow = 3,
+          rel_heights = c(1, 1, 1),
+          label_size = 18,
+          hjust = -1,
+          scale = .95,
+          align ="v")
+
+```
+
+# References
+
+Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) 
+**Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
+The European journal of neuroscience, 46, 1738-1748. 
+[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)) [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]

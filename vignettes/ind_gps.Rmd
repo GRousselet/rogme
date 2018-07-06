@@ -1,0 +1,193 @@
+---
+title: "Compare two independent groups"
+author: "Guillaume A. Rousselet"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Compare two independent groups}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+devtools::load_all()
+#> library(rogme)
+```
+
+We can consider two different perspectives when comparing two independent groups, by asking two questions.
+
+- **Question 1**: How does the typical observation in one group compare to the typical observation in the other group? 
+
+- **Question 2**: What is the typical difference between any member of group 1 and any member of group 2?
+
+# Stripcharts of marginal distributions
+
+The figure below illustrates two independent samples using stripcharts (1D scatterplots). The scatterplots indicate large differences in spread between the two groups and suggest larger differences in the right than the left tails of the distributions. The medians of the two groups are very similar, so the two distributions do not seem to differ in central tendency. In keeping with these observations, a t-test and a Mann–Whitney–Wilcoxon test are inconclusive, but a Kolmogorov–Smirnov test suggests the distributions differ. This discrepancy between tests highlights an important point: if a t-test is not significant, one cannot conclude that the two distributions do not differ. 
+
+```{r, message = FALSE, fig.width = 5, fig.height = 5}
+#> make data: two skewed distributions
+set.seed(1)
+df <- 4 #> Chi2 degrees of freedom
+n <- 50 #> sample size for both groups
+g1 <- rnorm(n) + df
+g1 <- g1 - hd(g1) + df + 1.001 #> median centre + shift
+g2 <- rchisq(n, df)
+g2 <- g2 - hd(g2)  + df + 1 #> median centre + shift
+
+#> make tibble
+df <- mkt2(g1,g2)
+
+#> 1D scatterplots + superimposed deciles
+p <- plot_scat2(df,
+                xlabel = "",
+                ylabel = "Scores (a.u.)",
+                alpha = 1,
+                shape = 21,
+                colour = "grey10",
+                fill = "grey90",
+                size = 3) +
+  scale_x_discrete(breaks=c("Group1", "Group2"),
+                   labels=c("Group 1","Group 2")) +
+  theme(axis.text.y = element_text(angle = 90, hjust = .5))
+p <- plot_hd_bars(p,
+                   col = "black",
+                   q_size = 0.5,
+                   md_size = 1.5,
+                   alpha = 1)
+p <- p + coord_flip() #> flip axes
+pscat <- p
+pscat
+```
+
+Vertical lines mark the deciles, with a thicker line for the median.
+
+These tests are inconclusive:
+```{r}
+t.test(g1,g2) #> regular Welsh t-test
+wilcox.test(g1,g2) #> Mann-Whitney-Wilcoxon test
+cidv2(g1,g2) #> Cliff's delta test
+```
+
+This test suggests the distributions differ:
+```{r}
+ks(g1,g2) #> Kolmogorov-Smirnov test
+#> ks(g1,g2,w=T) #> uses a weighted version more sensitive to differences occuring in the tails
+```
+
+# Shift function
+
+A shift function can help us understand how the two distributions differ: the overall profile corresponds to two centred distributions that differ in spread. The differences in spread are asymmetric, with larger differences in the right tails of the marginal distributions, as indicated by the non-linear shift function. Group 1 – group 2 is plotted along the y-axis for each decile, as a function of group 1 deciles. For group 2 to match group 1, its first 4 deciles need to be pushed up, towards higher scores; its last 4 deciles need to be pushed down, towards lower scores. For the decile differences, the vertical lines indicate 95% bootstrap confidence intervals, which are controlled for multiple comparisons. 
+
+```{r, fig.width = 5, fig.height = 5}
+#> compute shift function
+set.seed(4)
+sf <- shifthd_pbci(data = df, formula = obs ~ gr)
+
+#> plot shift function
+psf <- plot_sf(sf, plot_theme = 2)[[1]] +
+        scale_x_continuous(breaks = seq(4, 6, 0.5)) +
+        scale_y_continuous(breaks = seq(-6, 6, 2), limits = c(-6, 6))
+psf
+```
+
+# All pairwise differences
+
+To address Question 2, we compute all the pairwise differences between members of the two groups. In this case, each group has n = 50, so we end up with 2500 differences. The next figure shows a kernel density representation of these differences. 
+
+```{r, fig.width = 5, fig.height = 5}
+#> ----------------------------------------------
+#> compute all pairwise differences + save tibble
+apd <- mkt1(allpdiff(g1,g2))
+
+#> Compute confidence interval of the median of all pairwise differences
+out <- allpdiff_hdpbci(g1,g2)
+
+#> make kernel density plot of all pairwise differences
+p <- ggplot(apd, aes(obs)) +
+  geom_density(alpha = 1 , fill = "grey95", colour = "black") +
+  theme_bw() +
+  theme(legend.position="none",
+        axis.text.x = element_text(size=14),
+        axis.text.y = element_text(size=14),
+        axis.title.x = element_text(size=16,face="bold"),
+        axis.title.y = element_text(size=16,face="bold")) +
+  ylab("Density") +
+  xlab("All pairwise differences")
+# p
+
+#> add vertical lines marking the deciles
+sizeseq <- c(rep(.5,4),2,rep(.5,4))
+lineseq <- c(rep(1,4),1,rep(1,4))
+alphaseq <- rep(1,9) #c(rep(.7,4),.7,rep(.7,4))
+todo <- apd[[1]]
+
+q_seq <- seq(.1,.9,.1)
+for (qi in 1:length(q_seq)){
+  p <- p + geom_vline(xintercept = hd(todo,q_seq[[qi]]),
+                      alpha = alphaseq[[qi]],
+                      size = sizeseq[[qi]],
+                      linetype = lineseq[[qi]],
+                      colour = "black")
+}
+pkd <- p
+pkd
+```
+
+Kernel density representation of the distribution of all pairwise differences between the two groups. Vertical lines mark the deciles, with a thicker line for the median.
+
+What does the typical difference look like? The median of the differences is very near zero, at  `r round(out$estimate, digits = 2)`, with a 95% confidence interval of [`r round(out$ci[1], digits = 2)`, `r round(out$ci[2], digits = 2)`]. So, it seems on average, if we randomly select one observation from each group, they will differ very little. However, the differences can be quite substantial, and with real data we would need to put these differences in context, to understand how large they are, and their physiological interpretation. The differences are also asymmetrically distributed: negative scores extend to -10, whereas positive scores do not even reach +5. In other words, negative differences tend to outweigh positive differences. This asymmetry relates to our earlier observation of asymmetric differences in the shift function. If the two distributions did not differ, the distribution of all pairwise differences should be approximately symmetric and centred about zero. Thus, the two distributions seem to differ, but in a way that is not captured by measures of central tendency.
+
+# Difference asymmetry function
+
+We can quantify the asymmetries in the previous distribution of differences using the difference asymmetry function (Wilcox, 2012). The idea is to get a sense of the asymmetry of the difference distribution by computing a sum of quantiles = q + (1 q), for various quantiles estimated using the Harrell–Davis estimator. A percentile bootstrap technique is used to derive confidence intervals. The next figure shows the resulting difference asymmetry function. In this plot, 0.05 stands for the sum of quantile 0.05 + quantile 0.95; 0.10 stands for the sum of quantile 0.10 + quantile 0.90; and so on... The approach is not limited to these quantiles, so sparser or denser functions could be tested too. 
+
+```{r, fig.width = 5, fig.height = 5}
+#> slow because of the bootstrap confidence intervals
+set.seed(7)
+dasym <- asymhd(data = df, formula = obs ~ gr, 
+                q = seq(5,40,5)/100, alpha = .05, nboot = 100)
+
+#> ggplot
+diff_asym <- plot_diff_asym(data = dasym)[[1]]
+diff_asym
+```
+
+Difference asymmetry function with 95% confidence intervals. The family-wise error is controlled by adjusting the critical P values using Hochberg’s method; the confidence intervals are not adjusted. 
+
+Starting on the left, the quantile sums (0.05 + 0.95) are negative, and progressively smaller, converging to zero as we get closer to the centre of the distribution. If the distributions did not differ, the difference asymmetry function would be expected to be about flat and centred near zero. So, the q + (1 q) plot suggests that the distribution of differences is asymmetric, based on the 95% confidence intervals: the two groups seem to differ, with maximum differences in the tails. Other alpha levels can be assessed too.
+
+# Summary figure
+
+Finally, we can gather all the previous figures into a summary figure using `cowplot`.
+
+```{r, fig.width = 10, fig.height = 10}
+#> combine plots
+cowplot::plot_grid(pscat, pkd, psf, diff_asym,
+          labels=c("A", "B", "C", "D"),
+          ncol = 2,
+          nrow = 2,
+          rel_heights = c(1, 1),
+          label_size = 18,
+          hjust = -0.5,
+          scale=.95,
+          align = "v")
+
+```
+
+# References
+
+Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) 
+**Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
+The European journal of neuroscience, 46, 1738-1748. 
+[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)) [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
+
+Wilcox, R.R. (2012) Comparing Two Independent Groups Via a Quantile Generalization of the Wilcoxon-Mann-Whitney Test. Journal of Modern Applied Statistical Methods, 11, 296-302.
+
+
