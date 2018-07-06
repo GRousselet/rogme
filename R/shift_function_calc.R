@@ -314,7 +314,6 @@ shiftdhd <- function(data = df,
 #' @examples
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
-#' C1 <- rnorm(100)
 #' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 #'
@@ -477,8 +476,8 @@ shifthd_pbci <- function(data = df,
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
 #' C1 <- rnorm(100)
-#' df2 <- tibble(cond = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
-#'               obs = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
+#' df2 <- tibble(cond = factor(c(rep("C1",n),rep("C2",n),rep("C3",n))),
+#'               obs = c(C1+6, C1+rnorm(n)+4, C1+rnorm(n))) # make tibble
 #'
 #' out <- shiftdhd_pbci(df, obs ~ cond) # use the default parameters
 #' out <- shiftdhd_pbci(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
