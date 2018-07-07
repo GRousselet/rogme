@@ -254,12 +254,12 @@ plot_scat2d <- function(df = df,
     scale_y_continuous(breaks=seq(floor(min.y),ceiling(max.y),axis.steps)) +
     coord_cartesian(xlim = c(floor(min.x), ceiling(max.x)),
                     ylim = c(floor(min.y), ceiling(max.y))) +
-    geom_segment(aes(x=hd1,y=min.y*2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
-    geom_segment(aes(x=hd1,y=min.y*2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
-    geom_segment(aes(x=hd1,y=min.y*2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
-    geom_segment(aes(x=min.x*2,y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
-    geom_segment(aes(x=min.x*2,y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
-    geom_segment(aes(x=min.x*2,y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
+    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
+    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
+    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
+    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
+    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
+    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
     # scatterplot
     geom_point(size=size_p,
                stroke=stroke_p,
