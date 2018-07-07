@@ -33,10 +33,11 @@ The main tool in `rogme` is the [shift function](https://garstats.wordpress.com/
 Vignettes
 ---------
 
--   [Quantify various patterns using the shift function](/vignettes/sf_patterns.md)
--   [Compare two independent groups](/vignettes/ind_gps.md)
--   [Compare two dependent groups](/vignettes/dep_gps.md)
--   [Analyse a single distribution](/vignettes/one_gp.md)
+-   [Quantify distribution differences using the shift function](/inst/doc/sf_patterns.html)
+-   [Compare two independent groups](/inst/doc/ind_gps.html)
+-   [Compare two dependent groups](/inst/doc/dep_gps.html)
+-   [Quantify a single distribution](/inst/doc/one_gp.html)
+-   [Statistical tests and measures of effect sizes](/inst/doc/stats.html)
 
 Functions
 ---------
@@ -88,7 +89,7 @@ g1 <- rnorm(1000) + 6
 g2 <- rnorm(1000) * 1.5 + 6
 
 #> make tibble
-#> library(rogme)
+# library(rogme)
 devtools::load_all()
 #> Loading rogme
 #> Loading required package: ggplot2
@@ -124,7 +125,9 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 psf <- plot_sf(sf, plot_theme = 2)
 
 #> add labels for deciles 1 & 9
-psf <- add_sf_lab(psf, sf, y_lab_nudge = .1, text_size = 4)
+psf <- add_sf_lab(psf, sf, 
+                  y_lab_nudge = .1, 
+                  text_size = 4)
 
 #> change axis labels
 psf[[1]] <- psf[[1]] +  labs(x = "Group 1 quantiles of scores (a.u.)",
