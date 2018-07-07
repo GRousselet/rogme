@@ -101,10 +101,6 @@ g1 <- rnorm(1000) + 6
 g2 <- rnorm(1000) * 1.5 + 6
 
 #> make tibble
-# library(rogme)
-devtools::load_all()
-#> Loading rogme
-#> Loading required package: ggplot2
 df <- mkt2(g1, g2)
 ```
 
@@ -124,7 +120,7 @@ ps <- ps + coord_flip()
 ps
 ```
 
-![](README-files/README-unnamed-chunk-4-1.png)
+![](README-files/README-unnamed-chunk-5-1.png)
 
 Second, we compute the shift function and then plot it.
 
@@ -135,6 +131,9 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 
 #> plot shift function
 psf <- plot_sf(sf, plot_theme = 2)
+#> Warning: Using alpha for a discrete variable is not advised.
+
+#> Warning: Using alpha for a discrete variable is not advised.
 
 #> add labels for deciles 1 & 9
 psf <- add_sf_lab(psf, sf, 
@@ -147,7 +146,7 @@ psf[[1]] <- psf[[1]] +  labs(x = "Group 1 quantiles of scores (a.u.)",
 psf[[1]]
 ```
 
-![](README-files/README-unnamed-chunk-5-1.png)
+![](README-files/README-unnamed-chunk-6-1.png)
 
 Third, we make 1D scatterplots with deciles and colour coded differences.
 
@@ -171,7 +170,7 @@ p <- p + coord_flip() #> flip axes
 p
 ```
 
-![](README-files/README-unnamed-chunk-6-1.png)
+![](README-files/README-unnamed-chunk-7-1.png)
 
 Finally, we combine the three plots into one figure.
 
@@ -181,7 +180,7 @@ cowplot::plot_grid(ps, p, psf[[1]], labels=c("A", "B", "C"), ncol = 1, nrow = 3,
                    rel_heights = c(1, 1, 1), label_size = 20, hjust = -0.5, scale=.95)
 ```
 
-![](README-files/README-unnamed-chunk-7-1.png)
+![](README-files/README-unnamed-chunk-8-1.png)
 
 **Panel A** illustrates two distributions, both n = 1000, that differ in spread. The observations in the scatterplots were jittered based on their local density, as implemented in `ggbeeswarm::geom_quasirandom`.
 
@@ -218,7 +217,7 @@ library(gridExtra)
 do.call("grid.arrange", c(plist, ncol=2))
 ```
 
-![](README-files/README-unnamed-chunk-10-1.png)
+![](README-files/README-unnamed-chunk-11-1.png)
 
 To extract one object and for instance change a label:
 
@@ -227,7 +226,7 @@ p <- plist[[1]]
 p + labs(y = "Difference")
 ```
 
-![](README-files/README-unnamed-chunk-11-1.png)
+![](README-files/README-unnamed-chunk-12-1.png)
 
 New group plot with different y labels and titles:
 
@@ -238,7 +237,7 @@ plist[[sub]] <- plist[[sub]] + labs(y = "Difference", title = names(out)[sub]) +
 do.call("grid.arrange", c(plist, ncol=2))
 ```
 
-![](README-files/README-unnamed-chunk-12-1.png)
+![](README-files/README-unnamed-chunk-13-1.png)
 
 To understand what's going on, here are the marginal distributions:
 
@@ -253,4 +252,4 @@ p <- plot_scat2(df,
 p + coord_flip() #> flip axes
 ```
 
-![](README-files/README-unnamed-chunk-13-1.png)
+![](README-files/README-unnamed-chunk-14-1.png)
