@@ -54,50 +54,6 @@ plot_kde_rug_dec1 <- function(data=df,fill.colour="grey30",fill.alpha=.3){
   p
 }
 
-#' Scatterplots for 2 groups **KEEP?**
-#'
-#' \code{plot_scat2} produces scatterplots for 2 marginal distributions.
-#' The scatterplots are jittered using \code{\link[ggforce]{geom_sina}}.
-plot_scat2_sina <- function(data = df,
-                       symb_size = 2,
-                       symb_stroke = 1,
-                       symb_shape = c(21,21),
-                       symb_alpha = .2,
-                       symb_col = c("black","black"),
-                       symb_fil = c("grey70","grey70"),
-                       xlabel = NULL,
-                       ylabel = NULL,
-                       binwidth = NULL,
-                       bins = NULL,
-                       maxwidth = NULL,
-                       scale = TRUE){
-  xplot = names(data)[1]
-  yplot = names(data)[2]
-  p <- ggplot(data, aes_string(x = xplot, y = yplot, fill = xplot,
-                               colour = xplot, shape = xplot))
-  p <- p + ggforce::geom_sina(size = symb_size, stroke = symb_stroke,
-                              alpha = symb_alpha, binwidth = binwidth,
-                              bins = bins, maxwidth = maxwidth,
-                              scale = scale) +
-    theme_bw() +
-    scale_colour_manual(values = symb_col) +
-    scale_fill_manual(values = symb_fil) +
-    scale_shape_manual(values = symb_shape) +
-    theme(legend.position="none") +
-    theme(axis.title.x = element_text(size=16,face="bold"),
-          axis.title.y = element_text(size=16,face="bold"),
-          axis.text.x = element_text(size=14),
-          axis.text.y = element_text(size=14))
-  # override axis labels
-  if (!is.null(xlabel)){
-    p <- p + xlab(xlabel)
-  }
-  if (!is.null(ylabel)){
-    p <- p + ylab(ylabel)
-  }
-  p
-}
-
 #' Plot one-dimensional scatterplots for 2 groups
 #'
 #' \code{plot_scat2} produces scatterplots for 2 marginal distributions.
@@ -167,33 +123,60 @@ plot_scat2 <- function(data = df,
   p
 }
 
-#' Plot deciles and confidence intervals
+#' Plot quantiles and confidence intervals
 #'
-#' Plot deciles and their confidence intervals
-#' using the output of `quantiles_pbci`
+#' Using the output of \code{\link{quantiles_pbci}}, create a ggplot object
+#' showing specified quantiles (default to deciles) and their 95% percentile
+#' bootstrap confidence intervals. A vertical line marks the median.
+#'
+#' @param data Data frame created by `quantiles_pbci`.
+#' @param qseq Sequence of quantiles to plot - assumes median is in the middle of the sequence - default = deciles.
+#'
+#' @seealso \code{\link{quantiles_pbci}}
+#'
+#' @examples
+#' set.seed(7)
+#' # make fake skewed data
+#' x <- rgamma(100, shape=3, scale=1)*10+250
+#' # compute quantiles and their percentile bootstrap confidence intervals
+#' out <- quantiles_pbci(x,q=seq(1,9)/10,nboot=2000,alpha=0.05)
+#' # make decile plot
+#' p <- plot_hd_ci(data=out,plotzero=TRUE,label.x="Onsets in ms",
+#'                    hjust=-.05,vjust=.5,size_text=5,
+#'                    colour_dec = "grey10",fill_dec = "grey90",
+#'                    colour_line = "grey10", linetype_line = 1, size_line = 1) +
+#'                    scale_y_continuous(limits=c(250, 350),breaks=seq(250,350,25))
+# p
 #'
 #' @export
-plot_dec_ci <- function(out = out,
+plot_hd_ci <- function(data = out,
+                       qseq = seq(.1,.9,.1),
                         plotzero = TRUE,
-                        xtitle = "Differences",
+                        label.x = "Differences",
                         hjust = -.05,
                         vjust = .2,
                         size_text = 6,
-                        colour_dec = "#009E73",
-                        fill_dec = "white",
-                        size_dec = 4,
-                        shape_dec = 21,
+                        colour_q = "#009E73",
+                        fill_q = "white",
+                        size_q = 4,
+                        shape_q = 21,
                         colour_line = "#009E73",
                         size_line = 1,
                         linetype_line = 2,
                         colour_zero = "black",
                         size_zero = .5,
                         linetype_zero = 1){
-  md <- out$est_q[5] # median
+  md.loc <- floor(length(data$quantile)/2) + 1
+  md <- data$est_q[md.loc] # median
   md.c <- as.character(round(md, digits=1)) # turn into characters
-  lo.c <- as.character(round(out$ci.low[5], digits=1)) # turn into characters
-  up.c <- as.character(round(out$ci.up[5], digits=1)) # turn into characters
+  lo.c <- as.character(round(data$ci.low[md.loc], digits=1)) # turn into characters
+  up.c <- as.character(round(data$ci.up[md.loc], digits=1)) # turn into characters
   caption <- paste("Median = \n ",md.c," [",lo.c,", ",up.c,"]",sep="")
+  if (all.equal(qseq,seq(.1,.9,.1))){
+    label.y <- "Deciles"
+  }  else {
+    label.y <- "Quantiles"
+  }
   p <- ggplot(data=out, aes(x=quantile*10, y=est_q)) +
     geom_abline(intercept = md, slope = 0,
                 colour = colour_line,
@@ -207,18 +190,18 @@ plot_dec_ci <- function(out = out,
   }
   p <- p + geom_linerange(aes(ymin=ci.low, ymax=ci.up), colour=colour_line,size=1) +
     geom_point(colour = colour_dec,
-               size = size_dec,
-               shape = shape_dec,
-               fill = fill_dec) +
+               size = size_q,
+               shape = shape_q,
+               fill = fill_q) +
     theme_bw() +
-    labs(x="Deciles") +
-    labs(y=xtitle) +
+    labs(x=label.y) +
+    labs(y=label.x) +
     theme(axis.text.x = element_text(size=14),
           axis.text.y = element_text(size=14),
           axis.title.x = element_text(size=16,face="bold"),
           axis.title.y = element_text(size=16,face="bold")) +
     scale_x_continuous(breaks=seq(1,9,1)) +
-    annotate("text", x = 5, y = out$ci.up[5], label = caption[1],
+    annotate("text", x = 5, y = data$ci.up[5], label = caption[1],
              hjust = hjust, vjust = vjust, size = size_text) +
     coord_flip()
   p
