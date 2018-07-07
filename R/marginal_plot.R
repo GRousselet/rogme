@@ -164,16 +164,25 @@ plot_hd_ci <- function(data = out,
 #' @param df Data frame with paired observations in two columns.
 #' @param formula A formula with format response variable ∼ predictor variable,
 #'   where ~ (tilde) means "is modeled as a function of".
-#' @param xcol,ycol Names of columns of paired observations.
-#' @param colour_p Colour parameter of the scatterplot.
-#' @param fill_p Fill parameter of the scatterplot and so on.
-#' @param colour_q Colour of the segments marking the quartiles.
-#' @param linetype_q Linetype of the segments marking the quartiles and so on.
+#' @param axis.steps Steps between x and y tick marks - default = 2.
+#' @param min.x,min.y,max.x,max.y Specify axis limits - default square axes
+#' @param colour_p Colour parameter of the scatterplot - default "black".
+#' @param size_p Size parameter of the scatterplot - default = 5.
+#' @param stroke_p Stroke parameter of the scatterplot - default = 1,
+#' @param shape_p Shape parameter of the scatterplot - default = 21,
+#' @param colour_p Colour parameter of the scatterplot - default = "black",
+#' @param fill_p Fill parameter of the scatterplot - default = "#ffb347",
+#' @param alpha_p Alpha parameter of the scatterplot - default = .5,
+#' @param linetype_q Linetype of the segments marking the quartiles - default = "dashed",
+#' @param size_q Size of the segments marking the quartiles - default = 1,
+#' @param alpha_q Alpha of the segments marking the quartiles - default = .5,
+#' @param colour_q Colour of the segments marking the quartiles - default = "black"
 #' @examples
-#' plot_scat2d(df, xcol='c1', ycol='c2') # basic call
-#' plot_scat2d(df, xcol='c1', ycol='c2', size_q=1) # specify size of quartile segments
-#' plot_scat2d(df, xcol='c1', ycol='c2', size_q=c(1,2,1)) # use thicker line for median
-#' plot_scat2d(df, xcol='c1', ycol='c2', linetype_q = "longdash") # specify linetype - default = dashed
+#' df <- tibble(cond1 = rnorm(50), cond2 = cond1 + rnorm(50))
+#' plot_scat2d(df, formula = cond2 ~ cond1) # basic call
+#' plot_scat2d(df, formula = cond2 ~ cond1, size_q=3) # specify size of quartile segments
+#' plot_scat2d(df, formula = cond2 ~ cond1, size_q=c(1,2,1)) # use thicker line for median
+#' plot_scat2d(df, formula = cond2 ~ cond1, linetype_q = "longdash") # specify linetype - default = dashed
 #' @seealso \code{\link{hd}}
 #' @export
 plot_scat2d <- function(df = df,
@@ -224,16 +233,16 @@ plot_scat2d <- function(df = df,
 
   # plot limits
   if (is.na(min.x)){
-    min.x <- min(df[,2],df[,3])
+    min.x <- min(df[[xplot]],df[[yplot]])
   }
   if (is.na(max.x)){
-    max.x <- max(df[,2],df[,3])
+    max.x <- max(df[[xplot]],df[[yplot]])
   }
   if (is.na(min.y)){
-    min.y <- min(df[,2],df[,3])
+    min.y <- min(df[[xplot]],df[[yplot]])
   }
   if (is.na(max.y)){
-    max.y <- max(df[,2],df[,3])
+    max.y <- max(df[[xplot]],df[[yplot]])
   }
 
   # scatterplot of paired observations -----------------
@@ -241,14 +250,16 @@ plot_scat2d <- function(df = df,
     # reference line
     geom_abline(intercept = 0) +
     # quartiles
-    scale_x_continuous(limits=c(floor(min.x), ceiling(max.x)),breaks=seq(floor(min.x),ceiling(max.x),axis.steps)) +
-    scale_y_continuous(limits=c(floor(min.y), ceiling(max.y)),breaks=seq(floor(min.y),ceiling(max.y),axis.steps)) +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
-    geom_segment(aes(x=hd1,y=min.y,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
-    geom_segment(aes(x=min.x,y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
+    scale_x_continuous(breaks=seq(floor(min.x),ceiling(max.x),axis.steps)) +
+    scale_y_continuous(breaks=seq(floor(min.y),ceiling(max.y),axis.steps)) +
+    coord_cartesian(xlim = c(floor(min.x), ceiling(max.x)),
+                    ylim = c(floor(min.y), ceiling(max.y))) +
+    geom_segment(aes(x=hd1,y=min.y*2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
+    geom_segment(aes(x=hd1,y=min.y*2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
+    geom_segment(aes(x=hd1,y=min.y*2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
+    geom_segment(aes(x=min.x*2,y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
+    geom_segment(aes(x=min.x*2,y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
+    geom_segment(aes(x=min.x*2,y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
     # scatterplot
     geom_point(size=size_p,
                stroke=stroke_p,

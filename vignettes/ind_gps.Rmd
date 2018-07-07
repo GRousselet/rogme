@@ -17,8 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
-devtools::load_all()
-#> library(rogme)
+library(rogme)
 ```
 
 We can consider two different perspectives when comparing two independent groups, by asking two questions.
@@ -70,9 +69,18 @@ Vertical lines mark the deciles, with a thicker line for the median.
 
 These tests are inconclusive:
 ```{r}
-t.test(g1,g2) #> regular Welsh t-test
-wilcox.test(g1,g2) #> Mann-Whitney-Wilcoxon test
-cidv2(g1,g2) #> Cliff's delta test
+#> regular Welsh t-test
+t.test(g1,g2) 
+```
+
+```{r}
+#> Mann-Whitney-Wilcoxon test
+wilcox.test(g1,g2) 
+```
+
+```{r}
+#> Cliff's delta test
+cidv2(g1,g2) 
 ```
 
 This test suggests the distributions differ:
@@ -188,6 +196,8 @@ Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017)
 The European journal of neuroscience, 46, 1738-1748. 
 [[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)) [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
 
-Wilcox, R.R. (2012) Comparing Two Independent Groups Via a Quantile Generalization of the Wilcoxon-Mann-Whitney Test. Journal of Modern Applied Statistical Methods, 11, 296-302.
+Wilcox, R.R. (2012) 
+**Comparing Two Independent Groups Via a Quantile Generalization of the Wilcoxon-Mann-Whitney Test.**
+Journal of Modern Applied Statistical Methods, 11, 296-302.
 
 

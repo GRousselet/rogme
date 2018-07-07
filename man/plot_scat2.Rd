@@ -2,11 +2,51 @@
 % Please edit documentation in R/marginal_plot.R
 \name{plot_scat2}
 \alias{plot_scat2}
-\title{Scatterplots for 2 groups}
+\title{Plot one-dimensional scatterplots for 2 groups}
 \usage{
-plot_scat2(data = df, xlabel = NULL, ylabel = NULL, ...)
+plot_scat2(data = df, formula = obs ~ gr, xlabel = NULL, ylabel = NULL,
+  ...)
+}
+\arguments{
+\item{data}{A data frame in long format. One column is a factor describing the groups;
+another column contains the values/observations for each group. A properly formatted data
+frame can be created using \code{\link{mkt2}}. Missing values are not
+allowed.}
+
+\item{formula}{A formula with format response variable ∼ predictor variable,
+where ~ (tilde) means "is modeled as a function of".}
+
+\item{xlabel}{Option to set different name - default NULL to use data frame column names.}
+
+\item{ylabel}{Option to set different name - default NULL to use data frame column names.}
+
+\item{...}{Input arguments for ggbeeswarm::geom_quasirandom}
+}
+\value{
+A ggplot object.
 }
 \description{
 \code{plot_scat2} produces scatterplots for 2 marginal distributions.
 The scatterplots are jittered using \code{\link[ggbeeswarm]{geom_quasirandom}}.
+}
+\examples{
+# generate data
+set.seed(21)
+g1 <- rnorm(1000) + 6
+g2 <- rnorm(1000) * 1.5 + 6
+
+# make tibble
+df <- mkt2(g1, g2)
+# make scatterplots
+ps <- plot_scat2(data = df,
+  formula = obs ~ gr,
+  xlabel = "",
+  ylabel = "Scores (a.u.)",
+  alpha = 1,
+  shape = 21,
+  colour = "grey10",
+  fill = "grey90") # scatterplots
+ps <- ps + coord_flip()
+ps
+
 }

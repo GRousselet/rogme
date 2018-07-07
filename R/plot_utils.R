@@ -1,5 +1,5 @@
 #' Add bars marking quantiles to ggplot object created by \code{\link{plot_scat2}}.
-#' Used in the README.md file to demonstrate the shift function.
+#' See examples in the README file and the vignettes.
 #'
 #' @param p A ggplot object returned by \code{\link{plot_scat2}}.
 #' @param q_seq A sequence of quantiles - default = deciles.

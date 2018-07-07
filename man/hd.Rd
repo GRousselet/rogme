@@ -21,6 +21,11 @@ Compute the Harrell-Davis estimate of the qth quantile.
 \url{https://garstats.wordpress.com/2016/06/09/the-harrell-davis-quantile-estimator/}
 for more details.
 }
+\section{Note}{
+ code from Rallfun-v33.txt. See
+  \url{https://github.com/nicebread/WRS/}
+}
+
 \examples{
 hd(x) # use default estimation of the median (q = 0.5)
 hd(x, q = 0.25) # estimate the first quartile

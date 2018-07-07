@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{ks}
 \alias{ks}
-\title{Compute a Kolmogorov-Smirnov test}
+\title{Compute the Kolmogorov-Smirnov test statistic}
 \usage{
 ks(x, y, w = FALSE, sig = TRUE, alpha = 0.05)
 }
@@ -18,9 +18,6 @@ reported significance level is exact when using the unweighted test, but
 for the weighted test the reported level is too high.}
 }
 \description{
-Compute the Kolmogorov-Smirnov test statistic
-}
-\details{
 \code{ks} returns a list containing the value of the test statistic, the
 approximate .05 critical value, and the exact significance level if sig=T.
 }

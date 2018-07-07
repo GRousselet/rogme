@@ -1,10 +1,10 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Compare two dependent groups"
+author: "Guillaume A. Rousselet"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Compare two dependent groups}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,66 +17,95 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
-## dependencies
-library(rogme)
+# library(rogme)
+devtools::load_all()
 library(cowplot)
 library(tidyr)
-library(ggbeeswarm)
-## ============================
+```
 
-# --------------------------------
-# Dependent groups
-# --------------------------------
+When comparing dependent groups, we can ask two complementary questions:
 
-# load data
-load("./data/paired_example.RData") # pdata
+- **Question 1**: How does the typical observation in condition 1 compare to the typical observation in condition 2?
+- **Question 2**: What is the typical difference for a randomly sampled participant?
+
+The next figure shows two dependent distributions, with relatively large differences in the right tails. To address Question 1, ‘How does the typical observation in condition 1 compare to the typical observation in condition 2?’, we consider the median of each condition. 
+
+```{r, fig.width = 5, fig.height = 5}
+#> load data
+load("paired_example.RData") #> pdata
 df <- pdata
 
-# ----------------------------------------------------
-# independent stripcharts (1D scatterplots)
-# make long format
+#> ----------------------------------------------------
+#> independent stripcharts (1D scatterplots)
+#> make long format
 df.long <- tidyr::gather(df,gr,data,condition1,condition2)
 df.long$participant <- as.factor(df.long$participant)
 df.long$gr <- as.factor(df.long$gr)
+df.wide <- df
 
-# 1D scatterplots + superimposed deciles
-p <- ggplot(df.long, aes(x = gr,
-                         y = data,
-                         fill = gr,
-                         colour = gr,
-                         shape = gr)) +
-    ggbeeswarm::geom_quasirandom(alpha = 1,
-                                 shape = 21,
-                                 colour = "grey10",
-                                 fill = "grey90",
-                                 size = 3,
-                                 width = .2) +
-    theme_bw() +
-    theme(legend.position = "none") +
-    theme(axis.title.y = element_text(size=16,face="bold"),
-        axis.title.x = element_blank(),
-        axis.text.x = element_text(size=14),
-        axis.text.y = element_text(size=14)) +
-    ylab("Scores (a.u.)") +
-    scale_x_discrete(labels = c("condition1" = "Condition 1","condition2" = "Condition 2")) +
-  scale_y_continuous(limits = c(0, 30))
-strip <- plot_dec_bars(p,
-                   col = "black",
-                   dec_size = 0.5,
-                   md_size = 1.5,
-                   alpha = 1)
+#> 1D scatterplots + superimposed deciles
+p <- plot_scat2(df.long,
+                formula = data ~ gr,
+                xlabel = "",
+                ylabel = "Scores (a.u.)",
+                alpha = 1,
+                shape = 21,
+                colour = "grey10",
+                fill = "grey90",
+                size = 3) +
+      scale_x_discrete(labels = c("condition1" = "Condition 1","condition2" = "Condition 2")) +
+      scale_y_continuous(limits = c(0, 30))
+
+strip <- plot_hd_bars(p,
+                      col = "black",
+                      q_size = 0.5,
+                      md_size = 1.5,
+                      alpha = 1)
 strip
+```
 
-# t-test on means
+```{r}
+#> paired t-test on means
 t.test(df$condition1,df$condition2,paired=TRUE)
+```
 
-# percentile bootstrap confidence interval of the difference between
-# medians, treating the groups as independent
-pb2gen(df$condition1,df$condition2)
+```{r}
+#> percentile bootstrap confidence interval of the difference between
+#> medians, treating the groups as independent
+out <- pb2gen(df$condition1,df$condition2)
+```
 
-# ------------------------------------
-# linked stripcharts -----------------
-# coloured lines linking paired observations
+
+In condition 1, the median is `r round(out$est.1,digits=2)`; in condition 2, it is `r round(out$est.2,digits=2)`. The difference between the two medians is `r round(out$est.dif,digits=2)`, with a 95% confidence interval of [`r round(out$ci[1],digits=2)`, `r round(out$ci[2],digits=2)`].
+
+# Shift function
+
+To complement these descriptions, we consider the shift function for dependent groups (Wilcox & Erceg-Hurn, 2012). The shift function addresses an extension of Question 1, by more systematically comparing the distributions. It shows a non-uniform shift between the marginal distributions, with overall trend of growing differences as we progress towards the right tails of the distributions. In other words, among larger observations, observations in condition 2 tend to be higher than in condition 1.
+
+```{r fig.width = 5, fig.height = 5}
+#> --------------------------
+#> compute shift function
+set.seed(7)
+g2 <- df.long$data[df.long$gr=="condition2"]
+g1 <- df.long$data[df.long$gr=="condition1"]
+df <- mkt2(g1,g2)
+sf <- shiftdhd(data = df, formula = obs ~ gr, nboot = 1000)
+
+#> plot shift function
+psf <- plot_sf(sf, plot_theme = 2)[[1]] +
+  scale_x_continuous(breaks = seq(6, 20, 2), limits = c(8, 20)) +
+  scale_y_continuous(breaks = seq(-8, 4, 2), limits = c(-8, 4))
+psf
+```
+
+# Linked stripcharts
+
+Because we are dealing with a paired design, our investigation should not be limited to a comparison of the marginal distributions; it is also important to show how observations are linked between conditions. This association is revealed in two different ways in the next two figures. Looking at the pairing reveals a pattern otherwise hidden: for participants with weak scores in condition 1, differences tend to be small and centred about zero; beyond a certain level, with increasing scores in condition 1, the differences get progressively larger.
+
+```{r fig.width = 5, fig.height = 5}
+#> ------------------------------------
+#> linked stripcharts -----------------
+#> coloured lines linking paired observations
 pd <- position_dodge(width = 0.1)
 linkedstrip <- ggplot(df.long, aes(x=gr, y=data, group=participant)) +
                 geom_line(aes(colour=participant),size=1, alpha=.5,
@@ -87,16 +116,21 @@ linkedstrip <- ggplot(df.long, aes(x=gr, y=data, group=participant)) +
                       axis.title.x = element_blank(),
                       axis.title.y = element_text(size=16,face="bold"),
                       legend.position="none") +
-                # labs(title="Paired observations") +
+                #> labs(title="Paired observations") +
                 ylab("Scores (a.u.)") +
                 scale_x_discrete(labels = c("condition1" = "Condition 1","condition2" = "Condition 2")) +
                 scale_y_continuous(limits=c(0, 30),breaks=seq(0,30,5))
 linkedstrip
+```
 
-# ----------------------------------------------------
-# scatterplot of paired observations -----------------
-scatterdiff <- plot_scat2d(df=df,xcol="condition1",ycol="condition2",
-                               min.x=5,min.y=5,max.x=25,max.y=25,axis.steps=5,
+# Scatterplot of paired observations
+
+```{r, warning=FALSE, fig.width = 5, fig.height = 5}
+#> ----------------------------------------------------
+#> scatterplot of paired observations -----------------
+scatterdiff <- plot_scat2d(df = df.wide,
+                           formula = condition2 ~ condition1,
+                           min.x=5,min.y=5,max.x=25,max.y=25,axis.steps=5,
                            colour_p = "grey10",
                            fill_p = "grey90",
                            size_p = 4,
@@ -109,28 +143,19 @@ scatterdiff <- plot_scat2d(df=df,xcol="condition1",ycol="condition2",
   ylab("Condition 2") +
   theme(plot.title = element_blank())
 scatterdiff
+```
 
-# set.seed(1)
-# dat<-data.frame(rnorm(10,20,20),rep(seq(5),2),rep(c("a","b"),5))
-# names(dat)<-c("number","factor_1","factor_2")
-# dat<-dat[order(dat$factor_1,dat$factor_2),]
-# dat<-dat[c(-3,-7),]
-# library(dplyr)
-# dat %>% 
-#   group_by(factor_1) %>% 
-#   summarize(diff=number[match('a',factor_2)]-number[match('b',factor_2)]) -> 
-#   d2
-# 
-# d2$diff[is.na(d2$diff)] <- 0
-# 
-# d2
+# Stripchart of differences 
 
-# ----------------------------------------------------
-# 1D scatterplot = stripchart of differences ---------
-paired_differences <- df.long$data[df.long$gr=="condition2"]-df.long$data[df.long$gr=="condition1"]
+The next figure shows the distribution of pairwise differences, which let us assess Question 2, ‘What is the typical difference for a randomly sampled participant?’. 
+
+```{r fig.width = 5, fig.height = 5}
+#> ----------------------------------------------------
+#> 1D scatterplot = stripchart of differences ---------
+paired_differences <- df.long$data[df.long$gr=="condition1"]-df.long$data[df.long$gr=="condition2"]
 diff <- mkt1(paired_differences)
 set.seed(8)
-diffstrip <- ggplot(diff, aes(x=gr,y=data,fill=gr,colour=gr,shape=gr)) +
+diffstrip <- ggplot(diff, aes(x=gr,y=obs,fill=gr,colour=gr,shape=gr)) +
   geom_abline(intercept = 0, slope = 0, linetype = 2) +
   ggbeeswarm::geom_quasirandom(alpha = 1,
              shape = 21,
@@ -150,43 +175,65 @@ diffstrip <- ggplot(diff, aes(x=gr,y=data,fill=gr,colour=gr,shape=gr)) +
         panel.grid.minor.x = element_blank()) +
   xlab("Differences") +
   ylab("Difference scores (a.u.)") +
-  scale_y_continuous(limits=c(-2, 7),breaks=seq(-2,7,1))
-diffstrip <- plot_dec_bars(diffstrip,
+  scale_y_continuous(limits=c(-7, 2),breaks=seq(-7,2,1))
+diffstrip <- plot_hd_bars(diffstrip,
                            col = "black",
-                           dec_size = 0.5,
+                           q_size = 0.5,
                            md_size = 1.5,
                            alpha = 1)
 diffstrip
+```
 
-# Compute confidence interval of the median of the paired differences
+The distribution of within-participant differences is shifted downward from zero, with `r sum(paired_differences<0)` of `r length(paired_differences)` differences inferior to zero. That's a proportion of `r round(pxgta(paired_differences)[[1]], digits = 2)` observations. Matching these observations, only the first decile is superior to zero. 
+
+```{r fig.width = 5, fig.height = 5}
+#> Compute confidence interval of the median of the paired differences
 out <- hdpbci(paired_differences)
+```
 
-# --------------------------
-# compute shift function
+The median difference is `r round(out$estimate,digits=2)`, with a 95% confidence interval of [`r round(out$ci[1],digits=2)`, `r round(out$ci[2],digits=2)`].
+
+# Difference asymmetry function
+
+To complement these descriptions of the difference distribution, we consider the difference asymmetry function for dependent groups (Wilcox & Erceg-Hurn, 2012). The difference asymmetry function extends Question 2 about the typical difference, by considering the symmetry of the distribution of differences. In the case of a completely ineffective experimental manipulation, the distribution of differences should be approximately symmetric about zero. The associated difference asymmetry function should be flat and centred near zero. For the data at hand, the next figure reveals a negative and almost flat function, suggesting that the distribution of differences is almost uniformly shifted away from zero.
+
+```{r fig.width = 5, fig.height = 5}
+#> --------------------------
+#> asymmetry plot
 set.seed(7)
-g2 <- df.long$data[df.long$gr=="condition2"]
-g1 <- df.long$data[df.long$gr=="condition1"]
-df <- mkt2(g1,g2)
-sf <- shiftdhd(data = df, formula = obs ~ gr, nboot = 1000)
+dasym <- asymdhd(mkt1(paired_differences), q = seq(5,40,5)/100, alpha = .05, nboot = 1000)
 
-# plot shift function
-psf <- plot_sf(sf, plot_theme = 2) +
-  scale_x_continuous(breaks = seq(6, 20, 2), limits = c(8, 20)) +
-  scale_y_continuous(breaks = seq(-8, 4, 2), limits = c(-8, 4))
-psf
-
-# --------------------------
-# asymmetry plot
-set.seed(7)
-dasym <- asymdhd(paired_differences, q = seq(5,40,5)/100, alpha = .05, nboot = 1000)
-
-# ggplot2 version
-diff_asym <- plot_diff_asym(data = dasym$output) +
+#> ggplot
+diff_asym <- plot_diff_asym(data = dasym)[[1]] +
   scale_y_continuous(breaks = seq(-8, 8, 2), limits = c(-8, 8))
 diff_asym
+```
 
-# --------------------------
-# combine plots
+If some participants had particularly large positive differences relative to the participants with the largest negative differences, the left part of the difference asymmetry function would be shifted up compare to the rest of the function (this is illustrated in the next figure), a nonlinearity that would suggest that the differences are not symmetrically distributed – this does not seem to be the case here.
+
+Here we stretch the upper part of the difference distribution (all positive differences are multiplied by 5) to see how that affects the difference asymmetry function: the function is no longer flat, capturing the asymmetry we introduced. 
+
+```{r fig.width = 5, fig.height = 5}
+#> --------------------------
+#> asymmetry plot
+set.seed(7)
+todo <- paired_differences
+todo[todo>0] <- todo[todo>0]*5
+dasym <- asymdhd(mkt1(todo), q = seq(5,40,5)/100, alpha = .05, nboot = 1000)
+
+#> ggplot
+tmp <- plot_diff_asym(data = dasym)[[1]] +
+  scale_y_continuous(breaks = seq(-8, 8, 2), limits = c(-8, 8))
+tmp
+```
+
+# Summary figure
+
+With the code below, you can use `cowplot` to create a large summary figure.
+
+```{r, eval=FALSE, fig.width = 10, fig.height = 15}
+#> --------------------------
+#> combine plots
 cowplot::plot_grid(strip, linkedstrip, scatterdiff, diffstrip, psf, diff_asym,
           labels=c("A", "B", "C", "D", "E", "F"),
           ncol = 2,
@@ -197,6 +244,8 @@ cowplot::plot_grid(strip, linkedstrip, scatterdiff, diffstrip, psf, diff_asym,
           scale = .95,
           align ="v")
 
+# save figure
+ggsave(filename='figure_dep_gps.pdf',width=10,height=15)
 ```
 
 # References
@@ -205,3 +254,9 @@ Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017)
 **Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
 The European journal of neuroscience, 46, 1738-1748. 
 [[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)) [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
+
+Wilcox, R.R. & Erceg-Hurn, D.M. (2012) 
+**Comparing two dependent groups via quantiles.**
+J Appl Stat, 39, 2655-2664.
+
+

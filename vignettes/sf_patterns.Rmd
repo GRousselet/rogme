@@ -19,8 +19,7 @@ knitr::opts_chunk$set(
 In the [README](README.md) file, we considered the case of 2 independent groups that differ in spread. To get a better understanding of the shift function, here we consider other situations in which there is no clear difference, a difference in mean, a difference in skewness. We also look at how the shift function can quantify different patterns that can be observed in skewed observations such as reaction times.
 
 ```{r}
-#> library(rogme)
-devtools::load_all()
+library(rogme)
 suppressMessages(library(cowplot))
 n = 300 #> number of observations per group
 ```

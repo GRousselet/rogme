@@ -4,31 +4,55 @@
 \alias{asymhd}
 \title{Difference asymmetry function for two independent groups}
 \usage{
-asymhd(x, y, qseq = seq(5, 40, 5)/100, alpha = 0.05, nboot = 1000)
+asymhd(data = df, formula = obs ~ gr, qseq = seq(5, 40, 5)/100,
+  alpha = 0.05, nboot = 1000, todo = NULL, doall = FALSE)
 }
 \arguments{
-\item{x, y}{Two vectors. Missing values are automatically removed.}
+\item{data}{A data frame in long format. One column is a factor describing the groups;
+another column contains the values/observations for each group. A properly formatted data
+frame can be created using \code{\link{mkt2}}. Missing values are not
+allowed.}
+
+\item{formula}{A formula with format response variable ∼ predictor variable,
+where ~ (tilde) means "is modeled as a function of".}
+
+\item{qseq}{Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.}
 
 \item{alpha}{Expected long-run type I error rate - default = 0.05.}
 
 \item{nboot}{Number of bootstrap samples - default = 1000.}
 
-\item{q}{Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.}
+\item{todo}{A list of comparisons to perform - default = NULL.}
+
+\item{doall}{Set to TRUE to compute all comparisons - default = FALSE. Not
+executed if a \code{todo} list is provided.}
+}
+\value{
+A list of data frames, one data frame per comparison. Each data frame
+  has one row per decile. The columns are: \itemize{
+  \item Column 1 = quantiles
+  \item Column 2 = quantiles of differences
+  \item Column 3 = 1 - quantiles of differences
+  \item Column 4 = sum of quantiles
+  \item Column 5 = lower bounds of the confidence intervals
+  \item Column 6 = upper bounds of the confidence intervals
+  \item Column 7 = critical p_values based on Hochberg's method
+  \item Column 8 = p_values
+  }
 }
 \description{
-The difference asymmetry function provides perspective on the degree a distribution
-is symmetric about zero, by quantifying the sum of q and 1-q quantiles of the
-distribution of all pairwise differences between two independent groups x and y.
-If the distributions of x and y are identical, then the
-distribution of all pairwise differences is symmetric about zero.
-In particular, the sum of q and 1-q quantiles should be zero.
-If the distribution is symmetric the function should be approximately a horizontal line.
-If in addition the median of the difference scores is zero, the horizontal line will
-intersect the y-axis at zero.
-Confidence intervals and p values are returned for each quantile sum.
-The FWE is controlled via Hochberg's method, which is used to determine critical
-p values based on the argument alpha.
-To plot the results use \code{\link{plot_diff_asym}}.
+The difference asymmetry function provides perspective on the degree a
+distribution is symmetric about zero, by quantifying the sum of q and 1-q
+quantiles of the distribution of all pairwise differences between two
+independent groups x and y. If the distributions of x and y are identical,
+then the distribution of all pairwise differences is symmetric about zero. In
+particular, the sum of q and 1-q quantiles should be zero. If the
+distribution is symmetric the function should be approximately a horizontal
+line. If in addition the median of the difference scores is zero, the
+horizontal line will intersect the y-axis at zero. Confidence intervals and p
+values are returned for each quantile sum. The FWE is controlled via
+Hochberg's method, which is used to determine critical p values based on the
+argument alpha. To plot the results use \code{\link{plot_diff_asym}}.
 }
 \section{Note}{
 
@@ -37,11 +61,28 @@ from Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/},
 http://dornsife.usc.edu/labs/rwilcox/software/.
 }
 
+\examples{
+set.seed(21) # generate data
+n <- 100 # sample size
+df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+             obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
+
+out <- asymhd(df, obs ~ gr) # use the default parameters
+out <- asymhd(df, obs ~ gr, alpha = .90) # specify alpha
+out <- asymhd(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
+out <- asymhd(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
+out <- asymhd(df, obs ~ gr, q = seq(.1,.4,.1)) # specify the quantiles
+out <- asymhd(df, obs ~ gr, doall = TRUE) # compute all comparisons
+
+}
 \references{
 Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 Comparing two independent groups via the lower and upper quantiles.
 J Stat Comput Sim, 84, 1543-1551.
 }
 \seealso{
-\code{\link{hd}}, \code{\link{allpdiff}}, \code{\link{asymdhd}}
+\code{\link{hd}} Harrell-Davis quantile estimator
+\code{\link{allpdiff}} to compute all pairwise differences
+\code{\link{asymdhd}} for dependent groups
+\code{\link{plot_diff_asym}} to plot results
 }
