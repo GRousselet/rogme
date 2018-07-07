@@ -240,22 +240,5 @@ add_sf_lab <- function(p,
   p
 }
 
-#' Add text annotation of quartiles
-#'
-annotate_quartiles <- function(p,
-                               data,
-                               x = 0,
-                               hjust = 0,
-                               vjust = 0,
-                               size = 10){
-  hdq = c(hd(out,.25),hd(out,.5),hd(out,.75)) # compute quartiles
-  caption <- as.character(round(hdq, digits=2)) # turn into characters
-  p <- p + annotate("text", x = x, y = hdq[1], label = caption[1],
-                    hjust = hjust, vjust = vjust, size = size) +
-    annotate("text", x = x, y = hdq[2], label = caption[2],
-             hjust = hjust, vjust = vjust, size = size) +
-    annotate("text", x = x, y = hdq[3], label = caption[3],
-             hjust = hjust, vjust = vjust, size = size)
-  p
-}
+
 

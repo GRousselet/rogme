@@ -54,7 +54,7 @@ quantiles_pbci <- function(x, q = seq(1,9) / 10, nboot = 2000, alpha = 0.05){
     output[qi,4] = bvec[up]
   }
   output <- data.frame(output)
-  print(output)
+  # print(output)
   output
 }
 

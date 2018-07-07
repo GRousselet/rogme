@@ -1,59 +1,3 @@
-#' Plot 2 groups: KDE + rug + deciles
-#'
-#' Plot kernel density estimates + rug plots + deciles
-#' for 2 groups stored in a data frame.
-#'
-#' @export
-plot_kde_rug_dec2 <- function(data = df){
-  cdat <- plyr::ddply(data, "gr", summarise, deciles = q1469(obs))
-  hd05 <- plyr::ddply(data, "gr", summarise, hd = hd(obs,0.5))
-  #cc <- "grey80" # colour to plot deciles
-  p <- ggplot(data, aes(x=obs, fill=gr)) + geom_density(alpha=.3) +
-    facet_grid(gr ~ .) +
-    geom_vline(data=hd05, aes(xintercept=hd,  colour=gr),
-               linetype="solid", size=2, alpha=.5) + # thicker median
-    geom_vline(data=cdat, aes(xintercept=deciles,  colour=gr),
-               linetype="solid", size=1, alpha=.5) +
-    geom_rug() +
-    theme_bw() +
-    theme(legend.position="none",
-          axis.text.x = element_text(size=14),
-          axis.text.y = element_text(size=14),
-          axis.title.x = element_text(size=16,face="bold"),
-          axis.title.y = element_text(size=16,face="bold"),
-          strip.text.y = element_text(size = 20, colour = "white"),
-          strip.background = element_rect(colour="darkgrey", fill="darkgrey")) +
-    ylab("Density")
-  p
-}
-
-#' Plot 1 group: KDE + rug + deciles
-#'
-#' Plot kernel density estimate + rug plot + superimposed deciles
-#' for 1 group stored in a data frame
-#'
-#' @export
-plot_kde_rug_dec1 <- function(data=df,fill.colour="grey30",fill.alpha=.3){
-  cdat <- plyr::ddply(data, "gr", summarise, deciles=q1469(obs))
-  hd05 <- plyr::ddply(data, "gr", summarise, hd=hd(obs,0.5))
-  cc <- "grey80" # colour to plot deciles
-  p <- ggplot(data, aes(x=obs)) +
-    geom_density(alpha=fill.alpha,fill=fill.colour,colour="black") +
-    geom_vline(xintercept=hd05$hd, colour="black", linetype="solid",
-               size=2, alpha=0.5) + # thicker median
-    geom_vline(data=cdat, aes(xintercept=deciles),
-               linetype="solid", size=1, alpha=.5, colour="black") +
-    geom_rug() +
-    theme_bw() +
-    theme(legend.position="none",
-          axis.text.x = element_text(size=14),
-          axis.text.y = element_text(size=14),
-          axis.title.x = element_text(size=16,face="bold"),
-          axis.title.y = element_text(size=16,face="bold")) +
-    ylab("Density")
-  p
-}
-
 #' Plot one-dimensional scatterplots for 2 groups
 #'
 #' \code{plot_scat2} produces scatterplots for 2 marginal distributions.
@@ -189,7 +133,7 @@ plot_hd_ci <- function(data = out,
                          linetype = linetype_zero)
   }
   p <- p + geom_linerange(aes(ymin=ci.low, ymax=ci.up), colour=colour_line,size=1) +
-    geom_point(colour = colour_dec,
+    geom_point(colour = colour_q,
                size = size_q,
                shape = shape_q,
                fill = fill_q) +
@@ -218,6 +162,8 @@ plot_hd_ci <- function(data = out,
 #' Quartiles of each condition are superimposed. Quartiles are estimated using the
 #' Harrell-Davis estimator.
 #' @param df Data frame with paired observations in two columns.
+#' @param formula A formula with format response variable ∼ predictor variable,
+#'   where ~ (tilde) means "is modeled as a function of".
 #' @param xcol,ycol Names of columns of paired observations.
 #' @param colour_p Colour parameter of the scatterplot.
 #' @param fill_p Fill parameter of the scatterplot and so on.
@@ -231,8 +177,7 @@ plot_hd_ci <- function(data = out,
 #' @seealso \code{\link{hd}}
 #' @export
 plot_scat2d <- function(df = df,
-                        xcol = "condition1",
-                        ycol = "condition2",
+                        formula = cond2 ~ cond1,
                         min.x = NA,
                         min.y = NA,
                         max.x = NA,
@@ -248,16 +193,20 @@ plot_scat2d <- function(df = df,
                         size_q = 1,
                         alpha_q = .5,
                         colour_q = "black"){
+  # subset formula
+  subf <- subset_formula_wide(df, formula)
+  xplot = subf$x_col_name
+  yplot = subf$y_col_name
   # make data.frames for plotting quartile segments
-  hd1.25<-hd(df[[xcol]],.25)
-  hd1.5<-hd(df[[xcol]],.5)
-  hd1.75<-hd(df[[xcol]],.75)
-  hd2.25<-hd(df[[ycol]],.25)
-  hd2.5<-hd(df[[ycol]],.5)
-  hd2.75<-hd(df[[ycol]],.75)
-  df.25<-data.frame(hd1=hd1.25,hd2=hd2.25)
-  df.5<-data.frame(hd1=hd1.5,hd2=hd2.5)
-  df.75<-data.frame(hd1=hd1.75,hd2=hd2.75)
+  hd1.25 <- hd(df[[xplot]],.25)
+  hd1.5 <- hd(df[[xplot]],.5)
+  hd1.75 <- hd(df[[xplot]],.75)
+  hd2.25 <- hd(df[[yplot]],.25)
+  hd2.5 <- hd(df[[yplot]],.5)
+  hd2.75 <- hd(df[[yplot]],.75)
+  df.25 <- data.frame(hd1=hd1.25,hd2=hd2.25)
+  df.5 <- data.frame(hd1=hd1.5,hd2=hd2.5)
+  df.75 <- data.frame(hd1=hd1.75,hd2=hd2.75)
 
   # quartile plot parameters
   if(length(linetype_q)==1){
@@ -288,7 +237,7 @@ plot_scat2d <- function(df = df,
   }
 
   # scatterplot of paired observations -----------------
-  p <- ggplot(df, aes_string(x=xcol,y=ycol)) +
+  p <- ggplot(df, aes_string(x = xplot, y = yplot)) +
     # reference line
     geom_abline(intercept = 0) +
     # quartiles
