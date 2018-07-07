@@ -6,7 +6,7 @@
 - add unit tests for all main functions
 - update help
 - update README
-- add vignettes based on European Journal of Neuroscience 2017 paper examples
+- add 5 vignettes based on European Journal of Neuroscience 2017 paper examples
 - remove redundant functions; make some functions more flexible
 
 ## New input/output for shift function and difference asymmetry function
@@ -14,6 +14,7 @@
 - more than 2 groups are allowed: by default first two groups are processed; options to process pairs
 - change output to list of data frames
 - matching plot functions updated to accept a list of data frames and return a list of ggplot objects
+- the new format will make it easier to expand functions or create new ones to handle more complex designs
 
 ## Add formula input to:
 - `plot_scat2`
