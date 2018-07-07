@@ -2,7 +2,7 @@ Package: rogme
 Type: Package
 Title: Robust Graphical Methods For Group Comparisons
 Version: 0.2.0
-Date: 2018-07-04
+Date: 2018-07-07
 Authors@R: c(person("Guillaume", "Rousselet", email = "Guillaume.Rousselet@glasgow.ac.uk", role = c("aut", "cre")),
              person("Rand", "Wilcox", email = "rwilcox@usc.edu", role = "aut"))
 Maintainer: Guillaume Rousselet <Guillaume.Rousselet@glasgow.ac.uk>

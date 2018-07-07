@@ -2,19 +2,12 @@
 title: "Quantify a single distribution"
 author: "Guillaume A. Rousselet"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Quantify a single distribution}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output:
+  github_document:
+    html_preview: yes
+    toc: yes
+    toc_depth: 2
 ---
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
 ```{r, include = FALSE}
 # library(rogme)
@@ -32,7 +25,7 @@ Given a sufficiently large sample size, a single distribution can be quantified 
 #> Inference on the deciles of ERP onsets
 #> --------------------------------------
 #> load data:
-load("ERP_onsets.RData") # onsets
+load("./data/ERP_onsets.RData") # onsets
 
 #> -----------------------------------
 #> Panel A: scatterplot + deciles
@@ -110,4 +103,4 @@ The European journal of neuroscience, 44, 1804-1814.
 Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) 
 **Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
 The European journal of neuroscience, 46, 1738-1748. 
-[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)) [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
+[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)] [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]

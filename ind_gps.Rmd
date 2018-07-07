@@ -2,24 +2,22 @@
 title: "Compare two independent groups"
 author: "Guillaume A. Rousselet"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Compare two independent groups}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output:
+  github_document:
+    html_preview: yes
+    toc: yes
+    toc_depth: 2
 ---
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
 ```{r, include = FALSE}
 # library(rogme)
 devtools::load_all()
 ```
+
+```{r, message=FALSE}
+library(cowplot)
+```
+
 
 We can consider two different perspectives when comparing two independent groups, by asking two questions.
 
@@ -195,7 +193,7 @@ cowplot::plot_grid(pscat, pkd, psf, diff_asym,
 Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) 
 **Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
 The European journal of neuroscience, 46, 1738-1748. 
-[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)) [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
+[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)] [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
 
 Wilcox, R.R. (2012) 
 **Comparing Two Independent Groups Via a Quantile Generalization of the Wilcoxon-Mann-Whitney Test.**

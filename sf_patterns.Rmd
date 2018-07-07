@@ -2,19 +2,12 @@
 title: "Quantify distribution differences using the shift function"
 author: "Guillaume A. Rousselet"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Quantify distribution differences using the shift function}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output:
+  github_document:
+    html_preview: yes
+    toc: yes
+    toc_depth: 2
 ---
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
 In the README file, we considered the case of 2 independent groups that differ in spread. To get a better understanding of the shift function, here we consider other situations in which there is no clear difference, a difference in mean, a difference in skewness. We also look at how the shift function can quantify different patterns that can be observed in skewed observations such as reaction times.
 
@@ -23,14 +16,14 @@ In the README file, we considered the case of 2 independent groups that differ i
 devtools::load_all()
 ```
 
-```{r}
-suppressMessages(library(cowplot))
-n = 300 #> number of observations per group
+```{r, message=FALSE}
+library(cowplot)
 ```
 
 # No clear difference
 
 ```{r, message = FALSE, fig.width = 7, fig.height = 10}
+n = 300 #> number of observations per group
 set.seed(6)
 g1 <- rnorm(n)
 g2 <- rnorm(n)

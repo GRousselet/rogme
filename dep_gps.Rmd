@@ -2,26 +2,19 @@
 title: "Compare two dependent groups"
 author: "Guillaume A. Rousselet"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Compare two dependent groups}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output:
+  github_document:
+    html_preview: yes
+    toc: yes
+    toc_depth: 2
 ---
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
 ```{r, include = FALSE}
 # library(rogme)
 devtools::load_all()
 ```
 
-```{r}
+```{r, message=FALSE}
 library(cowplot)
 library(tidyr)
 ```
@@ -35,7 +28,7 @@ The next figure shows two dependent distributions, with relatively large differe
 
 ```{r, fig.width = 5, fig.height = 5}
 #> load data
-load("paired_example.RData") #> pdata
+load("./data/paired_example.RData") #> pdata
 df <- pdata
 
 #> ----------------------------------------------------
@@ -133,7 +126,7 @@ linkedstrip
 #> scatterplot of paired observations -----------------
 scatterdiff <- plot_scat2d(df = df.wide,
                            formula = condition2 ~ condition1,
-                           min.x=5,min.y=5,max.x=25,max.y=25,axis.steps=5,
+                           axis.steps=5,
                            colour_p = "grey10",
                            fill_p = "grey90",
                            size_p = 4,
@@ -256,7 +249,7 @@ ggsave(filename='figure_dep_gps.pdf',width=10,height=15)
 Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) 
 **Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
 The European journal of neuroscience, 46, 1738-1748. 
-[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)) [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
+[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)] [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
 
 Wilcox, R.R. & Erceg-Hurn, D.M. (2012) 
 **Comparing two dependent groups via quantiles.**

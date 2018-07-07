@@ -5,7 +5,7 @@ rogme
 
 Robust Graphical Methods For Group Comparisons (v. 0.2.0)
 
-The `rogme` R package provides graphical tools to compare groups of continous and pseudo-continuous observations. The goal is to illustrate and quantify how and by how much groups differ. The current version of the package is limited to comparing two groups. Future developments will extend the tools to deal with multiple groups, interactions and hierarchical designs.
+The `rogme` R package provides graphical tools and robust statistical methods to compare groups of continous and pseudo-continuous observations. The goal is to illustrate and quantify how and by how much groups differ. The current version of the package is limited to comparing two groups (though multiple pairs of groups can be compared in one go). Future developments will extend the tools to deal with multiple groups, interactions and hierarchical designs.
 
 The package can be installed using these commands:
 
@@ -16,15 +16,13 @@ devtools::install_github("GRousselet/rogme")
 
 The approach behind the package can be summarised in one figure:
 
-![**How two independent distributions differ. Left**: standard but misleading bar graphs of mean values. **Right**: detailed graphical methods. **A.** Stripcharts of marginal distributions. Vertical lines mark the deciles, with a thicker line for the median. **B.** Kernel density representation and rug plot of the distribution of difference scores. Vertical lines mark the deciles, with a thicker line for the median. **C.** Shift function. Group 1 - Group 2 is plotted along the y-axis for each decile (white disk), as a function of Group 1 deciles. The vertical lines indicate 95% bootstrap confidence intervals. The shift function can be sparser or denser by changing the quantiles. **D.** Difference asymmetry function with 95% bootstrap confidence intervals.](docs/Figure1.png)
+![](docs/Figure1.png) **How two independent distributions differ. Left**: standard but misleading bar graphs of mean values. **Right**: detailed graphical methods. **A.** Stripcharts of marginal distributions. Vertical lines mark the deciles, with a thicker line for the median. **B.** Kernel density representation and rug plot of the distribution of difference scores. Vertical lines mark the deciles, with a thicker line for the median. **C.** Shift function. Group 1 - Group 2 is plotted along the y-axis for each decile (white disk), as a function of Group 1 deciles. The vertical lines indicate 95% bootstrap confidence intervals. The shift function can be sparser or denser by changing the quantiles. **D.** Difference asymmetry function with 95% bootstrap confidence intervals.
 
 The approach is also described in these articles:
 
 [A few simple steps to improve the description of group results in neuroscience](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13400/full)
 
-[Beyond differences in means: robust graphical methods to compare two groups in neuroscience](https://www.biorxiv.org/content/early/2017/03/27/121079).
-
-\[[Reproducibility package using `rogme`](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)\]
+[Beyond differences in means: robust graphical methods to compare two groups in neuroscience](https://www.biorxiv.org/content/early/2017/03/27/121079). \[[Reproducibility package using `rogme`](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)\]
 
 `rogme` uses `ggplot2` for graphical representations, and the main statistical functions were developed by Rand Wilcox, as part of his [`WRS`](https://dornsife.usc.edu/labs/rwilcox/software/) package.
 
@@ -33,11 +31,11 @@ The main tool in `rogme` is the [shift function](https://garstats.wordpress.com/
 Vignettes
 ---------
 
--   [Quantify distribution differences using the shift function](vignettes/sf_patterns.Rmd)
--   [Compare two independent groups](vignettes/ind_gps.Rmd)
--   [Compare two dependent groups](vignettes/dep_gps.Rmd)
--   [Quantify a single distribution](vignettes/one_gp.Rmd)
--   [Statistical tests and measures of effect sizes](vignettes/stats.Rmd)
+-   [Quantify distribution differences using the shift function](docs/sf_patterns.md)
+-   [Compare two independent groups](docs/ind_gps.md)
+-   [Compare two dependent groups](docs/dep_gps.md)
+-   [Quantify a single distribution](docs/one_gp.md)
+-   [Statistical tests and measures of effect sizes](docs/stats.md)
 
 Functions
 ---------
