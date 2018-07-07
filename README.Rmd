@@ -43,11 +43,11 @@ functions were developed by Rand Wilcox, as part of his [`WRS`](https://dornsife
 The main tool in `rogme` is the [shift function](https://garstats.wordpress.com/2016/07/12/shift-function/). A shift function shows the difference between the quantiles of two groups as a function of the quantiles of one group. For inferences, the function returns an uncertainty interval for each quantile difference. By default, the deciles are used. Currently, confidence intervals are computed using one of two percentile bootstrap techniques. Highest density intervals and [Bayesian bootstrap](https://github.com/rasmusab/bayesboot) intervals will be available eventually.
 
 ## Vignettes
-- [Quantify distribution differences using the shift function](/vignettes/sf_patterns.Rmd)
-- [Compare two independent groups](/vignettes/ind_gps.Rmd)
-- [Compare two dependent groups](/vignettes/dep_gps.Rmd)
-- [Quantify a single distribution](/vignettes/one_gp.Rmd)
-- [Statistical tests and measures of effect sizes](/vignettes/stats.Rmd)
+- [Quantify distribution differences using the shift function](vignettes/sf_patterns.Rmd)
+- [Compare two independent groups](vignettes/ind_gps.Rmd)
+- [Compare two dependent groups](vignettes/dep_gps.Rmd)
+- [Quantify a single distribution](vignettes/one_gp.Rmd)
+- [Statistical tests and measures of effect sizes](vignettes/stats.Rmd)
 
 ## Functions
 All the main functions rely on the [Harrell-Davis quantile estimator](https://garstats.wordpress.com/2016/06/09/the-harrell-davis-quantile-estimator/), computed by the `hd()` function.

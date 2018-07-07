@@ -33,11 +33,11 @@ The main tool in `rogme` is the [shift function](https://garstats.wordpress.com/
 Vignettes
 ---------
 
--   [Quantify distribution differences using the shift function](/inst/doc/sf_patterns.html)
--   [Compare two independent groups](/inst/doc/ind_gps.html)
--   [Compare two dependent groups](/inst/doc/dep_gps.html)
--   [Quantify a single distribution](/inst/doc/one_gp.html)
--   [Statistical tests and measures of effect sizes](/inst/doc/stats.html)
+-   [Quantify distribution differences using the shift function](vignettes/sf_patterns.Rmd)
+-   [Compare two independent groups](vignettes/ind_gps.Rmd)
+-   [Compare two dependent groups](vignettes/dep_gps.Rmd)
+-   [Quantify a single distribution](vignettes/one_gp.Rmd)
+-   [Statistical tests and measures of effect sizes](vignettes/stats.Rmd)
 
 Functions
 ---------
@@ -60,7 +60,21 @@ In `rogme`, the shift function can be calculated using:
 
 Illustrations of the results is handled separately by `plot_sf()` and `plot_pbsf()`.
 
-You can see the shift function in action for instance in these publications: - [blog post](https://garstats.wordpress.com/2016/07/12/shift-function/) - [review article in the European Journal of Neuroscience](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13100/full) - [Sex Differences in the Adult Human Brain: Evidence from 5216 UK Biobank Participants](https://academic.oup.com/cercor/advance-article/doi/10.1093/cercor/bhy109/4996558) - [Visibility graphs for fMRI data: Multiplex temporal graphs and their modulations across resting-state networks](https://www.mitpressjournals.org/doi/full/10.1162/NETN_a_00012) - [Manipulation of contact network structure and the impact on foot-and-mouth disease transmission](https://www.sciencedirect.com/science/article/pii/S0167587717305627) - [No evidence that frontal eye field tDCS affects latency or accuracy of prosaccades](https://www.biorxiv.org/content/early/2018/06/20/351304) - [A Key Characteristic of Sex Differences in the Developing Brain: Greater Variability in Brain Structure of Boys than Girls](https://www.ncbi.nlm.nih.gov/pubmed/28981610)
+You can see the shift function in action for instance in these publications:
+
+-   [blog post](https://garstats.wordpress.com/2016/07/12/shift-function/)
+
+-   [review article in the European Journal of Neuroscience](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13100/full)
+
+-   [Sex Differences in the Adult Human Brain: Evidence from 5216 UK Biobank Participants](https://academic.oup.com/cercor/advance-article/doi/10.1093/cercor/bhy109/4996558)
+
+-   [Visibility graphs for fMRI data: Multiplex temporal graphs and their modulations across resting-state networks](https://www.mitpressjournals.org/doi/full/10.1162/NETN_a_00012)
+
+-   [Manipulation of contact network structure and the impact on foot-and-mouth disease transmission](https://www.sciencedirect.com/science/article/pii/S0167587717305627)
+
+-   [No evidence that frontal eye field tDCS affects latency or accuracy of prosaccades](https://www.biorxiv.org/content/early/2018/06/20/351304)
+
+-   [A Key Characteristic of Sex Differences in the Developing Brain: Greater Variability in Brain Structure of Boys than Girls](https://www.ncbi.nlm.nih.gov/pubmed/28981610)
 
 ### Difference asymmetry function
 
