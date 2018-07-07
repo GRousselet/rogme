@@ -5,13 +5,14 @@
 \title{Shift function for two independent groups (pbci method)}
 \usage{
 shifthd_pbci(data = df, formula = obs ~ gr, q = seq(0.1, 0.9, 0.1),
-  nboot = 2000, alpha = 0.05, adj_ci = TRUE)
+  nboot = 2000, alpha = 0.05, adj_ci = TRUE, todo = NULL,
+  doall = FALSE)
 }
 \arguments{
-\item{data}{A data frame in tidy format. Column 1 describes the two groups;
-column 2 contains the values for each group. A properly formatted data
-frame can be created using \code{link{mkt2}} or \code{link{mkt2d}}. Missing
-values are not allowed.}
+\item{data}{A data frame in long format. One column is a factor describing the groups;
+another column contains the values/observations for each group. A properly formatted data
+frame can be created using \code{\link{mkt2}}. Missing values are not
+allowed.}
 
 \item{formula}{A formula with format response variable ∼ predictor variable,
 where ~ (tilde) means "is modeled as a function of".}
@@ -23,25 +24,28 @@ where ~ (tilde) means "is modeled as a function of".}
 \item{alpha}{Expected long-run type I error rate - default = 0.05}
 
 \item{adj_ci}{Adjust confidence intervals & p values for multiple comparisons - default = TRUE}
+
+\item{todo}{A list of comparisons to perform - default = NULL.}
+
+\item{doall}{Set to TRUE to compute all comparisons - default = FALSE. Not
+executed if a \code{todo} list is provided.}
 }
 \value{
-A data frame with one row per decile.
-The columns are: \itemize{
+A list of data frames, one data frame per comparison. Each data frame
+  has one row per decile. The columns are: \itemize{
   \item Column 1 = quantiles
-  \item Column 2 = number of observations in group 1
-  \item Column 3 = number of observations in group 2
-  \item Column 4 = quantiles for group 1
-  \item Column 5 = quantiles for group 2
-  \item Column 6 = quantile differences (column 4 - column 5)
-  \item Column 7 = lower bounds of the confidence intervals
-  \item Column 8 = upper bounds of the confidence intervals
-  \item Column 9 = critical p_values based on Hochberg's method
-  \item Column 10 = p_values based on Hochberg's method
-  \item Column 11 = significance 0/1
+  \item Column 2 = quantiles for group 1
+  \item Column 3 = quantiles for group 2
+  \item Column 4 = quantile differences (column 4 - column 5)
+  \item Column 5 = lower bounds of the confidence intervals
+  \item Column 6 = upper bounds of the confidence intervals
+  \item Column 7 = critical p_values based on Hochberg's method
+  \item Column 8 = p_values (based on Hochberg's method if adj_ci = TRUE)
   }
 }
 \description{
-Compute a shift function for two independent groups using the
+\code{shifthd_pbci} returns a shift function for two independent groups or
+multiple shift functions for pairs of independent groups. It uses the
 Harrell-Davis quantile estimator in conjunction with a percentile
 bootstrap approach.
 Unlike \code{\link{shifthd}}: \itemize{
@@ -65,12 +69,28 @@ Adaptation of Rand Wilcox's `qcomhd` & `pb2gen` R functions
 From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}.
 }
 
+\examples{
+set.seed(21) # generate data
+n <- 100 # sample size
+df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+             obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
+
+out <- shifthd_pbci(df, obs ~ gr) # use the default parameters
+out <- shifthd_pbci(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
+out <- shifthd_pbci(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
+out <- shifthd_pbci(df, obs ~ gr, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
+out <- shifthd_pbci(df, doall = TRUE) # compute all comparisons
+
+}
 \references{
 Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 Comparing two independent groups via the lower and upper quantiles.
 J Stat Comput Sim, 84, 1543-1551.
 }
 \seealso{
-\code{hd}, \code{shifthd} for the pbse method for independent
-  groups, \code{shiftdhd_pbci} for dependent groups
+\code{\link{hd}}
+
+\code{\link{shifthd}} for the pbse method for independent groups,
+
+\code{\link{shiftdhd_pbci}} for dependent groups
 }

@@ -2,17 +2,31 @@
 % Please edit documentation in R/plot_utils.R
 \name{plot_hd_bars}
 \alias{plot_hd_bars}
-\title{Add bars marking quantiles
-Default to deciles.
-To plot the deciles with a different bar size for the median,
-use \code{\link{plot_dec_bars}}.}
+\title{Add bars marking quantiles to ggplot object created by \code{\link{plot_scat2}}.
+See examples in the README file and the vignettes.}
 \usage{
 plot_hd_bars(p, q_seq = seq(0.1, 0.9, 0.1), col = "grey21", width = 0.5,
-  size = 0.5)
+  q_size = 0.5, md_size = 1, alpha = 1)
+}
+\arguments{
+\item{p}{A ggplot object returned by \code{\link{plot_scat2}}.}
+
+\item{q_seq}{A sequence of quantiles - default = deciles.}
+
+\item{col}{Colour of the bars}
+
+\item{width}{Length of the bars}
+
+\item{q_size}{Thickness of the bars, except for the median}
+
+\item{md_size}{Thickness of the median bar}
+
+\item{alpha}{Alpha transparency}
+}
+\value{
+A ggplot object
 }
 \description{
-Add bars marking quantiles
-Default to deciles.
-To plot the deciles with a different bar size for the median,
-use \code{\link{plot_dec_bars}}.
+Add bars marking quantiles to ggplot object created by \code{\link{plot_scat2}}.
+See examples in the README file and the vignettes.
 }

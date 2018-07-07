@@ -5,13 +5,13 @@
 \title{Shift function for two depend groups (pbci method)}
 \usage{
 shiftdhd_pbci(data = df, formula = obs ~ gr, q = seq(0.1, 0.9, 0.1),
-  nboot = 1000, alpha = 0.05)
+  nboot = 1000, alpha = 0.05, todo = NULL, doall = FALSE)
 }
 \arguments{
-\item{data}{A data frame in tidy format. Column 1 describes the two groups;
-column 2 contains the values for each group. A properly formatted data
-frame can be created using \code{link{mkt2}} or \code{link{mkt2d}}. Missing
-values are not allowed.}
+\item{data}{A data frame in long format. One column is a factor describing the groups;
+another column contains the values/observations for each group. A properly formatted data
+frame can be created using \code{\link{mkt2}}. Missing values are not
+allowed.}
 
 \item{formula}{A formula with format response variable ∼ predictor variable,
 where ~ (tilde) means "is modeled as a function of".}
@@ -21,24 +21,29 @@ where ~ (tilde) means "is modeled as a function of".}
 \item{nboot}{Number of bootstrap samples - default = 1000}
 
 \item{alpha}{Expected long-run type I error rate - default = 0.05}
+
+\item{todo}{A list of comparisons to perform - default = NULL.}
+
+\item{doall}{Set to TRUE to compute all comparisons - default = FALSE. Not
+executed if a \code{todo} list is provided.}
 }
 \value{
-A data frame with one row per decile.
+A list of data frames, one data frame per comparison. Each data frame
+  has one row per decile.
 The columns are: \itemize{
   \item Column 1 = quantiles
-  \item Column 2 = number of observations
-  \item Column 3 = quantiles for group 1
-  \item Column 4 = quantiles for group 2
-  \item Column 5 = quantile differences (column 3 - column 4)
-  \item Column 6 = lower bounds of the confidence intervals
-  \item Column 7 = upper bounds of the confidence intervals
-  \item Column 8 = critical p_values based on Hochberg's method
-  \item Column 9 = p_values
-  \item Column 10 = significance 0/1
+  \item Column 2 = quantiles for group 1
+  \item Column 3 = quantiles for group 2
+  \item Column 4 = quantile differences (column 3 - column 4)
+  \item Column 5 = lower bounds of the confidence intervals
+  \item Column 6 = upper bounds of the confidence intervals
+  \item Column 7 = critical p_values based on Hochberg's method
+  \item Column 8 = p_values
   }
 }
 \description{
-Compute a shift function for two dependent groups using the
+\code{shiftdhd_pbci} returns a shift function for two independent groups or
+multiple shift functions for pairs of independent groups. It uses the
 Harrell-Davis quantile estimator in conjunction with a percentile
 bootstrap approach.
 Unlike \code{\link{shiftdhd}}: \itemize{
@@ -64,12 +69,28 @@ Adaptation of Rand Wilcox's `Dqcomhd`, `bootdpci` & `rmmcppb` R functions
 From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}.
 }
 
+\examples{
+set.seed(21) # generate data
+n <- 100 # sample size
+C1 <- rnorm(100)
+df2 <- tibble(cond = factor(c(rep("C1",n),rep("C2",n),rep("C3",n))),
+              obs = c(C1+6, C1+rnorm(n)+4, C1+rnorm(n))) # make tibble
+
+out <- shiftdhd_pbci(df, obs ~ cond) # use the default parameters
+out <- shiftdhd_pbci(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
+out <- shiftdhd_pbci(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # specify list of comparisons
+out <- shiftdhd_pbci(df, obs ~ cond, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
+out <- shiftdhd_pbci(df, doall = TRUE) # compute all comparisons
+}
 \references{
 Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 Comparing two dependent groups via quantiles.
 J Appl Stat, 39, 2655-2664.
 }
 \seealso{
-\code{hd}, \code{shiftdhd} for the pbse method for dependent
-  groups, \code{shifthd_pbci} for dependent groups
+\code{\link{hd}}
+
+\code{\link{shiftdhd}} for the pbse method for dependent groups
+
+\code{\link{shifthd_pbci}} for independent groups
 }

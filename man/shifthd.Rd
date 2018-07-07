@@ -4,31 +4,44 @@
 \alias{shifthd}
 \title{Shift function for two independent groups (pbse method)}
 \usage{
-shifthd(data = df, formula = obs ~ gr, nboot = 200)
+shifthd(data = df, formula = obs ~ gr, nboot = 200, todo = NULL,
+  doall = FALSE)
 }
 \arguments{
-\item{data}{A data frame in tidy format. Column 1 describes the two groups;
-column 2 contains the values for each group. A properly formatted data
-frame can be created using \code{link{mkt2}}. Missing values are not
+\item{data}{A data frame in long format. One column is a factor describing the groups;
+another column contains the values/observations for each group. A properly formatted data
+frame can be created using \code{\link{mkt2}}. Missing values are not
 allowed.}
 
 \item{formula}{A formula with format response variable ∼ predictor variable,
 where ~ (tilde) means "is modeled as a function of".}
 
 \item{nboot}{The number of bootstrap samples - default = 200.}
+
+\item{todo}{A list of comparisons to perform - default = NULL.}
+
+\item{doall}{Set to TRUE to compute all comparisons - default = FALSE. Not
+executed if a \code{todo} list is provided.}
 }
 \value{
-A data frame with one row per decile. The columns are: \itemize{
-  \item Column 1 = deciles for group 1 \item Column 2 = deciles for group 2
-  \item Column 3 = differences (column 1 - column 2) \item Column 4 = lower
-  bounds of the confidence intervals \item Column 5 = upper bounds of the
+A list of data frames, one data frame per comparison. Each data frame
+  has one row per decile. The columns are: \itemize{
+  \item Column 1 = quantiles - seq(0.1, 0.9, 0.1)
+  \item Column 2 = deciles for group 1
+  \item Column 3 = deciles for group 2
+  \item Column 4 = differences (column 1 - column 2)
+  \item Column 5 = lower
+  bounds of the confidence intervals
+  \item Column 6 = upper bounds of the
   confidence intervals }
 }
 \description{
-\code{shifthd} returns a shift function for two independent groups.
-\code{shifthd} \strong{works exclusively with deciles and with alpha = 0.05},
-so that only 95\% confidence intervals can be computed To use other quantiles
-and other alpha levels, see \code{\link{shifthd_pbci}}.
+\code{shifthd} returns a shift function for two independent groups or
+multiple shift functions for pairs of independent groups. \code{shifthd}
+\strong{works exclusively with deciles and with alpha = 0.05}, so that only
+95\% confidence intervals can be computed. To use other quantiles
+and other alpha levels, see \code{\link{shifthd_pbci}}. Plot the shift
+function using \code{plot_sf}.
 }
 \details{
 A shift function shows the difference between the quantiles of two groups as
@@ -40,7 +53,7 @@ are corrected for multiple comparisons so that the simultaneous probability
 coverage is .95.
 
 The deciles are estimated using the Harrell-Davis quantile estimator of the
-qth quantile is used. The default number of bootstrap samples is nboot = 200.
+qth quantile. The default number of bootstrap samples is nboot = 200.
 Independent bootstrap samples are used for each quantile and for each group.
 }
 \section{Note}{
@@ -49,17 +62,27 @@ Independent bootstrap samples are used for each quantile and for each group.
 }
 
 \examples{
-out <- shifthd(df) # use the default parameters
-out <- shifthd(df, nboot=500) # specify the number of bootstrap samples
-out <- shifthd(df, ord(2,1)) # specify the order of the groups
+set.seed(21) # generate data
+n <- 100 # sample size
+df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+             obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
+
+out <- shifthd(df, obs ~ gr) # use the default parameters
+out <- shifthd(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
+out <- shifthd(df, obs ~ gr, todo = list(c("g1","g2"),c("g3","g1"))) # specify list of comparisons
+out <- shifthd(df, doall = TRUE) # compute all comparisons
 
 }
 \references{
 Harrell, F.E. & Davis, C.E. (1982) A new distribution-free
-quantile estimator. Biometrika, 69, 635-640. Wilcox, R.R. (1995) Comparing
-Two Independent Groups Via Multiple Quantiles. Journal of the Royal
-Statistical Society. Series D (The Statistician), 44, 91-99.
+quantile estimator. Biometrika, 69, 635-640.
+
+Wilcox, R.R. (1995) Comparing Two Independent Groups Via Multiple Quantiles.
+Journal of the Royal Statistical Society. Series D (The Statistician), 44,
+91-99.
 }
 \seealso{
 \code{\link{shiftdhd}} for dependent groups.
+
+\code{\link{plot_sf}} to plot the results.
 }

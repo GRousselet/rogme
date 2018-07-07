@@ -4,24 +4,42 @@
 \alias{plot_scat2d}
 \title{Plot paired observations}
 \usage{
-plot_scat2d(df = df, xcol = "condition1", ycol = "condition2",
-  min.x = NA, min.y = NA, max.x = NA, max.y = NA, axis.steps = 2,
-  size_p = 5, stroke_p = 1, shape_p = 21, colour_p = "black",
-  fill_p = "#ffb347", alpha_p = 0.5, linetype_q = "dashed", size_q = 1,
-  alpha_q = 0.5, colour_q = "black")
+plot_scat2d(df = df, formula = cond2 ~ cond1, min.x = NA, min.y = NA,
+  max.x = NA, max.y = NA, axis.steps = 2, size_p = 5, stroke_p = 1,
+  shape_p = 21, colour_p = "black", fill_p = "#ffb347", alpha_p = 0.5,
+  linetype_q = "dashed", size_q = 1, alpha_q = 0.5, colour_q = "black")
 }
 \arguments{
 \item{df}{Data frame with paired observations in two columns.}
 
-\item{xcol, ycol}{Names of columns of paired observations.}
+\item{formula}{A formula with format response variable ∼ predictor variable,
+where ~ (tilde) means "is modeled as a function of".}
 
-\item{colour_p}{Colour parameter of the scatterplot.}
+\item{min.x, min.y, max.x, max.y}{Specify axis limits - default square axes}
 
-\item{fill_p}{Fill parameter of the scatterplot and so on.}
+\item{axis.steps}{Steps between x and y tick marks - default = 2.}
 
-\item{linetype_q}{Linetype of the segments marking the quartiles and so on.}
+\item{size_p}{Size parameter of the scatterplot - default = 5.}
 
-\item{colour_q}{Colour of the segments marking the quartiles.}
+\item{stroke_p}{Stroke parameter of the scatterplot - default = 1,}
+
+\item{shape_p}{Shape parameter of the scatterplot - default = 21,}
+
+\item{colour_p}{Colour parameter of the scatterplot - default "black".}
+
+\item{fill_p}{Fill parameter of the scatterplot - default = "#ffb347",}
+
+\item{alpha_p}{Alpha parameter of the scatterplot - default = .5,}
+
+\item{linetype_q}{Linetype of the segments marking the quartiles - default = "dashed",}
+
+\item{size_q}{Size of the segments marking the quartiles - default = 1,}
+
+\item{alpha_q}{Alpha of the segments marking the quartiles - default = .5,}
+
+\item{colour_q}{Colour of the segments marking the quartiles - default = "black"}
+
+\item{colour_p}{Colour parameter of the scatterplot - default = "black",}
 }
 \description{
 Scatterplot of paired observations with reference line of no effect.
@@ -29,10 +47,11 @@ Quartiles of each condition are superimposed. Quartiles are estimated using the
 Harrell-Davis estimator.
 }
 \examples{
-plot_scat2d(df, xcol='c1', ycol='c2') # basic call
-plot_scat2d(df, xcol='c1', ycol='c2', size_q=1) # specify size of quartile segments
-plot_scat2d(df, xcol='c1', ycol='c2', size_q=c(1,2,1)) # use thicker line for median
-plot_scat2d(df, xcol='c1', ycol='c2', linetype_q = "longdash") # specify linetype - default = dashed
+df <- tibble(cond1 = rnorm(50), cond2 = cond1 + rnorm(50))
+plot_scat2d(df, formula = cond2 ~ cond1) # basic call
+plot_scat2d(df, formula = cond2 ~ cond1, size_q=3) # specify size of quartile segments
+plot_scat2d(df, formula = cond2 ~ cond1, size_q=c(1,2,1)) # use thicker line for median
+plot_scat2d(df, formula = cond2 ~ cond1, linetype_q = "longdash") # specify linetype - default = dashed
 }
 \seealso{
 \code{\link{hd}}

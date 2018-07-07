@@ -89,28 +89,64 @@ mkt2 <- function(x, y, gr_names = "gr", obs_names = "obs",
   df
 }
 
-subset_data2 <- function(data, formula){
+subset_formula <- function(data, formula){
   vars <- all.vars(formula)
   param_col_name <- vars[2]
   obs_col_name <- vars[1]
-  # gr_names <- names(table(data[,param_col_name]))
+  # check that the columns exist
+  if (!(param_col_name %in% colnames(data))) {
+    stop(paste0(param_col_name," does not exist"))
+  }
+  if (!(obs_col_name %in% colnames(data))) {
+    stop(paste0(obs_col_name," does not exist"))
+  }
+  # check that param_col is a factor
+  if(!is.factor(data[[param_col_name]])){
+    stop('The predictor column must be a factor')
+  }
+  # check that obs_col is numeric
+  if(!is.numeric(data[[obs_col_name]])){
+    stop('Data must be numeric')
+  }
+  # get levels of param_col_name
   gr_names <- levels(data[[param_col_name]])
-  gr_name1 <- gr_names[[1]]
-  gr_name2 <- gr_names[[2]]
-  mm <- model.matrix(formula, data = data)
-  x <- data[mm[,2]==0,obs_col_name]
-  y <- data[mm[,2]==1,obs_col_name]
-  x <- x[[1]]
-  y <- y[[1]]
-  # x <- dplyr::filter_(data,lazyeval::interp(~ a == b, a = as.name(param_col_name),
-  #                                         b = gr_name1))
-  # x <- dplyr::collect(dplyr::select_(x, .dots = list(obs_col_name)))[[1]]
-  # y <- dplyr::filter_(data,lazyeval::interp(~ a == b, a = as.name(param_col_name),
-  #                                         b = gr_name2))
-  # y <- dplyr::collect(dplyr::select_(y, .dots = list(obs_col_name)))[[1]]
+  # gr_name1 <- gr_names[[1]]
+  # gr_name2 <- gr_names[[2]]
+  # mm <- model.matrix(formula, data = data)
+  # x <- data[mm[,2]==0,obs_col_name]
+  # y <- data[mm[,2]==1,obs_col_name]
+  # x <- x[[1]]
+  # y <- y[[1]]
   # outputs
-  out <- list(x = x, y = y, gr_name1 = gr_name1, gr_name2 = gr_name2)
+  out <- list(param_col_name = param_col_name,
+              obs_col_name = obs_col_name,
+              gr_names = gr_names)
 }
+
+subset_formula_wide <- function(data, formula){
+  vars <- all.vars(formula)
+  x_col_name <- vars[2]
+  y_col_name <- vars[1]
+  # check that the columns exist
+  if (!(x_col_name %in% colnames(data))) {
+    stop(paste0(x_col_name," does not exist"))
+  }
+  if (!(y_col_name %in% colnames(data))) {
+    stop(paste0(y_col_name," does not exist"))
+  }
+  # check that param_col is numeric
+  if(!is.numeric(data[[x_col_name]])){
+    stop('The x column must be numeric')
+  }
+  # check that obs_col is numeric
+  if(!is.numeric(data[[y_col_name]])){
+    stop('The y column must be numeric')
+  }
+  # outputs
+  out <- list(x_col_name = x_col_name,
+    y_col_name = y_col_name)
+}
+
 
 elimna <- function(m){
   #

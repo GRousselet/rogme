@@ -4,11 +4,12 @@
 \alias{shiftdhd}
 \title{Shift function for two dependent groups (pbse methods)}
 \usage{
-shiftdhd(data = df, formula = obs ~ gr, nboot = 200)
+shiftdhd(data = df, formula = obs ~ cond, nboot = 200, todo = NULL,
+  doall = FALSE)
 }
 \arguments{
-\item{data}{A data frame in tidy format. Column 1 describes the two groups;
-column 2 contains the values for each group. A properly formatted data
+\item{data}{A data frame in long format. One column is a factor describing the conditions;
+another column contains the values/observations for each condition. A properly formatted data
 frame can be created using \code{link{mkt2}} or \code{link{mkt2d}}. Missing
 values are not allowed.}
 
@@ -16,19 +17,28 @@ values are not allowed.}
 where ~ (tilde) means "is modeled as a function of".}
 
 \item{nboot}{The number of bootstrap samples - default = 200.}
+
+\item{todo}{A list of comparisons to perform - default = NULL.}
+
+\item{doall}{Set to TRUE to compute all comparisons - default = FALSE. Not
+executed if a \code{todo} list is provided.}
 }
 \value{
-A data frame with one row per decile. The columns are: \itemize{
-  \item Column 1 = deciles for group 1 \item Column 2 = deciles for group 2
-  \item Column 3 = differences (column 1 - column 2) \item Column 4 = lower
-  bounds of the confidence intervals \item Column 5 = upper bounds of the
-  confidence intervals }
+A list of data frames, one data frame per comparison. Each data frame has one row per decile. The columns are: \itemize{
+  \item Column 1 = quantiles - seq(0.1, 0.9, 0.1)
+  \item Column 2 = deciles for group 1
+  \item Column 3 = deciles for group 2
+  \item Column 4 = differences (column 1 - column 2)
+  \item Column 5 = lower bounds of the confidence intervals
+  \item Column 6 = upper bounds of the confidence intervals }
 }
 \description{
-\code{shiftdhd} returns a shift function for two dependent groups.
+\code{shiftdhd} returns a shift function for two dependent groups or
+multiple shift functions for pairs of dependent groups.
 \code{shiftdhd} \strong{works exclusively with deciles and with alpha =
-0.05}, so that only 95\% confidence intervals can be computed To use other
-quantiles and other alpha levels, see \code{\link{shiftdhd_pbci}}.
+0.05}, so that only 95\% confidence intervals can be computed. To use other
+quantiles and other alpha levels, see \code{\link{shiftdhd_pbci}}. Plot the shift
+function using \code{plot_sf}.
 }
 \details{
 A shift function shows the difference between the quantiles of two groups as
@@ -40,7 +50,7 @@ are corrected for multiple comparisons so that the simultaneous probability
 coverage is .95.
 
 The deciles are estimated using the Harrell-Davis quantile estimator of the
-qth quantile is used. The default number of bootstrap samples is nboot = 200.
+qth quantile. The default number of bootstrap samples is nboot = 200.
 The same bootstrap samples are used for each quantile and for each group.
 }
 \section{Note}{
@@ -49,16 +59,27 @@ The same bootstrap samples are used for each quantile and for each group.
 }
 
 \examples{
-out <- shiftdhd(df, formula = obs ~ gr) # use the default parameters
-out <- shiftdhd(df, formula = obs ~ gr, nboot = 500) # specify the number of bootstrap samples
+set.seed(21) # generate data
+n <- 100 # sample size
+C1 <- rnorm(100)
+df2 <- tibble(condition = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
+              data = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
+
+out <- shiftdhd(df, obs ~ cond) # use the default parameters
+out <- shiftdhd(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
+out <- shiftdhd(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # specify list of comparisons
+out <- shiftdhd(df, doall = TRUE) # compute all comparisons
 
 }
 \references{
 Harrell, F.E. & Davis, C.E. (1982) A new distribution-free
   quantile estimator. Biometrika, 69, 635-640.
+
   Wilcox, R.R. (2012) Introduction to robust estimation and hypothesis
   testing. Academic Press, San Diego, CA.
 }
 \seealso{
 \code{\link{shifthd}} for independent groups.
+
+\code{\link{plot_sf}} to plot the results.
 }
