@@ -1,5 +1,5 @@
 # ------------------------
-# rogme 0.2.0 (2018-07-04)
+# rogme 0.2.0 (2018-07-07)
 
 ## General improvements
 - add input checks to all main functions
