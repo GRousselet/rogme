@@ -19,6 +19,7 @@ Imports:
 License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 6.0.1
+Encoding: UTF-8
 VignetteBuilder: knitr
 URL: https://github.com/GRousselet/rogme
 BugReports: https://github.com/GRousselet/rogme/issues
