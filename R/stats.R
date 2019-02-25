@@ -606,3 +606,38 @@ pxgty <- function(x, y){
   names(out) <- c("P(X<Y)","P(X=0)","P(X>Y)")
   out
 }
+
+#  Compute a 1-alpha confidence interval for the trimmed mean
+#  The default amount of trimming is tr=.2
+trimci <- function(x,tr=.2,alpha=.05){
+se <- sqrt(winvar(x,tr))/((1-2*tr)*sqrt(length(x)))
+ci <- vector(mode="numeric",length=2)
+df <- length(x)-2*floor(tr*length(x))-1
+ci[1] <- mean(x,tr)-qt(1-alpha/2,df)*se
+ci[2] <- mean(x,tr)+qt(1-alpha/2,df)*se
+ci
+}
+
+#  Compute the gamma Winsorized variance for the data in the vector x.
+#  tr is the amount of Winsorization which defaults to .2.
+winvar <- function(x,tr=.2){
+y<-sort(x)
+n<-length(x)
+ibot<-floor(tr*n)+1
+itop<-length(x)-ibot+1
+xbot<-y[ibot]
+xtop<-y[itop]
+y<-ifelse(y<=xbot,xbot,y)
+y<-ifelse(y>=xtop,xtop,y)
+wv<-var(y)
+wv
+}
+
+# adapted from Rand Wilcox's trimci function
+trimpval <- function(x,tr=.2,null.value=0){
+se <- sqrt(winvar(x,tr))/((1-2*tr)*sqrt(length(x)))
+df <- length(x)-2*floor(tr*length(x))-1
+test <- (mean(x,tr)-null.value)/se
+pval <- 2*(1-pt(abs(test),df))
+pval
+}

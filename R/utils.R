@@ -147,6 +147,42 @@ subset_formula_wide <- function(data, formula){
     y_col_name = y_col_name)
 }
 
+subset_formula_hsf <- function(data, formula){
+  vars <- all.vars(formula)
+  id_col_name <- vars[3]
+  param_col_name <- vars[2]
+  obs_col_name <- vars[1]
+  # check that the columns exist
+  if (!(id_col_name %in% colnames(data))) {
+    stop(paste0(id_col_name," does not exist"))
+  }
+  if (!(param_col_name %in% colnames(data))) {
+    stop(paste0(param_col_name," does not exist"))
+  }
+  if (!(obs_col_name %in% colnames(data))) {
+    stop(paste0(obs_col_name," does not exist"))
+  }
+  # check that id_col is a factor
+  if(!is.factor(data[[id_col_name]])){
+    stop('The id column must be a factor')
+  }
+  # check that param_col is a factor
+  if(!is.factor(data[[param_col_name]])){
+    stop('The predictor column must be a factor')
+  }
+  # check that obs_col is numeric
+  if(!is.numeric(data[[obs_col_name]])){
+    stop('Data must be numeric')
+  }
+  # get levels of param_col_name
+  gr_names <- levels(data[[param_col_name]])
+  # outputs
+  out <- list(id_col_name = id_col_name,
+              param_col_name = param_col_name,
+              obs_col_name = obs_col_name,
+              gr_names = gr_names)
+}
+
 
 elimna <- function(m){
   #

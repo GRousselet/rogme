@@ -3,9 +3,11 @@
 rogme
 =====
 
-Robust Graphical Methods For Group Comparisons (v. 0.2.0)
+Robust Graphical Methods For Group Comparisons (v. 0.2.1)
 
 The `rogme` R package provides graphical tools and robust statistical methods to compare groups of continous and pseudo-continuous observations. The goal is to illustrate and quantify how and by how much groups differ. The current version of the package is limited to comparing two groups (though multiple pairs of groups can be compared in one go). Future developments will extend the tools to deal with multiple groups, interactions and hierarchical designs.
+
+**NEW**: a [hierarchical shift function](docs/hsf.md) to compare two dependent conditions from one group is now available.
 
 The package can be installed using these commands:
 
@@ -36,6 +38,7 @@ Vignettes
 -   [Compare two dependent groups](docs/dep_gps.md)
 -   [Quantify a single distribution](docs/one_gp.md)
 -   [Statistical tests and measures of effect sizes](docs/stats.md)
+-   [Hierarchical shift function](docs/hsf.md)
 
 Functions
 ---------

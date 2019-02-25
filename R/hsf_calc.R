@@ -1,0 +1,116 @@
+#' Hierarchical shift function for one group, two dependent conditions
+#'
+#' \code{hsf} returns a hierarchical shift function for one group of
+#' participants, tested in two dependent conditions. Full distributions of
+#' measurements must be available for each participant and condition. First,
+#' quantiles are computed for the distribution of measurements from each condition and each
+#' participant. Second, the quantiles are subtracted in each participant. Third,
+#' a trimmed mean is computed across participants for each quantile. Confidence
+#' intervals and p values are also computed. Correction for multiple comparisons
+#' across quantiles is achieved using Hochberg's 1988 procedure. Plot the shift
+#' function using \code{plot_hsf}.
+#'
+#' @references Rousselet, G. A., & Wilcox, R. R. (2019, January 17). Reaction
+#'   times and other skewed distributions: problems with the mean and the
+#'   median. https://doi.org/10.31234/osf.io/3y54r
+#'
+#'   Hochberg, Y. (1988). A sharper Bonferroni procedure for multiple tests of
+#'   significance. Biometrika, 75(4), 800-802.
+#'
+#' @param data A data frame in long format. Missing values are not allowed.
+#' @param formula A formula with format response variable ∼ predictor variable + id,
+#'   where ~ (tilde) means "is modeled as a function of" and '+ id' indicates the variable containing the participants' id number.
+#' @param qseq Quantiles to estimate - default = deciles.
+#' @param tr Percentage of trimming, value between 0 and 1 - default = 0.2 = 20\%. Set to zero to get results for the mean.
+#' @param alpha Alpha level - default 0.05.
+#' @param qtype Type of quantile estimation algorithm to pass to \code{quantile} - default = 8.
+#' @param todo Order of the groups to compare - default = 1 minus 2.
+#' @param null.value Null value to compute P values for the quantile differences - default = 0.
+#' @param adj_method Name of method to adjust for multiple quantile comparisons, passed to \code{p.adjust} - default = "hochberg".
+#'
+#' @return A list of 8 results:
+#' \enumerate{
+#'   \item \strong{comparison}: names of two conditions being compared.
+#'   \item \strong{individual_sf}: shift functions for every participant.
+#'   \item \strong{group_differences}: group quantile differences.
+#'   \item \strong{ci}: group confidence intervals for quantile differences.
+#'   \item \strong{pvalues}: P values for every difference.
+#'   \item \strong{adjusted_pvalues}: P values adjusted for multiple comparisons.
+#'   \item \strong{null_value}: null value used to compute P values.
+#'   \item \strong{quantiles}: quantiles estimated in each participant and condition.
+#'   }
+#'
+#' @seealso \code{\link{plot_hsf}} to plot the results.
+#'
+#' @examples
+#' # Reaction time data from the French Lexicon Project:
+#' load('./data/flp.RData') # get data
+#' set.seed(22) # subset random sample of participants
+#' id <- unique(flp$participant)
+#' df <- subset(flp, flp$participant %in% sample(id, 50, replace = FALSE))
+#' out <- hsf(df, rt ~ condition + participant) # use the default parameters
+#' plot_hsf(out) # plot results. Shift functions are overall negative, as
+#' participants tend to be faster in the Word condition than in the Non-Word
+#' condition.
+#'
+#' out <- hsf(df, rt ~ condition + participant, qseq = c(.25, .5, .75)) # estimate quartiles only
+#'
+#' out <- hsf(df, rt ~ condition + participant, todo = c(2,1)) # reverse comparison
+#'
+#' @export
+hsf <- function(data = df,
+                formula = obs ~ cond + id,
+                qseq = seq(0.1,0.9,0.1),
+                tr = 0.2,
+                alpha = 0.05,
+                qtype = 8,
+                todo = c(1,2),
+                null.value = 0,
+                adj_method = "hochberg"){
+  # check input is a data frame
+  if(!is.data.frame(data)){
+    stop("data must be a data frame")
+  }
+  # subset data
+  subf <- subset_formula_hsf(data, formula)
+  if (length(subf$gr_names) > 2) {
+    warning(paste0("Parameter column ",subf$param_col_name," contains more than 2 levels. The shift function is computed based on the first 2 levels: ",subf$gr_names[1], " vs. ",subf$gr_names[2]))
+  }
+  out <- vector("list", 8) # declare list of results
+
+  # Change order of conditions?
+  tmp <- subf$gr_names
+  subf$gr_names[1] <- tmp[todo[1]]
+  subf$gr_names[2] <- tmp[todo[2]]
+
+  # Compute shift functions for all participants
+  data.s <- subset(data, data[subf$param_col_name] == subf$gr_names[1])
+  q.1 <- matrix(unlist(tapply(data.s[[subf$obs_col_name]], list(data.s[[subf$id_col_name]]), quantile, probs = qseq, type = qtype)), nrow=length(qseq))
+  data.s <- subset(data, data[subf$param_col_name] == subf$gr_names[2])
+  q.2 <- matrix(unlist(tapply(data.s[[subf$obs_col_name]], list(data.s[[subf$id_col_name]]), quantile, probs = qseq, type = qtype)), nrow=length(qseq))
+  q.diff <- q.1 - q.2 # quantile differences
+
+  # Compute group trimmed means
+  group_diff = apply(q.diff, 1, mean, trim = tr)
+
+  # Compute confidence intervals for group trimmed means
+  group_ci <- apply(q.diff, 1, trimci, tr = tr, alpha = alpha) # 2 x length(qseq)
+
+  # P values
+  pval <- apply(q.diff, 1, trimpval, tr = tr, null.value = null.value) # length(qseq)
+
+  # Adjusted P values
+  adjust_pval <- p.adjust(pval, method = adj_method)
+
+  names(out) <- c('comparison','individual_sf', 'group_differences', 'ci',
+                  'pvalues', 'adjusted_pvalues', 'null_value', 'quantiles')
+  out[[1]] <- paste0(subf$gr_names[1], " - ",subf$gr_names[2])
+  out[[2]] <- q.diff
+  out[[3]] <- group_diff
+  out[[4]] <- group_ci
+  out[[5]] <- pval
+  out[[6]] <- adjust_pval
+  out[[7]] <- null.value
+  out[[8]] <- qseq
+  out
+}

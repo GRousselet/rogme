@@ -6,10 +6,11 @@
 by \code{\link{plot_scat2}}. Used in README to demonstrate the shift
 function.}
 \usage{
-plot_hd_links(p, sf = sf, q_col = "grey21", q_width = 0.5, q_size = 0.5,
-  md_size = 1, link_col = c("darkviolet", "darkorange2"),
-  link_alpha = c(0.4, 1), add_rect = FALSE, rect_alpha = NULL,
-  rect_col = NULL, add_lab = FALSE, labres = 2, text_size = 5)
+plot_hd_links(p, sf = sf, q_col = "grey21", q_width = 0.5,
+  q_size = 0.5, md_size = 1, link_col = c("darkviolet",
+  "darkorange2"), link_alpha = c(0.4, 1), add_rect = FALSE,
+  rect_alpha = NULL, rect_col = NULL, add_lab = FALSE, labres = 2,
+  text_size = 5)
 }
 \arguments{
 \item{p}{A ggplot object returned by \code{\link{plot_scat2}}.

@@ -4,8 +4,8 @@
 \alias{plot_scat2}
 \title{Plot one-dimensional scatterplots for 2 groups}
 \usage{
-plot_scat2(data = df, formula = obs ~ gr, xlabel = NULL, ylabel = NULL,
-  ...)
+plot_scat2(data = df, formula = obs ~ gr, xlabel = NULL,
+  ylabel = NULL, ...)
 }
 \arguments{
 \item{data}{A data frame in long format. One column is a factor describing the groups;
