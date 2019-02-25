@@ -1,7 +1,7 @@
 #' Hierarchical shift function for one group, two dependent conditions
 #'
 #' \code{hsf} returns a hierarchical shift function for one group of
-#' participants, tested in two dependent conditions. Full distributions of
+#' participants, tested in two dependent conditions (see \href{https://github.com/GRousselet/rogme/blob/master/docs/hsf.md}{vignette} on github). Full distributions of
 #' measurements must be available for each participant and condition. First,
 #' quantiles are computed for the distribution of measurements from each condition and each
 #' participant. Second, the quantiles are subtracted in each participant. Third,

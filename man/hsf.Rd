@@ -43,7 +43,7 @@ A list of 8 results:
 }
 \description{
 \code{hsf} returns a hierarchical shift function for one group of
-participants, tested in two dependent conditions. Full distributions of
+participants, tested in two dependent conditions (see \href{https://github.com/GRousselet/rogme/blob/master/docs/hsf.md}{vignette} on github). Full distributions of
 measurements must be available for each participant and condition. First,
 quantiles are computed for the distribution of measurements from each condition and each
 participant. Second, the quantiles are subtracted in each participant. Third,
@@ -62,6 +62,10 @@ out <- hsf(df, rt ~ condition + participant) # use the default parameters
 plot_hsf(out) # plot results. Shift functions are overall negative, as
 participants tend to be faster in the Word condition than in the Non-Word
 condition.
+
+out <- hsf(df, rt ~ condition + participant, qseq = c(.25, .5, .75)) # estimate quartiles only
+
+out <- hsf(df, rt ~ condition + participant, todo = c(2,1)) # reverse comparison
 
 }
 \references{
