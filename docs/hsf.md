@@ -27,6 +27,7 @@ Guillaume A. Rousselet
     -   [Stochastic dominance](#stochastic-dominance-2)
     -   [Compute shift functions for a subset of participants](#compute-shift-functions-for-a-subset-of-participants)
     -   [Illustrate results](#illustrate-results-1)
+    -   [Reverse order of conditions](#reverse-order-of-conditions)
 -   [References](#references)
 
 ``` r
@@ -418,6 +419,17 @@ plot_hsf(out)
 ```
 
 ![](hsf_files/figure-markdown_github/unnamed-chunk-25-1.png)
+
+Reverse order of conditions
+---------------------------
+
+``` r
+out <- hsf(df, rt ~ condition + participant,
+                todo = c(2,1))
+plot_hsf(out)
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
 References
 ==========

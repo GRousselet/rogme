@@ -326,6 +326,13 @@ out <- hsf(df, rt ~ condition + participant)
 plot_hsf(out)
 ```
 
+## Reverse order of conditions
+```{r}
+out <- hsf(df, rt ~ condition + participant,
+                todo = c(2,1))
+plot_hsf(out)
+```
+
 # References
 
 Rousselet, G. A., & Wilcox, R. R. (2019). 
