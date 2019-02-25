@@ -28,7 +28,7 @@ The next figure shows two dependent distributions, with relatively large differe
 
 ```{r, fig.width = 5, fig.height = 5}
 #> load data
-load("./data/paired_example.RData") #> pdata
+load("./data/pdata.RData") #> pdata
 df <- pdata
 
 #> ----------------------------------------------------

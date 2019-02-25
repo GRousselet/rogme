@@ -4,8 +4,8 @@
 \alias{mkt2}
 \title{Make tibble (data frame) for two groups}
 \usage{
-mkt2(x, y, gr_names = "gr", obs_names = "obs", group_labels = c("Group1",
-  "Group2"))
+mkt2(x, y, gr_names = "gr", obs_names = "obs",
+  group_labels = c("Group1", "Group2"))
 }
 \arguments{
 \item{x, y}{Two vectors.}

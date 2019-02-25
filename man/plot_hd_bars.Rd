@@ -5,8 +5,8 @@
 \title{Add bars marking quantiles to ggplot object created by \code{\link{plot_scat2}}.
 See examples in the README file and the vignettes.}
 \usage{
-plot_hd_bars(p, q_seq = seq(0.1, 0.9, 0.1), col = "grey21", width = 0.5,
-  q_size = 0.5, md_size = 1, alpha = 1)
+plot_hd_bars(p, q_seq = seq(0.1, 0.9, 0.1), col = "grey21",
+  width = 0.5, q_size = 0.5, md_size = 1, alpha = 1)
 }
 \arguments{
 \item{p}{A ggplot object returned by \code{\link{plot_scat2}}.}

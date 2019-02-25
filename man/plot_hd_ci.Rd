@@ -5,10 +5,11 @@
 \title{Plot quantiles and confidence intervals}
 \usage{
 plot_hd_ci(data = out, qseq = seq(0.1, 0.9, 0.1), plotzero = TRUE,
-  label.x = "Differences", hjust = -0.05, vjust = 0.2, size_text = 6,
-  colour_q = "#009E73", fill_q = "white", size_q = 4, shape_q = 21,
-  colour_line = "#009E73", size_line = 1, linetype_line = 2,
-  colour_zero = "black", size_zero = 0.5, linetype_zero = 1)
+  label.x = "Differences", hjust = -0.05, vjust = 0.2,
+  size_text = 6, colour_q = "#009E73", fill_q = "white",
+  size_q = 4, shape_q = 21, colour_line = "#009E73", size_line = 1,
+  linetype_line = 2, colour_zero = "black", size_zero = 0.5,
+  linetype_zero = 1)
 }
 \arguments{
 \item{data}{Data frame created by `quantiles_pbci`.}

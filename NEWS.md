@@ -1,4 +1,17 @@
 # ------------------------
+# rogme 0.2.1 (2019-25-02)
+
+- new `hsf` function implementing basic hierarchical shift function
+- new `plot_hsf` function to plot results
+- add `flp.RData` to demonstrate hsf
+- add `trimci`, `trimpval` and `winvar` functions to stats.R
+- add `datasets.R` to document datasets
+- rename `paired_example.RData` to `pdata.RData`
+- rename `ERP_onsets.RData` to `onsets.RData`
+- update vignettes `dep_gps` and `one_gp`
+- create `hsf` vignette
+
+# ------------------------
 # rogme 0.2.0 (2018-07-07)
 
 ## General improvements

@@ -1,0 +1,165 @@
+---
+title: "Get RT data from chronolex"
+output: pdf_document
+---
+
+Based on `process.words.R` available from the French lexicon project results folder:
+https://sites.google.com/site/frenchlexicon/results
+download >> "French Lexicon Project trial-level results with R scripts.zip"
+
+```{r message=FALSE}
+rm(list=ls())
+# change directory to chronolex folder
+setwd("./chronolex")
+a<-read.table("results.utf8.txt", as.is=T, encoding="utf-8", sep='\t',
+              col.names=c('sujet','num','mot','rt','acc','typemot','ordre','ordresuite'))
+a <- a[order(a$sujet),]
+a$sujet <- as.factor(a$sujet)
+#a$sujet = paste("subj",a$sujet,sep="")
+
+# number of subjects
+length(unique(a$sujet))
+```
+
+```{r eval=false}
+# suppress the pseudowords
+b = subset(a, typemot=="mot")
+(n = nrow(b))
+```
+
+
+```{r}
+# plot accuracy ~ rt per subject 
+rtsuj = tapply(a$rt, a$sujet, median)
+accsuj = tapply(a$acc, a$sujet, mean)
+ntrials = tapply(a$rt, a$sujet, length) # one P with 500 trials per condition
+
+plot(rtsuj, accsuj, main="RT & accuracy (one point per subject)") 
+rtcutoff <- 1500 #1100
+acccutoff <- .4 #.75
+abline(h=acccutoff)
+abline(v=rtcutoff)
+```
+Check participants with RT > 1500
+```{r}
+list.p <- unique(a$sujet)
+pp <- list.p[rtsuj>1500]
+hist(a$rt[a$sujet==pp[1]],breaks=50,xlim=c(0,2500))
+```
+
+```{r}
+list.p <- unique(a$sujet)
+pp <- list.p[rtsuj>1500]
+hist(a$rt[a$sujet==pp[2]],breaks=50,xlim=c(0,2500))
+```
+
+```{r}
+list.p <- unique(a$sujet)
+pp <- list.p[rtsuj>1500]
+hist(a$rt[a$sujet==pp[3]],breaks=50,xlim=c(0,2500))
+```
+
+```{r}
+list.p <- unique(a$sujet)
+pp <- list.p[rtsuj>1500]
+hist(a$rt[a$sujet==pp[4]],breaks=50,xlim=c(0,2500))
+```
+
+Clearly some participants with low accuracy and high RT did not follow the task instructions.
+
+```{r}
+# plot accuracy ~ rt 3rd quartile per subject 
+qrtsuj = tapply(a$rt, a$sujet, quantile, probs = 0.75)
+accsuj = tapply(a$acc, a$sujet, mean)
+ntrials = tapply(a$rt, a$sujet, length) # one P with 500 trials per condition
+
+plot(qrtsuj, accsuj, main="RT & accuracy (one point per subject)") 
+qrtcutoff <- 1500 #1100
+acccutoff <- .4 #.75
+abline(h=acccutoff)
+abline(v=rtcutoff)
+```
+
+Also, several participants have very unusual RT distributions, with a second bump of late RT.
+
+```{r}
+list.p <- unique(a$sujet)
+pp <- list.p[qrtsuj>1500]
+hist(a$rt[a$sujet==pp[1]],breaks=50,xlim=c(0,2500))
+# hist(a$rt[a$sujet==631],breaks=50,xlim=c(0,2500))
+```
+```{r}
+list.p <- unique(a$sujet)
+pp <- list.p[qrtsuj>1500]
+hist(a$rt[a$sujet==pp[2]],breaks=50,xlim=c(0,2500))
+# hist(a$rt[a$sujet==876],breaks=50,xlim=c(0,2500))
+```
+
+```{r eval=TRUE}
+# select subjects according to cutoffs
+goodsubjects <- (rtsuj<rtcutoff) & (accsuj>acccutoff) & (ntrials>1500) & (qrtsuj<qrtcutoff)
+a <- subset(a, goodsubjects[a$sujet]==TRUE)
+length(unique(a$sujet))
+nrow(a)
+```
+
+```{r}
+# number of trials per item (including errors)
+ntrials = tapply(a$rt, a$mot, length)
+```
+
+```{r}
+# number of trials per participant (including errors)
+aw = subset(a, typemot=="mot")
+ntrials = tapply(aw$rt, aw$sujet, length)
+summary(ntrials)
+anw = subset(a, typemot=="nonmot")
+ntrials = tapply(anw$rt, anw$sujet, length)
+summary(ntrials)
+
+ntrials = tapply(a$rt, list(a$sujet,a$typemot), length)
+summary(ntrials)
+```
+
+```{r}
+summary(tapply(aw$rt, aw$sujet, median))
+summary(tapply(anw$rt, anw$sujet, median))
+
+par(mfcol=c(1,2))
+hist(tapply(aw$rt, aw$sujet, median),breaks=50,xlim=c(0,2000),main="Median RT by part.: words")
+hist(tapply(anw$rt, anw$sujet, median),breaks=50,xlim=c(0,2000),main="Median RT by part.: non-words")
+```
+
+
+```{r eval=FALSE}
+# suppress trials with wrong responses
+n = nrow(b)
+b = subset(b, b$acc==1)
+1-(nrow(b)/n) # proportion of rejected datapoints
+
+nhits = tapply(b$rt, b$mot, length)
+```
+
+```{r}
+library(tibble)
+# save data frame
+b <- subset(a, a$typemot=="mot" | a$typemot=="nonmot") 
+b$typemot <- factor(b$typemot)
+library(plyr)
+b$typemot <- revalue(b$typemot, c("mot"="word", "nonmot"="non-word"))
+flp <- tibble(`participant` = as.factor(b$sujet),
+              `rt` = b$rt,
+              `acc` = b$acc,
+              `condition` = b$typemot)
+# get rid of missing participants
+flp$participant <- factor(flp$participant)
+save(flp, file="french_lexicon_project_rt_data.RData")
+```
+
+```{r}
+graphics.off()
+proc.time()
+```
+
+
+
