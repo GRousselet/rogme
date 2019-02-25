@@ -11,9 +11,9 @@ Description: Robust methods to compare and visualise groups of continuous
     functions, and tools for quantile estimation. The outputs of these core tools can be visualised using graphical representations based on ggplot2.
 Depends:
     R (>= 3.3.2),
-    ggplot2 (>= 2.2.0)
+    ggplot2 (>= 2.2.0),
+    tibble (>= 1.2.0)
 Imports:
-    tibble (>= 1.2.0),
     dplyr (>= 0.5.0),
     ggbeeswarm (>= 0.5.3)
 License: MIT + file LICENSE
