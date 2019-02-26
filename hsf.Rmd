@@ -135,7 +135,7 @@ out$adjusted_pvalues
 
 ## Stochastic dominance
 
-Does one condition dominates the other at all quantiles? In how many participants? See Speckman et al. (2008) for a great introduction to stochastic dominance.
+Does one condition dominate the other at all quantiles? In how many participants? See Speckman et al. (2008) for a great introduction to stochastic dominance.
 
 ### Participants with all quantile differences > 0
 ```{r}
@@ -268,7 +268,7 @@ The `.RData` dataset was created by applying the script `/data-raw/getflprtdata.
 
 ```{r}
 #> get data - tibble = `flp`
-load("./data/flp.RData") # reaction time data - check `help(flp)`
+flp <- flp # reaction time data - check `help(flp)`
 #> columns =
 #> - 1 = participant
 #> - 2 = rt
@@ -315,6 +315,7 @@ print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == n
 ## Compute shift functions for a subset of participants
 
 ```{r}
+set.seed(20)
 id <- unique(flp$participant)
 df <- subset(flp, flp$participant %in% sample(id, 50, replace = FALSE))
 out <- hsf(df, rt ~ condition + participant)
@@ -331,6 +332,24 @@ plot_hsf(out)
 out <- hsf(df, rt ~ condition + participant,
                 todo = c(2,1))
 plot_hsf(out)
+```
+
+## Quartiles instead of deciles
+```{r}
+plot_hsf(hsf(df, rt ~ condition + participant, qseq = c(0.25, 0.5, 0.75)))
+```
+
+## 99% confidence intervals
+```{r}
+plot_hsf(hsf(df, rt ~ condition + participant, alpha = 0.01))
+```
+
+## More quantiles?
+With about `r median(tapply(flp$rt, list(flp$participant, flp$condition), length))` trials per condition we can study the distributions in more detail.
+
+```{r}
+p <- plot_hsf(hsf(df, rt ~ condition + participant, qseq = seq(0.05, 0.95, 0.05)))
+p + theme(axis.text.x = element_text(size = 10))
 ```
 
 # References

@@ -1,7 +1,7 @@
 Hierarchical shift function
 ================
 Guillaume A. Rousselet
-2019-02-25
+2019-02-26
 
 -   [Introduction](#introduction)
 -   [Example 1: simulated data with a uniform shift](#example-1-simulated-data-with-a-uniform-shift)
@@ -28,6 +28,9 @@ Guillaume A. Rousselet
     -   [Compute shift functions for a subset of participants](#compute-shift-functions-for-a-subset-of-participants)
     -   [Illustrate results](#illustrate-results-1)
     -   [Reverse order of conditions](#reverse-order-of-conditions)
+    -   [Quartiles instead of deciles](#quartiles-instead-of-deciles)
+    -   [99% confidence intervals](#confidence-intervals)
+    -   [More quantiles?](#more-quantiles)
 -   [References](#references)
 
 ``` r
@@ -183,7 +186,7 @@ out$adjusted_pvalues
 Stochastic dominance
 --------------------
 
-Does one condition dominates the other at all quantiles? In how many participants? See Speckman et al. (2008) for a great introduction to stochastic dominance.
+Does one condition dominate the other at all quantiles? In how many participants? See Speckman et al. (2008) for a great introduction to stochastic dominance.
 
 ### Participants with all quantile differences &gt; 0
 
@@ -344,7 +347,7 @@ Data from the [French Lexicon Project](https://sites.google.com/site/frenchlexic
 
 ``` r
 #> get data - tibble = `flp`
-load("./data/flp.RData") # reaction time data - check `help(flp)`
+flp <- flp # reaction time data - check `help(flp)`
 #> columns =
 #> - 1 = participant
 #> - 2 = rt
@@ -405,6 +408,7 @@ Compute shift functions for a subset of participants
 ----------------------------------------------------
 
 ``` r
+set.seed(20)
 id <- unique(flp$participant)
 df <- subset(flp, flp$participant %in% sample(id, 50, replace = FALSE))
 out <- hsf(df, rt ~ condition + participant)
@@ -430,6 +434,36 @@ plot_hsf(out)
 ```
 
 ![](hsf_files/figure-markdown_github/unnamed-chunk-26-1.png)
+
+Quartiles instead of deciles
+----------------------------
+
+``` r
+plot_hsf(hsf(df, rt ~ condition + participant, qseq = c(0.25, 0.5, 0.75)))
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-27-1.png)
+
+99% confidence intervals
+------------------------
+
+``` r
+plot_hsf(hsf(df, rt ~ condition + participant, alpha = 0.01))
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-28-1.png)
+
+More quantiles?
+---------------
+
+With about 1000 trials per condition we can study the distributions in more detail.
+
+``` r
+p <- plot_hsf(hsf(df, rt ~ condition + participant, qseq = seq(0.05, 0.95, 0.05)))
+p + theme(axis.text.x = element_text(size = 10))
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
 References
 ==========
