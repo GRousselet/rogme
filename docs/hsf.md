@@ -27,6 +27,7 @@ Guillaume A. Rousselet
     -   [Stochastic dominance](#stochastic-dominance-2)
     -   [Compute shift functions for a subset of participants](#compute-shift-functions-for-a-subset-of-participants)
     -   [Illustrate results](#illustrate-results-1)
+    -   [T-test](#t-test)
     -   [Reverse order of conditions](#reverse-order-of-conditions)
     -   [Quartiles instead of deciles](#quartiles-instead-of-deciles)
     -   [99% confidence intervals](#confidence-intervals)
@@ -408,7 +409,7 @@ Compute shift functions for a subset of participants
 ----------------------------------------------------
 
 ``` r
-set.seed(20)
+set.seed(19)
 id <- unique(flp$participant)
 df <- subset(flp, flp$participant %in% sample(id, 50, replace = FALSE))
 out <- hsf(df, rt ~ condition + participant)
@@ -424,6 +425,27 @@ plot_hsf(out)
 
 ![](hsf_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
+T-test
+------
+
+``` r
+# remove all variability across trials 
+dfred <- na.omit(tapply(df$rt, list(df$participant, df$condition), mean))
+t.test(dfred[,1], dfred[,2], paired = TRUE)
+```
+
+    ## 
+    ##  Paired t-test
+    ## 
+    ## data:  dfred[, 1] and dfred[, 2]
+    ## t = -9.9517, df = 49, p-value = 2.363e-13
+    ## alternative hypothesis: true difference in means is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -91.14614 -60.51992
+    ## sample estimates:
+    ## mean of the differences 
+    ##               -75.83303
+
 Reverse order of conditions
 ---------------------------
 
@@ -433,7 +455,7 @@ out <- hsf(df, rt ~ condition + participant,
 plot_hsf(out)
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
 Quartiles instead of deciles
 ----------------------------
@@ -442,7 +464,7 @@ Quartiles instead of deciles
 plot_hsf(hsf(df, rt ~ condition + participant, qseq = c(0.25, 0.5, 0.75)))
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-27-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-28-1.png)
 
 99% confidence intervals
 ------------------------
@@ -451,7 +473,7 @@ plot_hsf(hsf(df, rt ~ condition + participant, qseq = c(0.25, 0.5, 0.75)))
 plot_hsf(hsf(df, rt ~ condition + participant, alpha = 0.01))
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
 More quantiles?
 ---------------
@@ -463,7 +485,7 @@ p <- plot_hsf(hsf(df, rt ~ condition + participant, qseq = seq(0.05, 0.95, 0.05)
 p + theme(axis.text.x = element_text(size = 10))
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-29-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-30-1.png)
 
 References
 ==========

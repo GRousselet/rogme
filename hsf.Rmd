@@ -315,7 +315,7 @@ print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == n
 ## Compute shift functions for a subset of participants
 
 ```{r}
-set.seed(20)
+set.seed(19)
 id <- unique(flp$participant)
 df <- subset(flp, flp$participant %in% sample(id, 50, replace = FALSE))
 out <- hsf(df, rt ~ condition + participant)
@@ -325,6 +325,13 @@ out <- hsf(df, rt ~ condition + participant)
 ```{r} 
 # fig.width = 5, fig.height = 3
 plot_hsf(out)
+```
+
+## T-test
+```{r}
+# remove all variability across trials 
+dfred <- na.omit(tapply(df$rt, list(df$participant, df$condition), mean))
+t.test(dfred[,1], dfred[,2], paired = TRUE)
 ```
 
 ## Reverse order of conditions
