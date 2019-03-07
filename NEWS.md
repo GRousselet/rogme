@@ -1,6 +1,9 @@
 # ------------------------
 # rogme 0.2.1 (2019-25-02)
 
+- new `plot_hsf_pb_dist` function to plot percentile bootstrap samples
+- new `plot_hsf_pb` function to plot percentile bootstrap results
+- new `hsf_pb` function implementing percentile bootstrap hierarchical shift function
 - new `hsf` function implementing basic hierarchical shift function
 - new `plot_hsf` function to plot results
 - add `flp.RData` to demonstrate hsf

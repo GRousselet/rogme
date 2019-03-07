@@ -1,5 +1,4 @@
 Package: rogme
-Type: Package
 Title: Robust Graphical Methods For Group Comparisons
 Version: 0.2.1
 Date: 2019-25-02
@@ -10,19 +9,24 @@ Description: Robust methods to compare and visualise groups of continuous
     variables. Based on Rand Wilcox's shift functions, difference asymmetry
     functions, and tools for quantile estimation. The outputs of these core tools can be visualised using graphical representations based on ggplot2.
 Depends:
-    R (>= 3.3.2),
-    ggplot2 (>= 2.2.0),
-    tibble (>= 1.2.0)
+    R (>= 3.3.2)
 Imports:
-    dplyr (>= 0.5.0),
-    ggbeeswarm (>= 0.5.3)
+    dplyr (>= 0.8.0),
+    tidyr (>= 0.8.2),
+    ggbeeswarm (>= 0.5.3),
+    ggplot2 (>= 3.0.0),
+    tibble (>= 1.2.0),
+    HDInterval (>= 0.2.0),
+    tidybayes (>= 1.0.3)
+Suggests: 
+    knitr,
+    testthat,
+    rmarkdown
 License: MIT + file LICENSE
+Language: en-UK
 LazyData: TRUE
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Encoding: UTF-8
 URL: https://github.com/GRousselet/rogme
 BugReports: https://github.com/GRousselet/rogme/issues
-Suggests: knitr,
-    testthat,
-    rmarkdown

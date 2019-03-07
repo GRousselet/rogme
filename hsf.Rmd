@@ -16,6 +16,7 @@ devtools::load_all()
 
 ```{r, message=FALSE}
 library(tibble)
+library(ggplot2)
 library(retimes)
 ```
 
@@ -103,10 +104,6 @@ alpha <- 0.05
 nboot <- 1000 # bootstrap
 tr <- 0.2 # group trimmed mean for each quantile
 nq <- length(qseq)
-icrit <- round((1-alpha)*nboot) # 95th quantile
-ilo <- round((alpha/2)*nboot)
-iup <- nboot - ilo
-ilo <- ilo + 1
 ```
 
 ## Compute hierarchical shift function
@@ -150,6 +147,35 @@ pdlt0 <- apply(out$individual_sf < 0, 2, sum)
 print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == nq) / np, digits = 1),'%), all quantile differences are less than to zero'))
 ```
 
+## Percentile bootstrap hierarchical shift function
+
+Use the percentile bootstrap to compute confidence intervals. 
+
+Hierarchical situation: nt trials at level 2, two conditions compared using a shift function (default = deciles) in each of np participants at level 1. For each decile of the shift function, we perform a one-sample test on the 20% trimmed mean. The deciles are dependent, so we resample participants, then trials (hierarchical sampling). 
+
+### Compute bootstrap samples
+```{r}
+set.seed(8899)
+out <- hsf_pb(df, rt ~ cond + id)
+```
+
+### Plot bootstrap confidence intervals
+```{r}
+plot_hsf_pb(out, interv = "ci")
+```
+
+### Plot bootstrap highest density intervals - default
+```{r}
+plot_hsf_pb(out)
+```
+
+### Plot bootstrap distributions
+
+Distributions of bootstrap estimates can be considered cheap [Bayesian posterior distributions](http://www.sumsar.net/blog/2015/04/the-non-parametric-bootstrap-as-a-bayesian-model/). They also contain useful information not captured by simply reporting confidence intervals. Here we plot them using `geom_halfeyeh()` from [tidybayes](https://github.com/mjskay/tidybayes).
+
+```{r}
+plot_hsf_pb_dist(out)
+```
 
 # Example 2: simulated data without differences
 
@@ -222,10 +248,6 @@ alpha <- 0.05
 nboot <- 1000 # bootstrap
 tr <- 0.2 # group trimmed mean for each quantile
 nq <- length(qseq)
-icrit <- round((1-alpha)*nboot) # 95th quantile
-ilo <- round((alpha/2)*nboot)
-iup <- nboot - ilo
-ilo <- ilo + 1
 ```
 
 ## Compute hierarchical shift function

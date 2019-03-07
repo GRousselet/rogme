@@ -53,9 +53,7 @@ across quantiles is achieved using Hochberg's 1988 procedure. Plot the shift
 function using \code{plot_hsf}.
 }
 \examples{
-# Reaction time data from the French Lexicon Project:
-load('./data/flp.RData') # get data
-set.seed(22) # subset random sample of participants
+set.seed(22) # subset random sample of participants from the French Lexicon Project
 id <- unique(flp$participant)
 df <- subset(flp, flp$participant \%in\% sample(id, 50, replace = FALSE))
 out <- hsf(df, rt ~ condition + participant) # use the default parameters
