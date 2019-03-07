@@ -185,6 +185,7 @@ plot_hsf_pb <- function(data,
 #' @param point_interv Option to pass to \href{https://mjskay.github.io/tidybayes/reference/point_interval.html}{point_interval} - default = "mode_hdi"
 #' @param interval_width Width of the intervals - default c(0.5, 0.9)
 #' @param fill_colour Colour of the bootstrap distributions - default = "orange".
+#' @param int_colour Colour of the interval and summary point - default = "black".
 #'
 #' @return A ggplot object.
 #'
@@ -198,7 +199,8 @@ plot_hsf_pb_dist <- function(data,
                               null_value = 0,
                               point_interv = "mode_hdi",
                               interval_width = c(0.5, 0.9),
-                              fill_colour = "orange"
+                              fill_colour = "orange",
+                             int_colour = "black"
                             ){
   # check input is a list of data frames
   if(!is.list(data)){
@@ -208,15 +210,14 @@ plot_hsf_pb_dist <- function(data,
     stop("data must have length 8, as returned by hsf()")
   }
   
-  point_interv <- sym(point_interv)
-
   df <- tibble(boot_samp = as.vector(data$bootstrap_samples),
                quantile = rep(data$quantiles, each = data$nboot))
   p <- ggplot(df, aes(x = boot_samp, y = quantile)) +
         theme_classic() +
         tidybayes::geom_halfeyeh(
           fill = fill_colour, 
-          point_interval = point_interv,
+          color = int_colour,
+          .point_interval = point_interv,
           .width = interval_width) +
         geom_vline(xintercept = null_value) +
         scale_y_continuous(breaks = qseq) +

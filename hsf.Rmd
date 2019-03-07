@@ -166,7 +166,7 @@ plot_hsf_pb(out, interv = "ci")
 
 ### Plot bootstrap highest density intervals - default
 ```{r}
-plot_hsf_pb(out)
+plot_hsf_pb(out, interv = "ci")
 ```
 
 ### Plot bootstrap distributions
@@ -175,6 +175,12 @@ Distributions of bootstrap estimates can be considered cheap [Bayesian posterior
 
 ```{r}
 plot_hsf_pb_dist(out)
+```
+
+With 80% confidence interval and median of bootstrap differences.
+```{r}
+plot_hsf_pb_dist(out, point_interv = median_ci, interval_width = .80, 
+                 int_colour = "pink", fill_colour = "blue")
 ```
 
 # Example 2: simulated data without differences
