@@ -227,7 +227,7 @@ plot_hsf_pb_dist <- function(data,
           axis.title.x = element_text(size = 18),
           axis.text = element_text(size = 16, colour = "black"),
           axis.title.y = element_text(size = 18)) + 
-        labs(x = "Quantiles", y = "Bootstrap differences") +
+        labs(y = "Quantiles", x = "Bootstrap differences") +
         ggtitle(data$comparison) +
         coord_flip()
 
