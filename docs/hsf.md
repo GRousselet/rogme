@@ -1,7 +1,7 @@
 Hierarchical shift function
 ================
 Guillaume A. Rousselet
-2019-02-26
+2019-03-08
 
 -   [Introduction](#introduction)
 -   [Example 1: simulated data with a uniform shift](#example-1-simulated-data-with-a-uniform-shift)
@@ -13,6 +13,7 @@ Guillaume A. Rousselet
     -   [P values](#p-values)
     -   [Adjusted P values](#adjusted-p-values)
     -   [Stochastic dominance](#stochastic-dominance)
+    -   [Percentile bootstrap hierarchical shift function](#percentile-bootstrap-hierarchical-shift-function)
 -   [Example 2: simulated data without differences](#example-2-simulated-data-without-differences)
     -   [KDE](#kde-1)
     -   [Shift function](#shift-function-1)
@@ -20,6 +21,7 @@ Guillaume A. Rousselet
     -   [Compute hierarchical shift function](#compute-hierarchical-shift-function-1)
     -   [Plot hierarchical shift function](#plot-hierarchical-shift-function-1)
     -   [Stochastic dominance](#stochastic-dominance-1)
+    -   [Percentile bootstrap hierarchical shift function](#percentile-bootstrap-hierarchical-shift-function-1)
 -   [Example 3: real data](#example-3-real-data)
     -   [Get lexical decision dataset](#get-lexical-decision-dataset)
     -   [Compute shift functions for all participants](#compute-shift-functions-for-all-participants)
@@ -32,10 +34,12 @@ Guillaume A. Rousselet
     -   [Quartiles instead of deciles](#quartiles-instead-of-deciles)
     -   [99% confidence intervals](#confidence-intervals)
     -   [More quantiles?](#more-quantiles)
+    -   [Percentile bootstrap hierarchical shift function](#percentile-bootstrap-hierarchical-shift-function-2)
 -   [References](#references)
 
 ``` r
 library(tibble)
+library(ggplot2)
 library(retimes)
 ```
 
@@ -138,10 +142,6 @@ alpha <- 0.05
 nboot <- 1000 # bootstrap
 tr <- 0.2 # group trimmed mean for each quantile
 nq <- length(qseq)
-icrit <- round((1-alpha)*nboot) # 95th quantile
-ilo <- round((alpha/2)*nboot)
-iup <- nboot - ilo
-ilo <- ilo + 1
 ```
 
 Compute hierarchical shift function
@@ -208,6 +208,55 @@ print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == n
 
     ## [1] "In 22 participants (73.3%), all quantile differences are less than to zero"
 
+Percentile bootstrap hierarchical shift function
+------------------------------------------------
+
+Use the percentile bootstrap to compute confidence intervals.
+
+Hierarchical situation: nt trials at level 2, two conditions compared using a shift function (default = deciles) in each of np participants at level 1. For each decile of the shift function, we perform a one-sample test on the 20% trimmed mean. The deciles are dependent, so we resample participants, then trials (hierarchical sampling).
+
+### Compute bootstrap samples
+
+``` r
+set.seed(8899)
+out <- hsf_pb(df, rt ~ cond + id)
+```
+
+### Plot bootstrap confidence intervals
+
+``` r
+plot_hsf_pb(out, interv = "ci")
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-13-1.png)
+
+### Plot bootstrap highest density intervals - default
+
+``` r
+plot_hsf_pb(out, interv = "hdi")
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-14-1.png)
+
+### Plot bootstrap distributions
+
+Distributions of bootstrap estimates can be considered cheap [Bayesian posterior distributions](http://www.sumsar.net/blog/2015/04/the-non-parametric-bootstrap-as-a-bayesian-model/). They also contain useful information not captured by simply reporting confidence intervals. Here we plot them using `geom_halfeyeh()` from [tidybayes](https://github.com/mjskay/tidybayes).
+
+``` r
+plot_hsf_pb_dist(out)
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-15-1.png)
+
+With 80% confidence interval, median of bootstrap differences and different colours
+
+``` r
+plot_hsf_pb_dist(out, point_interv = median_ci, interval_width = .80, 
+                 int_colour = "blue", fill_colour = "grey")
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-16-1.png)
+
 Example 2: simulated data without differences
 =============================================
 
@@ -250,7 +299,7 @@ p <- ggplot(df, aes(x = obs)) + theme_classic() +
 p
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-17-1.png)
 
 Shift function
 --------------
@@ -264,7 +313,7 @@ p <- plot_sf(out, plot_theme = 1)[[1]] +
 p
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-13-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-18-1.png)
 
 Make data for np participants
 -----------------------------
@@ -290,10 +339,6 @@ alpha <- 0.05
 nboot <- 1000 # bootstrap
 tr <- 0.2 # group trimmed mean for each quantile
 nq <- length(qseq)
-icrit <- round((1-alpha)*nboot) # 95th quantile
-ilo <- round((alpha/2)*nboot)
-iup <- nboot - ilo
-ilo <- ilo + 1
 ```
 
 Compute hierarchical shift function
@@ -314,7 +359,7 @@ p <- plot_hsf(out)
 p
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 Stochastic dominance
 --------------------
@@ -337,6 +382,32 @@ print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == n
 ```
 
     ## [1] "In 4 participants (13.3%), all quantile differences are less than to zero"
+
+Percentile bootstrap hierarchical shift function
+------------------------------------------------
+
+### Compute bootstrap samples
+
+``` r
+set.seed(8899)
+out <- hsf_pb(df, rt ~ cond + id)
+```
+
+### Plot bootstrap highest density intervals - default
+
+``` r
+plot_hsf_pb(out, interv = "hdi")
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-25-1.png)
+
+### Plot bootstrap distributions
+
+``` r
+plot_hsf_pb_dist(out)
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
 Example 3: real data
 ====================
@@ -381,7 +452,7 @@ Illustrate results
 plot_hsf(out)
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
 Stochastic dominance
 --------------------
@@ -423,7 +494,7 @@ Illustrate results
 plot_hsf(out)
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-33-1.png)
 
 T-test
 ------
@@ -455,7 +526,7 @@ out <- hsf(df, rt ~ condition + participant,
 plot_hsf(out)
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-27-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-35-1.png)
 
 Quartiles instead of deciles
 ----------------------------
@@ -464,7 +535,7 @@ Quartiles instead of deciles
 plot_hsf(hsf(df, rt ~ condition + participant, qseq = c(0.25, 0.5, 0.75)))
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-36-1.png)
 
 99% confidence intervals
 ------------------------
@@ -473,7 +544,7 @@ plot_hsf(hsf(df, rt ~ condition + participant, qseq = c(0.25, 0.5, 0.75)))
 plot_hsf(hsf(df, rt ~ condition + participant, alpha = 0.01))
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-29-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-37-1.png)
 
 More quantiles?
 ---------------
@@ -485,7 +556,33 @@ p <- plot_hsf(hsf(df, rt ~ condition + participant, qseq = seq(0.05, 0.95, 0.05)
 p + theme(axis.text.x = element_text(size = 10))
 ```
 
-![](hsf_files/figure-markdown_github/unnamed-chunk-30-1.png)
+![](hsf_files/figure-markdown_github/unnamed-chunk-38-1.png)
+
+Percentile bootstrap hierarchical shift function
+------------------------------------------------
+
+### Compute bootstrap samples
+
+``` r
+set.seed(8899)
+out <- hsf_pb(df, rt ~ condition + participant)
+```
+
+### Plot bootstrap highest density intervals - default
+
+``` r
+plot_hsf_pb(out, interv = "hdi")
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-40-1.png)
+
+### Plot bootstrap distributions
+
+``` r
+plot_hsf_pb_dist(out)
+```
+
+![](hsf_files/figure-markdown_github/unnamed-chunk-41-1.png)
 
 References
 ==========
