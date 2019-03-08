@@ -13,7 +13,9 @@ plot_hsf_pb_dist(data, null_value = 0, point_interv = "mode_hdi",
 
 \item{null_value}{Reference value to plot as a horizontal line - default = 0.}
 
-\item{point_interv}{Option to pass to \href{https://mjskay.github.io/tidybayes/reference/point_interval.html}{point_interval} - default = "mode_hdi"}
+\item{point_interv}{Option mean/median/mode_ci/hdi to pass to
+\href{https://mjskay.github.io/tidybayes/reference/point_interval.html}{point_interval}
+- default = "mode_hdi"}
 
 \item{interval_width}{Width of the intervals - default c(0.5, 0.9)}
 

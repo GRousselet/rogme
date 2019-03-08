@@ -207,23 +207,16 @@ hsf_pb <- function(data = df,
   
   # Number of participants
   np <- length(unique(df$id))
-  
-  #use filter to split conditions:
-  #   data1 <- filter(data, conditions == cond1)
-  # 
-  # df <- tibble(rt = rnorm(33), id = factor(c(rep(1,10),rep(2,11),rep(3,12))))
-  # df <- mutate(group_by(df, id), group_row = 1:n())
-  # data.matrix(spread(df, id, rt))
-  
-  unique_id <- as.vector(unique(data[[subf$id_col_name]]), mode = "numeric")
+
+  #unique_id <- as.vector(unique(data[[subf$id_col_name]]), mode = "numeric")
  
   # Compute shift functions for all participants
   df1 <- dplyr::filter(df, df$cond == subf$gr_names[1])
-  nt1 <- unlist(tapply(df1$obs, df1$id, length))
+  nt1 <- dplyr::count(df1, id)[["n"]]
   q.1 <- matrix(unlist(tapply(df1$obs, df1$id, quantile, probs = qseq, type = qtype)), nrow=length(qseq))
   
   df2 <- dplyr::filter(df, df$cond == subf$gr_names[2])
-  nt2 <- unlist(tapply(df2$obs, df2$id, length))
+  nt2 <- dplyr::count(df2, id)[["n"]]
   q.2 <- matrix(unlist(tapply(df2$obs, df2$id, quantile, probs = qseq, type = qtype)), nrow=length(qseq))
   
   q.diff <- q.1 - q.2 # quantile differences
@@ -244,7 +237,8 @@ hsf_pb <- function(data = df,
   mat2 <- mat2[,-c(1,2)] # trials x participants
   
   # bootstrap participants
-  boot_id <- matrix(sample(unique_id, np * nboot, replace = TRUE), nrow = nboot)
+  boot_id <- matrix(sample(np, np * nboot, replace = TRUE), nrow = nboot)
+  #unique_id
   
   for(B in 1:nboot){
     
