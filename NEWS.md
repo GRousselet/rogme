@@ -39,7 +39,6 @@
 
 ## Add handling of lists of ggplot objects to:
 - `plot_sf`
-- `plot_pbsf`
 - `add_sf_lab`
 
 ## New functions:
