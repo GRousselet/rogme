@@ -1,8 +1,8 @@
 #' Plot percentile bootstrap shift function
 #'
 #' Plot one or more shift functions generated with \code{\link{shifthd}},
-#' \code{link{shiftdhd}}, \code{\link{shifthd_pbci}} or
-#' \code{link{shiftdhd_pbci}}. Assumes the median was estimated and is the
+#' \code{\link{shiftdhd}}, \code{\link{shifthd_pbci}} or
+#' \code{\link{shiftdhd_pbci}}. Assumes the median was estimated and is the
 #' middle value. The function returns a list of ggplot objects, which can be
 #' customised using the \href{http://docs.ggplot2.org/current/}{ggplot2}
 #' package.
