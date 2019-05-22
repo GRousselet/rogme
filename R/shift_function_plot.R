@@ -133,7 +133,7 @@ plot_sf <- function(data = df,
       }
     }
     # -------------------
-    if (all.equal(df$q, seq(0.1,0.9,0.1))) {
+    if (identical(df$q, seq(0.1,0.9,0.1))) {
       lab.x <- paste0("Deciles for ",names(df)[2])
       lab.y <- paste0("Decile differences:\n",names(df)[2]," - ",names(df)[3])
     } else {
