@@ -1,7 +1,11 @@
 # ------------------------
-# rogme 0.2.1 (2019-25-02)
+# rogme 0.2.2 (NOT RELEASED YET)
+- new `onsets2` dataset, containing ERP onsets from 2 sessions
+- fix bug in `plot_sf` when requesting quantiles other than the deciles
 
-- new `onsets2` dataset, containing ERP onsets from 2 sessions.
+# ------------------------
+# rogme 0.2.1 (2019-02-25)
+
 - new `plot_hsf_pb_dist` function to plot percentile bootstrap samples
 - new `plot_hsf_pb` function to plot percentile bootstrap results
 - new `hsf_pb` function implementing percentile bootstrap hierarchical shift function
@@ -61,7 +65,7 @@
 - `plot_kde_rug_dec2`
 
 # ------------------------
-# rogme 0.1.1 (2018-06-11) 
+# rogme 0.1.1 (2018-11-06) 
 
 ## Bug fixes
 
