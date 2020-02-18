@@ -1,8 +1,8 @@
 #' Plot percentile bootstrap shift function
 #'
 #' Plot one or more shift functions generated with \code{\link{shifthd}},
-#' \code{link{shiftdhd}}, \code{\link{shifthd_pbci}} or
-#' \code{link{shiftdhd_pbci}}. Assumes the median was estimated and is the
+#' \code{\link{shiftdhd}}, \code{\link{shifthd_pbci}} or
+#' \code{\link{shiftdhd_pbci}}. Assumes the median was estimated and is the
 #' middle value. The function returns a list of ggplot objects, which can be
 #' customised using the \href{http://docs.ggplot2.org/current/}{ggplot2}
 #' package.
@@ -133,7 +133,7 @@ plot_sf <- function(data = df,
       }
     }
     # -------------------
-    if (identical(df$q, seq(0.1,0.9,0.1))) {
+    if (isTRUE(all.equal(df$q, seq(0.1,0.9,0.1)))) {
       lab.x <- paste0("Deciles for ",names(df)[2])
       lab.y <- paste0("Decile differences:\n",names(df)[2]," - ",names(df)[3])
     } else {

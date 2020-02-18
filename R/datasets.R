@@ -24,6 +24,16 @@
 #' @source \url{https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13100}
 "onsets"
 
+#' ERP onsets from 120 participants, 74 tested twice.
+#'
+#' A dataset containing estimated onsets of face - noise ERP differences
+#' from 120 participants in session 1 and 74 participants in session 2.
+#'
+#' @format A matrix of 120 rows of onset values in ms and 2 columns for sessions 1 and 2. Missing values in session 2 are marked as NA.
+#'
+#' @source \url{https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13100}
+"onsets2"
+
 #'  Fake data from 35 participants
 #'
 #'  A dataset containing fake data from 35 participants in 2 conditions.

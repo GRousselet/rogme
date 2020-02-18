@@ -71,7 +71,7 @@ In `rogme`, the shift function can be calculated using:
 - `shifthd()` or `shifthd_pbci()` for independent groups
 - `shiftdhd()` or `shiftdhd_pbci()` for dependent groups
 
-Illustrations of the results is handled separately by `plot_sf()` and `plot_pbsf()`.
+Illustrations of the results is handled separately by `plot_sf()`.
 
 You can see the shift function in action for instance in these publications:
 
