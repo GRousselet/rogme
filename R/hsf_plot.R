@@ -222,7 +222,7 @@ plot_hsf_pb_dist <- function(data,
           .point_interval = point_interv,
           .width = interval_width) +
         geom_vline(xintercept = null_value) +
-        scale_y_continuous(breaks = qseq) +
+        scale_y_continuous(breaks = data$quantiles) +
         theme(plot.title = element_text(size=22),
           axis.title.x = element_text(size = 18),
           axis.text = element_text(size = 16, colour = "black"),
