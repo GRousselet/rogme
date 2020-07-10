@@ -4,7 +4,9 @@
 \name{pdata}
 \alias{pdata}
 \title{Fake data from 35 participants}
-\format{An object of class \code{data.frame} with 35 rows and 3 columns.}
+\format{
+An object of class \code{data.frame} with 35 rows and 3 columns.
+}
 \usage{
 pdata
 }
@@ -19,6 +21,6 @@ A dataset containing fake data from 35 participants in 2 conditions.
    \item{condition2}{results from condition 2, in arbitrary units}
  }
 
-@source \url{https://www.biorxiv.org/content/10.1101/121079v2}
+ @source \url{https://www.biorxiv.org/content/10.1101/121079v2}
 }
 \keyword{datasets}

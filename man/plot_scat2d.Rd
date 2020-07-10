@@ -4,11 +4,25 @@
 \alias{plot_scat2d}
 \title{Plot paired observations}
 \usage{
-plot_scat2d(df = df, formula = cond2 ~ cond1, min.x = NA,
-  min.y = NA, max.x = NA, max.y = NA, axis.steps = 2, size_p = 5,
-  stroke_p = 1, shape_p = 21, colour_p = "black",
-  fill_p = "#ffb347", alpha_p = 0.5, linetype_q = "dashed",
-  size_q = 1, alpha_q = 0.5, colour_q = "black")
+plot_scat2d(
+  df = df,
+  formula = cond2 ~ cond1,
+  min.x = NA,
+  min.y = NA,
+  max.x = NA,
+  max.y = NA,
+  axis.steps = 2,
+  size_p = 5,
+  stroke_p = 1,
+  shape_p = 21,
+  colour_p = "black",
+  fill_p = "#ffb347",
+  alpha_p = 0.5,
+  linetype_q = "dashed",
+  size_q = 1,
+  alpha_q = 0.5,
+  colour_q = "black"
+)
 }
 \arguments{
 \item{df}{Data frame with paired observations in two columns.}
@@ -26,7 +40,7 @@ where ~ (tilde) means "is modeled as a function of".}
 
 \item{shape_p}{Shape parameter of the scatterplot - default = 21,}
 
-\item{colour_p}{Colour parameter of the scatterplot - default "black".}
+\item{colour_p}{Colour parameter of the scatterplot - default = "black",}
 
 \item{fill_p}{Fill parameter of the scatterplot - default = "#ffb347",}
 
@@ -39,8 +53,6 @@ where ~ (tilde) means "is modeled as a function of".}
 \item{alpha_q}{Alpha of the segments marking the quartiles - default = .5,}
 
 \item{colour_q}{Colour of the segments marking the quartiles - default = "black"}
-
-\item{colour_p}{Colour parameter of the scatterplot - default = "black",}
 }
 \description{
 Scatterplot of paired observations with reference line of no effect.

@@ -4,9 +4,16 @@
 \alias{hsf_pb}
 \title{Percentile bootstrap hierarchical shift function for one group, two dependent conditions}
 \usage{
-hsf_pb(data = df, formula = obs ~ cond + id, qseq = seq(0.1, 0.9,
-  0.1), tr = 0.2, alpha = 0.05, qtype = 8, todo = c(1, 2),
-  nboot = 1000)
+hsf_pb(
+  data = df,
+  formula = obs ~ cond + id,
+  qseq = seq(0.1, 0.9, 0.1),
+  tr = 0.2,
+  alpha = 0.05,
+  qtype = 8,
+  todo = c(1, 2),
+  nboot = 1000
+)
 }
 \arguments{
 \item{data}{A data frame in long format. Missing values are not allowed.}

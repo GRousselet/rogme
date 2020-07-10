@@ -4,8 +4,15 @@
 \alias{asymdhd}
 \title{Difference asymmetry function for two dependent groups or a single distribution}
 \usage{
-asymdhd(data = df, formula = obs ~ gr, qseq = seq(5, 40, 5)/100,
-  alpha = 0.05, nboot = 1000, todo = NULL, doall = FALSE)
+asymdhd(
+  data = df,
+  formula = obs ~ gr,
+  qseq = seq(5, 40, 5)/100,
+  alpha = 0.05,
+  nboot = 1000,
+  todo = NULL,
+  doall = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame in long format. One column is a factor describing the groups;

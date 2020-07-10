@@ -4,8 +4,13 @@
 \alias{shiftdhd}
 \title{Shift function for two dependent groups (pbse methods)}
 \usage{
-shiftdhd(data = df, formula = obs ~ cond, nboot = 200, todo = NULL,
-  doall = FALSE)
+shiftdhd(
+  data = df,
+  formula = obs ~ cond,
+  nboot = 200,
+  todo = NULL,
+  doall = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame in long format. One column is a factor describing the conditions;

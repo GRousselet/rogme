@@ -4,9 +4,16 @@
 \alias{shifthd_pbci}
 \title{Shift function for two independent groups (pbci method)}
 \usage{
-shifthd_pbci(data = df, formula = obs ~ gr, q = seq(0.1, 0.9, 0.1),
-  nboot = 2000, alpha = 0.05, adj_ci = TRUE, todo = NULL,
-  doall = FALSE)
+shifthd_pbci(
+  data = df,
+  formula = obs ~ gr,
+  q = seq(0.1, 0.9, 0.1),
+  nboot = 2000,
+  alpha = 0.05,
+  adj_ci = TRUE,
+  todo = NULL,
+  doall = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame in long format. One column is a factor describing the groups;

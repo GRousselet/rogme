@@ -4,7 +4,9 @@
 \name{onsets}
 \alias{onsets}
 \title{ERP onsets from 120 participants}
-\format{A vector of 120 values in ms.}
+\format{
+A vector of 120 values in ms.
+}
 \source{
 \url{https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13100}
 }

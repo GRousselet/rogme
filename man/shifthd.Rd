@@ -4,8 +4,7 @@
 \alias{shifthd}
 \title{Shift function for two independent groups (pbse method)}
 \usage{
-shifthd(data = df, formula = obs ~ gr, nboot = 200, todo = NULL,
-  doall = FALSE)
+shifthd(data = df, formula = obs ~ gr, nboot = 200, todo = NULL, doall = FALSE)
 }
 \arguments{
 \item{data}{A data frame in long format. One column is a factor describing the groups;

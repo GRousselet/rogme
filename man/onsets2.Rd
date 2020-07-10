@@ -4,7 +4,9 @@
 \name{onsets2}
 \alias{onsets2}
 \title{ERP onsets from 120 participants, 74 tested twice.}
-\format{A matrix of 120 rows of onset values in ms and 2 columns for sessions 1 and 2. Missing values in session 2 are marked as NA.}
+\format{
+A matrix of 120 rows of onset values in ms and 2 columns for sessions 1 and 2. Missing values in session 2 are marked as NA.
+}
 \source{
 \url{https://onlinelibrary.wiley.com/doi/full/10.1111/ejn.13100}
 }

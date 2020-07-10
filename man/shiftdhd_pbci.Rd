@@ -4,8 +4,15 @@
 \alias{shiftdhd_pbci}
 \title{Shift function for two depend groups (pbci method)}
 \usage{
-shiftdhd_pbci(data = df, formula = obs ~ gr, q = seq(0.1, 0.9, 0.1),
-  nboot = 1000, alpha = 0.05, todo = NULL, doall = FALSE)
+shiftdhd_pbci(
+  data = df,
+  formula = obs ~ gr,
+  q = seq(0.1, 0.9, 0.1),
+  nboot = 1000,
+  alpha = 0.05,
+  todo = NULL,
+  doall = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame in long format. One column is a factor describing the groups;

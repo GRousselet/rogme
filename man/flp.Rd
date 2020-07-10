@@ -4,13 +4,15 @@
 \name{flp}
 \alias{flp}
 \title{Reaction time data from the French Lexicon Project}
-\format{A data frame with 1917983 rows and 4 variables:
+\format{
+A data frame with 1917983 rows and 4 variables:
 \describe{
   \item{participant}{id factor, from 1 to 959}
   \item{rt}{single trial reaction times, in ms}
   \item{acc}{accuracy, 1 for correct and 0 for incorrect responses}
   \item{condition}{condition factor, with levels "word" and "non-word"}
-}}
+}
+}
 \source{
 \url{https://sites.google.com/site/frenchlexicon/results}
 }

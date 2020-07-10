@@ -92,68 +92,53 @@ plot_hd_links <- function(p,
                           add_lab = FALSE,
                           labres = 2,
                           text_size = 5){
-  p <- plot_hd_bars(p,
-                    col = q_col,
-                    width = q_width,
-                    q_size = q_size,
-                    md_size = md_size,
-                    q_seq = sf[[1]],
-                    alpha = 1)
+  
   # extract vectors from shift function -------------------------
-  g1 <- sf[[2]] # group 1 deciles
-  g2 <- sf[[3]] # group 2 deciles
-  diff <- sf[[4]] # differences
+  g1 <- sf[[2]]
+  g2 <- sf[[3]]
+  diff <- sf[[4]]
   # create new variables ----------------------------------------
-  diff_sign <- (sign(diff) > 0) + 1 # difference signs c(-1,1) -> c(1,2)
+  diff_sign <- (sign(diff) > 0) + 1
   q_seq <- sf[[1]]
   qn <- length(q_seq)
-  deco <- c(seq(1,floor(qn/2)+1),seq(floor(qn/2),1)) # code of deciles
-  alpha_seq <- seq(link_alpha[1], link_alpha[2], length.out = floor(qn/2)+1)
-  line_size <- c(rep(q_size, floor(qn/2)),
-                 md_size,
-                 rep(q_size, floor(qn/2)))
-  # add links ---------------------------------------------------
-  for (d in 1:qn){
-    p <- p + annotate("segment",
-      x = 1 + q_width / 2,
-      xend = 2 - q_width / 2,
-      y = g1[d],
-      yend = g2[d],
-      colour = link_col[diff_sign[d]],
-      alpha = alpha_seq[deco[d]],
-      size = line_size[d])
+  deco <- c(seq(1, floor(qn/2) + 1), seq(floor(qn/2), 1))
+  alpha_seq <- seq(link_alpha[1], link_alpha[2], length.out = floor(qn/2) + 
+                     1)
+  line_size <- c(rep(q_size, floor(qn/2)), md_size, rep(q_size, 
+                                                        floor(qn/2)))
+  # plot quantiles and links ---------------------------------------------------
+  for (d in 1:qn) {
+    # plot quantiles: group / condition 1
+    p <- p + annotate("segment", x = 1 - q_width/2, xend = 1 + 
+                        q_width/2, y = g1[d], yend = g1[d], colour = q_col, size = line_size[d])
+    # plot quantiles: group / condition 2
+    p <- p + annotate("segment", x = 2 - q_width/2, xend = 2 + 
+                        q_width/2, y = g2[d], yend = g2[d], colour = q_col, size = line_size[d])
+    # link quantiles between groups / conditions
+    p <- p + annotate("segment", x = 1 + q_width/2, xend = 2 - 
+                        q_width/2, y = g1[d], yend = g2[d], colour = link_col[diff_sign[d]], 
+                      alpha = alpha_seq[deco[d]], size = line_size[d])
   }
   # add rectangle
   if (add_rect == TRUE) {
-    if (is.null(rect_alpha)){
+    if (is.null(rect_alpha)) {
       rect_alpha <- 0.2
     }
-    if (is.null(rect_col)){
+    if (is.null(rect_col)) {
       rect_col <- "grey30"
     }
-    p <- p + annotate("rect", xmin = 0.4, xmax = 1.25, ymin = g1[1], ymax = g1[qn],
-      alpha = rect_alpha) # add rectangle
+    p <- p + annotate("rect", xmin = 0.4, xmax = 1.25, ymin = g1[1], 
+                      ymax = g1[qn], alpha = rect_alpha)
   }
   # add labels for differences between extreme deciles
-  if (add_lab == TRUE){
-    for (d in seq(1,qn,qn-1)){
-      # if (diff_sign[d] == 1){
-      #   cc <- link_col[2]
-      # } else {
-      #   cc <- link_col[1]
-      # }
-      p <- p + annotate("label",
-        x = 1.5,
-        y = min(g1[d],g2[d]) + abs(g1[d] - g2[d]) / 2,
-        label = round(diff[d],labres),
-        fill = link_col[diff_sign[d]],
-        colour = "white",
-        fontface = "bold",
-        alpha = alpha_seq[deco[d]])
+  if (add_lab == TRUE) {
+    for (d in seq(1, qn, qn - 1)) {
+      p <- p + annotate("label", x = 1.5, y = min(g1[d], g2[d]) + abs(g1[d] - g2[d])/2, label = round(diff[d], labres), fill = link_col[diff_sign[d]], colour = "white", fontface = "bold", alpha = alpha_seq[deco[d]])
     } # for loop
   } # if add_lab
   p
 }
+
 # =================================================================================
 
 #' Add difference labels to shift function

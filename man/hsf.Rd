@@ -4,9 +4,17 @@
 \alias{hsf}
 \title{Hierarchical shift function for one group, two dependent conditions}
 \usage{
-hsf(data = df, formula = obs ~ cond + id, qseq = seq(0.1, 0.9, 0.1),
-  tr = 0.2, alpha = 0.05, qtype = 8, todo = c(1, 2),
-  null.value = 0, adj_method = "hochberg")
+hsf(
+  data = df,
+  formula = obs ~ cond + id,
+  qseq = seq(0.1, 0.9, 0.1),
+  tr = 0.2,
+  alpha = 0.05,
+  qtype = 8,
+  todo = c(1, 2),
+  null.value = 0,
+  adj_method = "hochberg"
+)
 }
 \arguments{
 \item{data}{A data frame in long format. Missing values are not allowed.}
