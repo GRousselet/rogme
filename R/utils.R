@@ -32,7 +32,7 @@
 #' 5  Group1     5
 #' @export
 mkt1 <- function(x, name = c("obs", "gr")){
-  gr <- c(rep('Group1', length(x)))
+  gr <- factor(c(rep('Group1', length(x))))
   df <- data.frame(x, gr)
   names(df) <- name
   df <- tibble::as_tibble(df)

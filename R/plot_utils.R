@@ -22,15 +22,24 @@ plot_hd_bars <- function(p,
    nq <- length(q_seq)
    size_seq <- c(rep(q_size,floor(nq/2)), md_size, rep(q_size,floor(nq/2)))
    for (qi in 1:length(q_seq)){
-    p <- p + geom_errorbar(stat = "summary",
-                           fun.y = hd,
-                           fun.ymin = hd,
-                           fun.ymax = hd,
-                           fun.args = list(q = q_seq[[qi]]),
-                           colour = col,
-                           width = width,
-                           size = size_seq[[qi]],
-                           alpha = alpha)
+    # p <- p + geom_errorbar(stat = "summary",
+    #                        fun.y = hd,
+    #                        fun.ymin = hd,
+    #                        fun.ymax = hd,
+    #                        fun.args = list(q = q_seq[[qi]]),
+    #                        colour = col,
+    #                        width = width,
+    #                        size = size_seq[[qi]],
+    #                        alpha = alpha)
+     p <- p + stat_summary(geom = "errorbar",
+                            fun = hd,
+                            fun.min = hd,
+                            fun.max = hd,
+                            fun.args = list(q = q_seq[[qi]]),
+                            colour = col,
+                            width = width,
+                            size = size_seq[[qi]],
+                            alpha = alpha)
   }
   p
 }

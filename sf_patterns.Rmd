@@ -18,6 +18,7 @@ devtools::load_all()
 
 ```{r, message=FALSE}
 library(cowplot)
+library(ggplot2)
 ```
 
 # No clear difference

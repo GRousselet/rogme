@@ -17,6 +17,7 @@ devtools::load_all()
 ```{r, message=FALSE}
 library(cowplot)
 library(tidyr)
+library(ggplot2)
 ```
 
 When comparing dependent groups, we can ask two complementary questions:
@@ -197,7 +198,7 @@ To complement these descriptions of the difference distribution, we consider the
 #> --------------------------
 #> asymmetry plot
 set.seed(7)
-dasym <- asymdhd(mkt1(paired_differences), q = seq(5,40,5)/100, alpha = .05, nboot = 1000)
+dasym <- asymdhd(diff, q = seq(5,40,5)/100, alpha = .05, nboot = 1000)
 
 #> ggplot
 diff_asym <- plot_diff_asym(data = dasym)[[1]] +

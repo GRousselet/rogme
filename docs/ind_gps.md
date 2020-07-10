@@ -1,29 +1,42 @@
 Compare two independent groups
 ================
 Guillaume A. Rousselet
-2018-07-07
+2020-07-10
 
--   [Stripcharts of marginal distributions](#stripcharts-of-marginal-distributions)
--   [Shift function](#shift-function)
--   [All pairwise differences](#all-pairwise-differences)
--   [Difference asymmetry function](#difference-asymmetry-function)
--   [Summary figure](#summary-figure)
--   [References](#references)
+  - [Stripcharts of marginal
+    distributions](#stripcharts-of-marginal-distributions)
+  - [Shift function](#shift-function)
+  - [All pairwise differences](#all-pairwise-differences)
+  - [Difference asymmetry function](#difference-asymmetry-function)
+  - [Summary figure](#summary-figure)
+  - [References](#references)
 
 ``` r
 library(cowplot)
+library(ggplot2)
 ```
 
-We can consider two different perspectives when comparing two independent groups, by asking two questions.
+We can consider two different perspectives when comparing two
+independent groups, by asking two questions.
 
--   **Question 1**: How does the typical observation in one group compare to the typical observation in the other group?
+  - **Question 1**: How does the typical observation in one group
+    compare to the typical observation in the other group?
 
--   **Question 2**: What is the typical difference between any member of group 1 and any member of group 2?
+  - **Question 2**: What is the typical difference between any member of
+    group 1 and any member of group 2?
 
-Stripcharts of marginal distributions
-=====================================
+# Stripcharts of marginal distributions
 
-The figure below illustrates two independent samples using stripcharts (1D scatterplots). The scatterplots indicate large differences in spread between the two groups and suggest larger differences in the right than the left tails of the distributions. The medians of the two groups are very similar, so the two distributions do not seem to differ in central tendency. In keeping with these observations, a t-test and a Mann–Whitney–Wilcoxon test are inconclusive, but a Kolmogorov–Smirnov test suggests the distributions differ. This discrepancy between tests highlights an important point: if a t-test is not significant, one cannot conclude that the two distributions do not differ.
+The figure below illustrates two independent samples using stripcharts
+(1D scatterplots). The scatterplots indicate large differences in spread
+between the two groups and suggest larger differences in the right than
+the left tails of the distributions. The medians of the two groups are
+very similar, so the two distributions do not seem to differ in central
+tendency. In keeping with these observations, a t-test and a
+Mann–Whitney–Wilcoxon test are inconclusive, but a Kolmogorov–Smirnov
+test suggests the distributions differ. This discrepancy between tests
+highlights an important point: if a t-test is not significant, one
+cannot conclude that the two distributions do not differ.
 
 ``` r
 #> make data: two skewed distributions
@@ -60,7 +73,7 @@ pscat <- p
 pscat
 ```
 
-![](ind_gps_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](ind_gps_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 Vertical lines mark the deciles, with a thicker line for the median.
 
@@ -144,10 +157,19 @@ ks(g1,g2) #> Kolmogorov-Smirnov test
 #> ks(g1,g2,w=T) #> uses a weighted version more sensitive to differences occuring in the tails
 ```
 
-Shift function
-==============
+# Shift function
 
-A shift function can help us understand how the two distributions differ: the overall profile corresponds to two centred distributions that differ in spread. The differences in spread are asymmetric, with larger differences in the right tails of the marginal distributions, as indicated by the non-linear shift function. Group 1 – group 2 is plotted along the y-axis for each decile, as a function of group 1 deciles. For group 2 to match group 1, its first 4 deciles need to be pushed up, towards higher scores; its last 4 deciles need to be pushed down, towards lower scores. For the decile differences, the vertical lines indicate 95% bootstrap confidence intervals, which are controlled for multiple comparisons.
+A shift function can help us understand how the two distributions
+differ: the overall profile corresponds to two centred distributions
+that differ in spread. The differences in spread are asymmetric, with
+larger differences in the right tails of the marginal distributions, as
+indicated by the non-linear shift function. Group 1 – group 2 is plotted
+along the y-axis for each decile, as a function of group 1 deciles. For
+group 2 to match group 1, its first 4 deciles need to be pushed up,
+towards higher scores; its last 4 deciles need to be pushed down,
+towards lower scores. For the decile differences, the vertical lines
+indicate 95% bootstrap confidence intervals, which are controlled for
+multiple comparisons.
 
 ``` r
 #> compute shift function
@@ -160,22 +182,28 @@ psf <- plot_sf(sf, plot_theme = 2)[[1]] +
         scale_y_continuous(breaks = seq(-6, 6, 2), limits = c(-6, 6))
 ```
 
-    ## Scale for 'alpha' is already present. Adding another scale for 'alpha',
-    ## which will replace the existing scale.
+    ## Warning: Using alpha for a discrete variable is not advised.
+    
+    ## Warning: Using alpha for a discrete variable is not advised.
 
-    ## Scale for 'y' is already present. Adding another scale for 'y', which
+    ## Scale for 'alpha' is already present. Adding another scale for 'alpha', which
     ## will replace the existing scale.
+
+    ## Scale for 'y' is already present. Adding another scale for 'y', which will
+    ## replace the existing scale.
 
 ``` r
 psf
 ```
 
-![](ind_gps_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](ind_gps_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-All pairwise differences
-========================
+# All pairwise differences
 
-To address Question 2, we compute all the pairwise differences between members of the two groups. In this case, each group has n = 50, so we end up with 2500 differences. The next figure shows a kernel density representation of these differences.
+To address Question 2, we compute all the pairwise differences between
+members of the two groups. In this case, each group has n = 50, so we
+end up with 2500 differences. The next figure shows a kernel density
+representation of these differences.
 
 ``` r
 #> ----------------------------------------------
@@ -216,16 +244,41 @@ pkd <- p
 pkd
 ```
 
-![](ind_gps_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](ind_gps_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-Kernel density representation of the distribution of all pairwise differences between the two groups. Vertical lines mark the deciles, with a thicker line for the median.
+Kernel density representation of the distribution of all pairwise
+differences between the two groups. Vertical lines mark the deciles,
+with a thicker line for the median.
 
-What does the typical difference look like? The median of the differences is very near zero, at -0.06, with a 95% confidence interval of \[-1.02, 0.75\]. So, it seems on average, if we randomly select one observation from each group, they will differ very little. However, the differences can be quite substantial, and with real data we would need to put these differences in context, to understand how large they are, and their physiological interpretation. The differences are also asymmetrically distributed: negative scores extend to -10, whereas positive scores do not even reach +5. In other words, negative differences tend to outweigh positive differences. This asymmetry relates to our earlier observation of asymmetric differences in the shift function. If the two distributions did not differ, the distribution of all pairwise differences should be approximately symmetric and centred about zero. Thus, the two distributions seem to differ, but in a way that is not captured by measures of central tendency.
+What does the typical difference look like? The median of the
+differences is very near zero, at -0.06, with a 95% confidence interval
+of \[-0.86, 0.86\]. So, it seems on average, if we randomly select one
+observation from each group, they will differ very little. However, the
+differences can be quite substantial, and with real data we would need
+to put these differences in context, to understand how large they are,
+and their physiological interpretation. The differences are also
+asymmetrically distributed: negative scores extend to -10, whereas
+positive scores do not even reach +5. In other words, negative
+differences tend to outweigh positive differences. This asymmetry
+relates to our earlier observation of asymmetric differences in the
+shift function. If the two distributions did not differ, the
+distribution of all pairwise differences should be approximately
+symmetric and centred about zero. Thus, the two distributions seem to
+differ, but in a way that is not captured by measures of central
+tendency.
 
-Difference asymmetry function
-=============================
+# Difference asymmetry function
 
-We can quantify the asymmetries in the previous distribution of differences using the difference asymmetry function (Wilcox, 2012). The idea is to get a sense of the asymmetry of the difference distribution by computing a sum of quantiles = q + (1 q), for various quantiles estimated using the Harrell–Davis estimator. A percentile bootstrap technique is used to derive confidence intervals. The next figure shows the resulting difference asymmetry function. In this plot, 0.05 stands for the sum of quantile 0.05 + quantile 0.95; 0.10 stands for the sum of quantile 0.10 + quantile 0.90; and so on... The approach is not limited to these quantiles, so sparser or denser functions could be tested too.
+We can quantify the asymmetries in the previous distribution of
+differences using the difference asymmetry function (Wilcox, 2012). The
+idea is to get a sense of the asymmetry of the difference distribution
+by computing a sum of quantiles = q + (1 q), for various quantiles
+estimated using the Harrell–Davis estimator. A percentile bootstrap
+technique is used to derive confidence intervals. The next figure shows
+the resulting difference asymmetry function. In this plot, 0.05 stands
+for the sum of quantile 0.05 + quantile 0.95; 0.10 stands for the sum of
+quantile 0.10 + quantile 0.90; and so on… The approach is not limited to
+these quantiles, so sparser or denser functions could be tested too.
 
 ``` r
 #> slow because of the bootstrap confidence intervals
@@ -238,16 +291,25 @@ diff_asym <- plot_diff_asym(data = dasym)[[1]]
 diff_asym
 ```
 
-![](ind_gps_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](ind_gps_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-Difference asymmetry function with 95% confidence intervals. The family-wise error is controlled by adjusting the critical P values using Hochberg’s method; the confidence intervals are not adjusted.
+Difference asymmetry function with 95% confidence intervals. The
+family-wise error is controlled by adjusting the critical P values using
+Hochberg’s method; the confidence intervals are not adjusted.
 
-Starting on the left, the quantile sums (0.05 + 0.95) are negative, and progressively smaller, converging to zero as we get closer to the centre of the distribution. If the distributions did not differ, the difference asymmetry function would be expected to be about flat and centred near zero. So, the q + (1 q) plot suggests that the distribution of differences is asymmetric, based on the 95% confidence intervals: the two groups seem to differ, with maximum differences in the tails. Other alpha levels can be assessed too.
+Starting on the left, the quantile sums (0.05 + 0.95) are negative, and
+progressively smaller, converging to zero as we get closer to the centre
+of the distribution. If the distributions did not differ, the difference
+asymmetry function would be expected to be about flat and centred near
+zero. So, the q + (1 q) plot suggests that the distribution of
+differences is asymmetric, based on the 95% confidence intervals: the
+two groups seem to differ, with maximum differences in the tails. Other
+alpha levels can be assessed too.
 
-Summary figure
-==============
+# Summary figure
 
-Finally, we can gather all the previous figures into a summary figure using `cowplot`.
+Finally, we can gather all the previous figures into a summary figure
+using `cowplot`.
 
 ``` r
 #> combine plots
@@ -262,11 +324,18 @@ cowplot::plot_grid(pscat, pkd, psf, diff_asym,
           align = "v")
 ```
 
-![](ind_gps_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](ind_gps_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
-References
-==========
+# References
 
-Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) **Beyond differences in means: robust graphical methods to compare two groups in neuroscience.** The European journal of neuroscience, 46, 1738-1748. \[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)\] \[[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)\] \[[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)\]
+Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) **Beyond differences
+in means: robust graphical methods to compare two groups in
+neuroscience.** The European journal of neuroscience, 46, 1738-1748.
+\[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)\]
+\[[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)\]
+\[[reproducibility
+package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)\]
 
-Wilcox, R.R. (2012) **Comparing Two Independent Groups Via a Quantile Generalization of the Wilcoxon-Mann-Whitney Test.** Journal of Modern Applied Statistical Methods, 11, 296-302.
+Wilcox, R.R. (2012) **Comparing Two Independent Groups Via a Quantile
+Generalization of the Wilcoxon-Mann-Whitney Test.** Journal of Modern
+Applied Statistical Methods, 11, 296-302.

@@ -16,6 +16,7 @@ devtools::load_all()
 
 ```{r, message=FALSE}
 library(cowplot)
+library(ggplot2)
 ```
 
 Given a sufficiently large sample size, a single distribution can be quantified in more details, by including confidence intervals of the quantiles. The figure below illustrates such detailed representation using event-related potential onsets from 120 participants (Bieniek et al., 2016). In that case, the earliest latencies are particularly interesting, so it is useful to quantify the first deciles in addition to the median.
@@ -47,11 +48,12 @@ p <- plot_scat2(df,
         axis.ticks.y = element_blank())
  
 #> add vertical lines marking the deciles
-p <- plot_hd_bars(p,
-  col = "black",
-  q_size = 0.5,
-  md_size = 1.5,
-  alpha = 1) 
+p <- plot_hd_bars(p, 
+                  q_seq = seq(.1,.9,.1),
+                  col = "black",
+                  q_size = 0.5,
+                  md_size = 1.5,
+                  alpha = 1) 
 
 #> flip axes
 #> one ERP onsets at 284 ms is masked

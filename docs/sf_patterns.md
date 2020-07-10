@@ -1,28 +1,35 @@
 Quantify distribution differences using the shift function
 ================
 Guillaume A. Rousselet
-2018-07-07
+2020-07-10
 
--   [No clear difference](#no-clear-difference)
--   [Mean difference](#mean-difference)
--   [Skewness difference](#skewness-difference)
--   [Reaction time differences](#reaction-time-differences)
-    -   [Weak early differences, then increasing differences](#weak-early-differences-then-increasing-differences)
-    -   [Complete shift](#complete-shift)
-    -   [Early differences, then decreasing differences](#early-differences-then-decreasing-differences)
--   [References](#references)
+  - [No clear difference](#no-clear-difference)
+  - [Mean difference](#mean-difference)
+  - [Skewness difference](#skewness-difference)
+  - [Reaction time differences](#reaction-time-differences)
+      - [Weak early differences, then increasing
+        differences](#weak-early-differences-then-increasing-differences)
+      - [Complete shift](#complete-shift)
+      - [Early differences, then decreasing
+        differences](#early-differences-then-decreasing-differences)
+  - [References](#references)
 
-In the README file, we considered the case of 2 independent groups that differ in spread. To get a better understanding of the shift function, here we consider other situations in which there is no clear difference, a difference in mean, a difference in skewness. We also look at how the shift function can quantify different patterns that can be observed in skewed observations such as reaction times.
+In the README file, we considered the case of 2 independent groups that
+differ in spread. To get a better understanding of the shift function,
+here we consider other situations in which there is no clear difference,
+a difference in mean, a difference in skewness. We also look at how the
+shift function can quantify different patterns that can be observed in
+skewed observations such as reaction times.
 
 ``` r
-suppressMessages(library(cowplot))
-n = 300 #> number of observations per group
+library(cowplot)
+library(ggplot2)
 ```
 
-No clear difference
-===================
+# No clear difference
 
 ``` r
+n = 300 #> number of observations per group
 set.seed(6)
 g1 <- rnorm(n)
 g2 <- rnorm(n)
@@ -78,7 +85,13 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 
 #> plot shift function
 psf <- plot_sf(sf, plot_theme = 2)
+```
 
+    ## Warning: Using alpha for a discrete variable is not advised.
+    
+    ## Warning: Using alpha for a discrete variable is not advised.
+
+``` r
 #> change axis labels
 psf[[1]] <- psf[[1]] +
             labs(x = "Group 1 quantiles of scores (a.u.)",
@@ -115,14 +128,23 @@ cowplot::plot_grid(ps, p, psf[[1]], labels=c("A", "B", "C"), ncol = 1, nrow = 3,
                              align = "v")
 ```
 
-![](sf_patterns_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](sf_patterns_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-The figure above illustrates two large samples drawn from a standard normal population. In that case, a t-test on means in inconclusive (*t* = -0.45, *P* = 0.65), and so is Kolmogorov-Smirnov test (*KS statistic* = 0.05, *P* = 0.82). As expected, the shift function shows only weak differences at all the deciles. This allows us to suggest more comfortably that the two distributions are similar, which cannot be done with a t-test because it considers only a very limited aspect of the data.
+The figure above illustrates two large samples drawn from a standard
+normal population. In that case, a t-test on means in inconclusive (*t*
+= -0.45, *P* = 0.65), and so is Kolmogorov-Smirnov test (*KS statistic*
+= 0.05, *P* = 0.82). As expected, the shift function shows only weak
+differences at all the deciles. This allows us to suggest more
+comfortably that the two distributions are similar, which cannot be done
+with a t-test because it considers only a very limited aspect of the
+data.
 
-The shift function is not perfectly flat, as expected from random sampling of a limited sample size. The samples are both n = 300, so for smaller samples even more uneven shift functions can be expected by chance.
+The shift function is not perfectly flat, as expected from random
+sampling of a limited sample size. The samples are both n = 300, so for
+smaller samples even more uneven shift functions can be expected by
+chance.
 
-Mean difference
-===============
+# Mean difference
 
 ``` r
 set.seed(21)
@@ -182,7 +204,13 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 
 #> plot shift function
 psf <- plot_sf(sf, plot_theme = 2)
+```
 
+    ## Warning: Using alpha for a discrete variable is not advised.
+    
+    ## Warning: Using alpha for a discrete variable is not advised.
+
+``` r
 #> change axis labels
 psf[[1]] <- psf[[1]] +
             labs(x = "Group 1 quantiles of scores (a.u.)",
@@ -224,12 +252,19 @@ cowplot::plot_grid(ps, p, psf[[1]], labels=c("A", "B", "C"), ncol = 1, nrow = 3,
                    align = "v")
 ```
 
-![](sf_patterns_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](sf_patterns_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-In the figure above, the two distributions differ in central tendency: in that case, a t-test on means returns a large negative t value (*t* = -7.56, *P* &lt; 0.0001), but this is not the full story. The shift function shows that all the differences between deciles are negative and around 0.6. That all the deciles show an effect in the same direction is the hallmark of a completely effective method or experimental intervention. This consistent shift can also be described as first-order stochastic ordering, in which one distribution stochastically dominates another (Speckman et al., 2008).
+In the figure above, the two distributions differ in central tendency:
+in that case, a t-test on means returns a large negative t value (*t* =
+-7.56, *P* \< 0.0001), but this is not the full story. The shift
+function shows that all the differences between deciles are negative and
+around 0.6. That all the deciles show an effect in the same direction is
+the hallmark of a completely effective method or experimental
+intervention. This consistent shift can also be described as first-order
+stochastic ordering, in which one distribution stochastically dominates
+another (Speckman et al., 2008).
 
-Skewness difference
-===================
+# Skewness difference
 
 ``` r
 set.seed(4)
@@ -294,7 +329,13 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 
 #> plot shift function
 psf <- plot_sf(sf, plot_theme = 2)
+```
 
+    ## Warning: Using alpha for a discrete variable is not advised.
+    
+    ## Warning: Using alpha for a discrete variable is not advised.
+
+``` r
 #> change axis labels
 psf[[1]] <- psf[[1]] +
             labs(x = "Group 1 quantiles of scores (a.u.)",
@@ -334,22 +375,35 @@ cowplot::plot_grid(ps, p, psf[[1]], labels=c("A", "B", "C"), ncol = 1, nrow = 3,
                              align = "v")
 ```
 
-![](sf_patterns_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](sf_patterns_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-In this third figure, similarly to our second example, a t-test on means also returns a large t value (*t* = -3.74, *P* = 0.0002). However, the way the two distributions differ is very different from our previous example: the first five deciles are near zero and follow almost a horizontal line, and from deciles 5 to 9, differences increase linearly. The confidence intervals also increase as we move from the left to the right of the distributions: there is growing uncertainty about the size of the group difference in the right tails of the distributions.
+In this third figure, similarly to our second example, a t-test on means
+also returns a large t value (*t* = -3.74, *P* = 0.0002). However, the
+way the two distributions differ is very different from our previous
+example: the first five deciles are near zero and follow almost a
+horizontal line, and from deciles 5 to 9, differences increase linearly.
+The confidence intervals also increase as we move from the left to the
+right of the distributions: there is growing uncertainty about the size
+of the group difference in the right tails of the distributions.
 
-More generally, the shift function is well suited to investigate how skewed distributions differ. The figures in the next section illustrate reaction time data in which a manipulation:
+More generally, the shift function is well suited to investigate how
+skewed distributions differ. The figures in the next section illustrate
+reaction time data in which a manipulation:
 
--   affects most strongly slow behavioural responses, but with limited effects on fast responses;
+  - affects most strongly slow behavioural responses, but with limited
+    effects on fast responses;
 
--   affects all responses, fast and slow, similarly;
+  - affects all responses, fast and slow, similarly;
 
--   has stronger effects on fast responses, and weaker ones for slow responses.
+  - has stronger effects on fast responses, and weaker ones for slow
+    responses.
 
-Reaction time differences
-=========================
+# Reaction time differences
 
-The detailed dissociations presented below have been reported in the literature, and provide much stronger constraints on theories than comparisons limited to say the median reaction times across participants (Ridderinkhof et al., 2005; Pratte et al., 2010).
+The detailed dissociations presented below have been reported in the
+literature, and provide much stronger constraints on theories than
+comparisons limited to say the median reaction times across participants
+(Ridderinkhof et al., 2005; Pratte et al., 2010).
 
 ``` r
 library(retimes)
@@ -362,8 +416,7 @@ Nb = 1000 #> number of bootstrap samples
 nobs <- 1000 #> number of observations per group
 ```
 
-Weak early differences, then increasing differences
----------------------------------------------------
+## Weak early differences, then increasing differences
 
 **Panel A** = violin plots **Panel B** = shift function
 
@@ -401,6 +454,13 @@ sf <- shifthd_pbci(data = df, formula = obs ~ gr, q=seq(.1,.9,.1), nboot = Nb)
 psf <- plot_sf(sf, plot_theme = 2, symb_size = 4)[[1]] + 
   scale_y_continuous(breaks = seq(-160, 20, 20), limits = c(-160, 20)) +
   labs(y = "Decile differences")
+```
+
+    ## Warning: Using alpha for a discrete variable is not advised.
+    
+    ## Warning: Using alpha for a discrete variable is not advised.
+
+``` r
 #> psf
 
 #> combine kernel density plots + shift functions
@@ -417,10 +477,9 @@ cowplot::plot_grid(ps, psf,
 
     ## Warning: Removed 1 rows containing non-finite values (stat_ydensity).
 
-![](sf_patterns_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](sf_patterns_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-Complete shift
---------------
+## Complete shift
 
 ``` r
 set.seed(3)
@@ -454,7 +513,13 @@ sf <- shifthd_pbci(data = df, formula = obs ~ gr, q=seq(.1,.9,.1), nboot = Nb)
 psf <- plot_sf(sf, plot_theme = 2, symb_size = 4)[[1]] +
                   scale_y_continuous(breaks = seq(-100, 20, 20), limits = c(-100, 20)) +
                   labs(y = "Decile differences")
+```
 
+    ## Warning: Using alpha for a discrete variable is not advised.
+    
+    ## Warning: Using alpha for a discrete variable is not advised.
+
+``` r
 #> combine kernel density plots + shift functions
 cowplot::plot_grid(ps, psf,
                    labels=c("A", "B"),
@@ -469,10 +534,9 @@ cowplot::plot_grid(ps, psf,
 
     ## Warning: Removed 1 rows containing non-finite values (stat_ydensity).
 
-![](sf_patterns_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](sf_patterns_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-Early differences, then decreasing differences
-----------------------------------------------
+## Early differences, then decreasing differences
 
 ``` r
 set.seed(1)
@@ -506,7 +570,13 @@ sf <- shifthd_pbci(data = df, formula = obs ~ gr, q=seq(.1,.9,.1), nboot = Nb)
 psf <- plot_sf(sf, plot_theme = 2, symb_size = 4)[[1]] +
                 scale_y_continuous(breaks = seq(-70, 30, 10), limits = c(-70, 30)) +
                 labs(y = "Decile differences")
+```
 
+    ## Warning: Using alpha for a discrete variable is not advised.
+    
+    ## Warning: Using alpha for a discrete variable is not advised.
+
+``` r
 #> combine kernel density plots + shift functions
 cowplot::plot_grid(ps, psf,
                     labels=c("A", "B"),
@@ -521,15 +591,26 @@ cowplot::plot_grid(ps, psf,
 
     ## Warning: Removed 19 rows containing non-finite values (stat_ydensity).
 
-![](sf_patterns_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](sf_patterns_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-References
-==========
+# References
 
-Pratte, M.S., Rouder, J.N., Morey, R.D. & Feng, C.N. (2010) **Exploring the differences in distributional properties between Stroop and Simon effects using delta plots.** Atten Percept Psycho, 72, 2013-2025.
+Pratte, M.S., Rouder, J.N., Morey, R.D. & Feng, C.N. (2010) **Exploring
+the differences in distributional properties between Stroop and Simon
+effects using delta plots.** Atten Percept Psycho, 72, 2013-2025.
 
-Ridderinkhof, K.R., Scheres, A., Oosterlaan, J. & Sergeant, J.A. (2005) **Delta plots in the study of individual differences: New tools reveal response inhibition deficits in AD/HD that are eliminated by methylphenidate treatment.** J Abnorm Psychol, 114, 197-215.
+Ridderinkhof, K.R., Scheres, A., Oosterlaan, J. & Sergeant, J.A. (2005)
+**Delta plots in the study of individual differences: New tools reveal
+response inhibition deficits in AD/HD that are eliminated by
+methylphenidate treatment.** J Abnorm Psychol, 114, 197-215.
 
-Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) **Beyond differences in means: robust graphical methods to compare two groups in neuroscience.** The European journal of neuroscience, 46, 1738-1748. \[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)\] \[[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)\] \[[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)\]
+Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) **Beyond differences
+in means: robust graphical methods to compare two groups in
+neuroscience.** The European journal of neuroscience, 46, 1738-1748.
+\[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)\]
+\[[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)\]
+\[[reproducibility
+package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)\]
 
-Speckman, P.L., Rouder, J.N., Morey, R.D. & Pratte, M.S. (2008) **Delta plots and coherent distribution ordering.** Am Stat, 62, 262-266.
+Speckman, P.L., Rouder, J.N., Morey, R.D. & Pratte, M.S. (2008) **Delta
+plots and coherent distribution ordering.** Am Stat, 62, 262-266.

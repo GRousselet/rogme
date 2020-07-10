@@ -179,7 +179,7 @@ plot_hsf_pb_dist(out)
 
 With 80% confidence interval, median of bootstrap differences and different colours
 ```{r}
-plot_hsf_pb_dist(out, point_interv = median_ci, interval_width = .80, 
+plot_hsf_pb_dist(out, point_interv = "median_ci", interval_width = .80, 
                  int_colour = "blue", fill_colour = "grey")
 ```
 
