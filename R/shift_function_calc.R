@@ -413,8 +413,8 @@ shifthd_pbci <- function(data = df,
 
 #' Shift function for two depend groups (pbci method)
 #'
-#' \code{shiftdhd_pbci} returns a shift function for two independent groups or
-#' multiple shift functions for pairs of independent groups. It uses the
+#' \code{shiftdhd_pbci} returns a shift function for two dependent groups or
+#' multiple shift functions for pairs of dependent groups. It uses the
 #' Harrell-Davis quantile estimator in conjunction with a percentile
 #' bootstrap approach.
 #' Unlike \code{\link{shiftdhd}}: \itemize{
