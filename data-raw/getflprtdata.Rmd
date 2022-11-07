@@ -40,6 +40,7 @@ acccutoff <- .4 #.75
 abline(h=acccutoff)
 abline(v=rtcutoff)
 ```
+
 Check participants with RT > 1500
 ```{r}
 list.p <- unique(a$sujet)

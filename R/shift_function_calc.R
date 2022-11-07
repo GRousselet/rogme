@@ -280,20 +280,20 @@ shiftdhd <- function(data = df,
 #' @param q Quantiles to estimate - default = deciles 0.1:0.1:.9.
 #' @param nboot Number of bootstrap samples - default = 2000
 #' @param alpha Expected long-run type I error rate - default = 0.05
-#' @param adj_ci Adjust confidence intervals & p values for multiple comparisons - default = TRUE
+#' @param adj_ci Adjust confidence intervals for multiple comparisons - default = TRUE
 #' @param todo A list of comparisons to perform - default = NULL.
 #' @param doall Set to TRUE to compute all comparisons - default = FALSE. Not
 #'   executed if a \code{todo} list is provided.
 #' @return A list of data frames, one data frame per comparison. Each data frame
-#'   has one row per decile. The columns are: \itemize{
+#'   has one row per quantile. The columns are: \itemize{
 #'   \item Column 1 = quantiles
 #'   \item Column 2 = quantiles for group 1
 #'   \item Column 3 = quantiles for group 2
 #'   \item Column 4 = quantile differences (column 4 - column 5)
 #'   \item Column 5 = lower bounds of the confidence intervals
 #'   \item Column 6 = upper bounds of the confidence intervals
-#'   \item Column 7 = critical p_values based on Hochberg's method
-#'   \item Column 8 = p_values (based on Hochberg's method if adj_ci = TRUE)
+#'   \item Column 7 = p_values
+#'   \item Column 8 = p_values  adjusted using Hochberg's 1988 recursive method
 #'   }
 #' @section Note:
 #' Adaptation of Rand Wilcox's `qcomhd` & `pb2gen` R functions
@@ -304,6 +304,10 @@ shiftdhd <- function(data = df,
 #' Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 #' Comparing two independent groups via the lower and upper quantiles.
 #' J Stat Comput Sim, 84, 1543-1551.
+#' 
+#' Hochberg, Y. (1988)
+#' A sharper Bonferroni procedure for multiple tests of significance
+#' Biometrika, 75, 800-802.
 #'
 #' @seealso \code{\link{hd}}
 #'
@@ -376,14 +380,14 @@ shifthd_pbci <- function(data = df,
       temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
       output[i,5] = bvec[low] # ci_lower
       output[i,6] = bvec[up] # ci_upper
-      output[i,8] = 2*(min(temp,1-temp)) # p_value
+      output[i,7] = 2*(min(temp,1-temp)) # p_value
     }
-    temp = order(output[,8], decreasing=TRUE)
-    zvec = alpha / c(1:length(q))
-    output[temp,7] = zvec # p_crit
     if(adj_ci){
+      id = order(output[,7], decreasing=TRUE)
+      zvec = alpha / c(1:length(q)) # p_crit
+      zvec[id] = zvec
       for(i in 1:length(q)){
-        alpha = output[i,7]
+        alpha = zvec[i]
         # confidence interval's boundaries
         low <- round((alpha / 2) * nboot) + 1
         up <- nboot - low
@@ -393,25 +397,25 @@ shifthd_pbci <- function(data = df,
         bvecx <- apply(datax, 1, hd, q = q[i])
         bvecy <- apply(datay, 1, hd, q = q[i])
         bvec <- sort(bvecx - bvecy)
-        temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
+        # temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
         output[i,5] = bvec[low] # ci_lower
         output[i,6] = bvec[up] # ci_upper
-        output[i,8] = 2*(min(temp,1-temp)) # p_value
+        # output[i,8] = 2*(min(temp,1-temp)) # p_value
       }
     }
     # make data frame
     tmp <- data.frame(output)
     names(tmp) <- c('q', gr_name1, gr_name2, 'difference',
-      'ci_lower', 'ci_upper', 'p_crit', 'p_value')
-    # add sig column
-    # dplyr::mutate(tmp, sig = p_value <= p_crit)
+                    'ci_lower', 'ci_upper', 'p_value', 'adj_p_value')
+    # apply Hochberg's 1988 correction for multiple comparisons
+    tmp[,8] <- p.adjust(tmp[,7], method='hoch')  
     out[[comp]] <- tmp
     names(out)[comp] <- paste0(gr_name1, " - ",gr_name2)
   }
   out
 }
 
-#' Shift function for two depend groups (pbci method)
+#' Shift function for two dependent groups (pbci method)
 #'
 #' \code{shiftdhd_pbci} returns a shift function for two dependent groups or
 #' multiple shift functions for pairs of dependent groups. It uses the
@@ -453,8 +457,8 @@ shifthd_pbci <- function(data = df,
 #'   \item Column 4 = quantile differences (column 3 - column 4)
 #'   \item Column 5 = lower bounds of the confidence intervals
 #'   \item Column 6 = upper bounds of the confidence intervals
-#'   \item Column 7 = critical p_values based on Hochberg's method
-#'   \item Column 8 = p_values
+#'   \item Column 7 = p_values 
+#'   \item Column 8 = p_values adjusted using Hochberg's method
 #'   }
 #' @section Note:
 #' Adaptation of Rand Wilcox's `Dqcomhd`, `bootdpci` & `rmmcppb` R functions
@@ -539,17 +543,14 @@ shiftdhd_pbci <- function(data = df,
       temp <- sum(bvec < 0) / nboot + sum(bvec == 0) / (2 * nboot)
       output[i,5] = bvec[low] # ci_lower
       output[i,6] = bvec[up] # ci_upper
-      output[i,8] = 2*(min(temp,1-temp)) # p_value
+      output[i,7] = 2*(min(temp,1-temp)) # p_value
     }
-    temp = order(output[,8], decreasing=TRUE)
-    zvec = alpha / c(1:length(q))
-    output[temp,7] = zvec # p_crit
     # make data frame
     tmp <- data.frame(output)
     names(tmp) <- c('q', gr_name1, gr_name2, 'difference',
-      'ci_lower', 'ci_upper', 'p_crit', 'p_value')
-    # add sig column
-    # dplyr::mutate(tmp, sig = p_value <= p_crit)
+                    'ci_lower', 'ci_upper', 'p_value', 'adj_p_value')
+    # apply Hochberg's 1988 correction for multiple comparisons
+    tmp[,8] <- p.adjust(tmp[,7], method='hoch')  
     out[[comp]] <- tmp
     names(out)[comp] <- paste0(gr_name1, " - ",gr_name2)
   }
