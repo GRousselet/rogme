@@ -1,5 +1,5 @@
 # ------------------------
-# rogme 0.2.2 (NOT RELEASED YET)
+# rogme 0.2.2
 - new `onsets2` dataset, containing ERP onsets from 2 sessions
 - fix bug in `plot_sf` when requesting quantiles other than the deciles
 - fix bugs due to depricated `ggplot2` syntax in `plot_hd_bars` and `plot_hd_links`
