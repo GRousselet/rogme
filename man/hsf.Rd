@@ -5,7 +5,7 @@
 \title{Hierarchical shift function for one group, two dependent conditions}
 \usage{
 hsf(
-  data = df,
+  data,
   formula = obs ~ cond + id,
   qseq = seq(0.1, 0.9, 0.1),
   tr = 0.2,
@@ -65,9 +65,7 @@ set.seed(22) # subset random sample of participants from the French Lexicon Proj
 id <- unique(flp$participant)
 df <- subset(flp, flp$participant \%in\% sample(id, 50, replace = FALSE))
 out <- hsf(df, rt ~ condition + participant) # use the default parameters
-plot_hsf(out) # plot results. Shift functions are overall negative, as
-participants tend to be faster in the Word condition than in the Non-Word
-condition.
+plot_hsf(out) # plot results
 
 out <- hsf(df, rt ~ condition + participant, qseq = c(.25, .5, .75)) # estimate quartiles only
 
@@ -75,9 +73,9 @@ out <- hsf(df, rt ~ condition + participant, todo = c(2,1)) # reverse comparison
 
 }
 \references{
-Rousselet, G. A., & Wilcox, R. R. (2019, January 17). Reaction
+Rousselet, G. A., & Wilcox, R. R. (2020). Reaction
   times and other skewed distributions: problems with the mean and the
-  median. https://doi.org/10.31234/osf.io/3y54r
+  median. https://open.lnu.se/index.php/metapsychology/article/view/1630
 
   Hochberg, Y. (1988). A sharper Bonferroni procedure for multiple tests of
   significance. Biometrika, 75(4), 800-802.

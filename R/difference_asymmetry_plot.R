@@ -23,7 +23,7 @@
 #' # using asymhd
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
-#' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+#' df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 #' out <- asymhd(df, obs ~ gr, doall = TRUE, nboot = 100) # compute all comparisons
 #' plist <- plot_diff_asym(out)
@@ -35,7 +35,7 @@
 #' C2 <- C1 + rnorm(n) + 2 # condition 2
 #' # Data with 3 independent groups and 2 dependent conditions per group
 #' library(tibble)
-#' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+#' df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'   cond1 = c(C1, C1+rnorm(n), C1+rnorm(n)),
 #'   cond2 = c(C2, C2 + 1, C2 + 3) ) # make tibble
 #' library(dplyr)
@@ -45,7 +45,7 @@
 #' plist
 #'
 #' @export
-plot_diff_asym <- function(data = df,
+plot_diff_asym <- function(data,
                            symb_col = NULL,
                            symb_fill = NULL,
                            symb_size = 5,
@@ -82,17 +82,17 @@ plot_diff_asym <- function(data = df,
     if (is.null(q_line_col)){
       q_line_col <- "grey50"
     }
-    p <- ggplot(df, aes_string(x="quantile", y="SUM")) +
+    p <- ggplot(df, aes(x = .data[["quantile"]], y = .data[["SUM"]])) +
       geom_hline(yintercept=0,linetype=2,alpha=0.5) + # x=0 reference line
       # vertical bars for uncertainty intervals
       geom_linerange(aes(ymin=ci.low, ymax=ci.up), colour = diffint_col,
-        size = diffint_size) +
+        linewidth = diffint_size) +
       # line joining the quantiles
       geom_line(colour = q_line_col, alpha = q_line_alpha, linetype = "solid",
-        size = q_line_size) +
+        linewidth = q_line_size) +
       # symbols marking the quantiles
       geom_point(aes(fill = deco), colour="black", size = symb_size, shape = symb_shape) +
-      scale_fill_gradient(low = symb_fill[1], high = symb_fill[2], guide = FALSE) +
+      scale_fill_gradient(low = symb_fill[1], high = symb_fill[2], guide = "none") +
       xlab("Quantiles") +
       ylab(paste0("Quantile sum = q + 1-q \n (",names(data[pc])," differences)")) +
       theme_bw() +

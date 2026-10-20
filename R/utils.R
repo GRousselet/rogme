@@ -4,10 +4,9 @@
 #' data frame with column 1 for group label and column 2 for observations.
 #'
 #' @param x A vector.
-#' @param gr_names The name of the first column - default "gr" for groups.
-#' @param obs_names The name of the second column - default "obs" for
-#'   observations.
-#' @return A tibble - see details in \code{\link[TIBBLE]{tibble}}.
+#' @param name Names of the two columns - default "obs" for observations
+#'   and "gr" for groups.
+#' @return A tibble - see details in \code{\link[tibble]{tibble}}.
 #' @examples
 #' # Generate one vector
 #' g1 <- rnorm(10)
@@ -16,20 +15,11 @@
 #' df <- mkt1(g1)
 #'
 #' # Make tibble using custom parameters
-#' df <- mkt1(g1, gr_names = "groups", obs_names = "values", group_label =
-#' "group1")
+#' df <- mkt1(g1, name = c("values", "groups"))
 #'
 #' # For instance, vector x:
 #' x <- c(1, 2, 3, 4, 5)
 #' df <- mkt1(x)
-#' # become a tibble: 5 × 2:
-#'        gr   obs
-#'    <fctr> <dbl>
-#' 1  Group1     1
-#' 2  Group1     2
-#' 3  Group1     3
-#' 4  Group1     4
-#' 5  Group1     5
 #' @export
 mkt1 <- function(x, name = c("obs", "gr")){
   gr <- factor(c(rep('Group1', length(x))))
@@ -45,10 +35,11 @@ mkt1 <- function(x, name = c("obs", "gr")){
 #' data frame with column 1 for group labels as factors and column 2 for observations.
 #'
 #' @param x,y Two vectors.
+#' @param group_labels Labels of the two groups - default "Group1" and "Group2".
 #' @param gr_names The name of the first column - default "gr" for groups.
 #' @param obs_names The name of the second column - default "obs" for
 #'   observations.
-#' @return A tibble - see details in \code{\link[TIBBLE]{tibble}}.
+#' @return A tibble - see details in \code{\link[tibble]{tibble}}.
 #' @examples
 #' # Generate two vectors
 #' g1 <- rnorm(10)
@@ -65,19 +56,6 @@ mkt1 <- function(x, name = c("obs", "gr")){
 #' x <- c(1, 2, 3, 4, 5)
 #' y <- c(11, 12, 13, 14, 15)
 #' df <- mkt2(x, y)
-#' # become a tibble: 10 × 2:
-#'        gr   obs
-#'    <fctr> <dbl>
-#' 1  Group1     1
-#' 2  Group1     2
-#' 3  Group1     3
-#' 4  Group1     4
-#' 5  Group1     5
-#' 6  Group2    11
-#' 7  Group2    12
-#' 8  Group2    13
-#' 9  Group2    14
-#' 10 Group2    15
 #' @export
 mkt2 <- function(x, y, gr_names = "gr", obs_names = "obs",
                  group_labels = c("Group1", "Group2")){

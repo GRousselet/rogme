@@ -10,9 +10,9 @@
 #' across quantiles is achieved using Hochberg's 1988 procedure. Plot the shift
 #' function using \code{plot_hsf}.
 #'
-#' @references Rousselet, G. A., & Wilcox, R. R. (2019, January 17). Reaction
+#' @references Rousselet, G. A., & Wilcox, R. R. (2020). Reaction
 #'   times and other skewed distributions: problems with the mean and the
-#'   median. https://doi.org/10.31234/osf.io/3y54r
+#'   median. https://open.lnu.se/index.php/metapsychology/article/view/1630
 #'
 #'   Hochberg, Y. (1988). A sharper Bonferroni procedure for multiple tests of
 #'   significance. Biometrika, 75(4), 800-802.
@@ -47,16 +47,14 @@
 #' id <- unique(flp$participant)
 #' df <- subset(flp, flp$participant %in% sample(id, 50, replace = FALSE))
 #' out <- hsf(df, rt ~ condition + participant) # use the default parameters
-#' plot_hsf(out) # plot results. Shift functions are overall negative, as
-#' participants tend to be faster in the Word condition than in the Non-Word
-#' condition.
+#' plot_hsf(out) # plot results
 #'
 #' out <- hsf(df, rt ~ condition + participant, qseq = c(.25, .5, .75)) # estimate quartiles only
 #'
 #' out <- hsf(df, rt ~ condition + participant, todo = c(2,1)) # reverse comparison
 #'
 #' @export
-hsf <- function(data = df,
+hsf <- function(data,
                 formula = obs ~ cond + id,
                 qseq = seq(0.1,0.9,0.1),
                 tr = 0.2,
@@ -127,9 +125,9 @@ hsf <- function(data = df,
 #' there is no correction for multiple comparisons and no p values. Plot the
 #' shift function using \code{plot_hsf_pb} or \code{plot_hsf_pb_dist}.
 #'
-#' @references Rousselet, G. A., & Wilcox, R. R. (2019, January 17). Reaction
+#' @references Rousselet, G. A., & Wilcox, R. R. (2020). Reaction
 #'   times and other skewed distributions: problems with the mean and the
-#'   median. https://doi.org/10.31234/osf.io/3y54r
+#'   median. https://open.lnu.se/index.php/metapsychology/article/view/1630
 #'
 #' @param data A data frame in long format. Missing values are not allowed.
 #' @param formula A formula with format response variable ∼ predictor variable + id,
@@ -161,16 +159,14 @@ hsf <- function(data = df,
 #' id <- unique(flp$participant)
 #' df <- subset(flp, flp$participant %in% sample(id, 50, replace = FALSE))
 #' out <- hsf_pb(df, rt ~ condition + participant) # use the default parameters
-#' plot_hsf_pb(out) # plot results. Shift functions are overall negative, as
-#' participants tend to be faster in the Word condition than in the Non-Word
-#' condition.
+#' plot_hsf_pb(out) # plot results 
 #'
 #' out <- hsf_pb(df, rt ~ condition + participant, qseq = c(.25, .5, .75)) # estimate quartiles only
 #'
 #' out <- hsf_pb(df, rt ~ condition + participant, todo = c(2,1)) # reverse comparison
 #'
 #' @export
-hsf_pb <- function(data = df,
+hsf_pb <- function(data,
                     formula = obs ~ cond + id,
                     qseq = seq(0.1,0.9,0.1),
                     tr = 0.2,

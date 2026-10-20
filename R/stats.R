@@ -3,13 +3,13 @@
 #' Estimate the quantiles for the data in vector x using the Harrell-Davis
 #' estimate of the qth quantile.
 #' @param x A numeric vector of observations.
-#' @param q A numeric vector of quantiles - default to the deciles.
+#' @param qseq A numeric vector of quantiles - default to the deciles.
 #' @return A vector of quantile estimates.
 #' @examples
 #' x <- rnorm(100) # create vector
 #' hdseq(x) # estimates of the deciles
 #' hdseq(x, qseq = c(0.25, 0.5, 0.75)) # estimates of the quartiles
-#' hdseq(x, qseq = c(seq(1,4),seq(6,9))) # estimates of the deciles except the median
+#' hdseq(x, qseq = c(seq(1,4),seq(6,9))/10) # estimates of the deciles except the median
 #'
 #' @export
 hdseq <- function(x, qseq = seq(0.1,0.9,0.1)){
@@ -32,6 +32,11 @@ hdseq <- function(x, qseq = seq(0.1,0.9,0.1)){
 #' Compute percentile bootstrap confidence intervals of quantiles,
 #' estimated using the Harrell-Davis estimator.
 #' Default to deciles.
+#' @param x A numeric vector of observations.
+#' @param q A numeric vector of quantiles - default to the deciles.
+#' @param nboot Number of bootstrap samples - default = 2000.
+#' @param alpha Alpha level - default = 0.05, which means that a 95% confidence
+#'   interval is computed.
 #' @section Note:
 #' Combine functions \code{deciles} & \code{qcipb} from
 #' Rallfun-v31.txt - see \url{https://github.com/nicebread/WRS}.
@@ -139,6 +144,8 @@ allpdiff_hdpbci <- function(x,y,alpha=.05,q=.5,nboot=600){
 #' @param alpha Alpha level - default = 0.05, which means that a 95% confidence
 #'   interval is computed.
 #' @param nboot Number of bootstrap samples - default = 2000.
+#' @param est Function used to estimate the parameter being compared - default = \code{hd}.
+#' @param ... Additional arguments passed to \code{est}.
 #' @return A list with variables: \code{est.1} \code{est.2}, \code{est.diff} \code{ci}, \code{p.value}, \code{sq.se}, \code{n1}, \code{n2}
 #' @section Note: Adaptation of \code{pb2gen} from Rallfun-v33.txt. See
 #'   \url{https://github.com/nicebread/WRS/}
@@ -177,6 +184,7 @@ pb2gen <- function(x, y, alpha = .05, nboot = 2000, est = hd,...){
 #' @param q A quantile between 0 and 1 - default is 0.5, the median.
 #' @param na.rm Set to TRUE to remove NA, FALSE otherwise - default is TRUE.
 #' @examples
+#' x <- rnorm(100)
 #' hd(x) # use default estimation of the median (q = 0.5)
 #' hd(x, q = 0.25) # estimate the first quartile
 #' hd(x, q = 0.75) # estimate the third quartile
@@ -249,6 +257,7 @@ hdpbci <- function(x, q = .5, alpha = .05, nboot = 2000, nv = 0){
 #' @param sig TRUE to use the exact significance level. If there are ties, the
 #'   reported significance level is exact when using the unweighted test, but
 #'   for the weighted test the reported level is too high.
+#' @param alpha Alpha significance level.
 #' @seealso This function uses the functions ecdf, kstiesig, kssig and kswsig
 #' @section Note:
 #' From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}
@@ -261,7 +270,7 @@ ks <- function(x, y, w = FALSE, sig = TRUE, alpha = .05){
   tie <- logical(1)
   siglevel <- NA
   z <- sort(c(x,y))  # Pool and sort the observations
-  tie = duplicated(z)
+  tie <- anyDuplicated(z) > 0
   v <- 1   # Initializes v
   for (i in 1:length(z))v[i]<-abs(ecdf(x,z[i])-ecdf(y,z[i]))
   ks<-max(v)
@@ -294,6 +303,8 @@ ks <- function(x, y, w = FALSE, sig = TRUE, alpha = .05){
 #'  Compute empirical cdf
 #'  Compute the empirical cdf for data in x evaluated at val.
 #'  That is, estimate P(X <= val)
+#' @param x A numeric vector.
+#' @param val Value at which the cdf is evaluated.
 ecdf <- function(x, val){
   ecdf <- length(x[x <= val]) / length(x)
   ecdf
@@ -306,6 +317,8 @@ ecdf <- function(x, val){
 #' for the data in vectors x and y at val, the observed value of the
 #' test statistic.
 #' \code{kstiesig} allows ties among values.
+#' @param x,y Two vectors.
+#' @param val Observed value of test statistic.
 kstiesig <- function(x, y, val){
   m<-length(x)
   n<-length(y)
@@ -330,9 +343,9 @@ kstiesig <- function(x, y, val){
 }
 
 #' Compute significance level of the  Kolmogorov-Smirnov test statistic
-#' m=sample size of first group
-#' n=sample size of second group
-#' val=observed value of test statistic
+#' @param m Sample size of first group
+#' @param n Sample size of second group
+#' @param val Observed value of test statistic
 kssig<-function(m,n,val){
   cmat<-matrix(0,m+1,n+1)
   umat<-matrix(0,m+1,n+1)

@@ -25,8 +25,8 @@ Given a sufficiently large sample size, a single distribution can be quantified 
 #> --------------------------------------
 #> Inference on the deciles of ERP onsets
 #> --------------------------------------
-#> load data:
-load("./data/onsets.RData") # onsets
+#> load data from package:
+onsets <- onsets
 
 #> -----------------------------------
 #> Panel A: scatterplot + deciles

@@ -49,13 +49,17 @@ package. Individual shift functions are superimposed in the background. The trim
 A horizontal line indicates a null reference value.
 }
 \examples{
+set.seed(22)
+id <- unique(flp$participant)
+df <- subset(flp, flp$participant \%in\% sample(id, 20, replace = FALSE))
+out <- hsf_pb(df, rt ~ condition + participant , nboot = 200)
 plot_hsf_pb(out) # default plot
 p <- plot_hsf_pb(out) # get ggplot object
 plot_hsf_pb(out, gp_line_colour = "purple", gp_point_colour = "purple") # pink group shift function
 
 }
 \references{
-Rousselet, G. A., & Wilcox, R. R. (2019, January 17). Reaction
+Rousselet, G. A., & Wilcox, R. R. (2020). Reaction
   times and other skewed distributions: problems with the mean and the
-  median. https://doi.org/10.31234/osf.io/3y54r
+  median. https://open.lnu.se/index.php/metapsychology/article/view/1630
 }

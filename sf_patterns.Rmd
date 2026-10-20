@@ -267,7 +267,8 @@ More generally, the shift function is well suited to investigate how skewed dist
 The detailed dissociations presented below have been reported in the literature, and provide much stronger constraints on theories than comparisons limited to say the median reaction times across participants (Ridderinkhof et al., 2005; Pratte et al., 2010).
 
 ```{r}
-library(retimes)
+#> shifted lognormal generator: shift + lognormal(meanlog, sdlog)
+rsln <- function(n, shift, meanlog, sdlog) shift + rlnorm(n, meanlog, sdlog)
 Nb = 1000 #> number of bootstrap samples
 nobs <- 1000 #> number of observations per group
 ```
@@ -279,8 +280,8 @@ nobs <- 1000 #> number of observations per group
 
 ```{r, message = FALSE, fig.width = 7, fig.height = 8}
 set.seed(3)
-g1 <- rexgauss(nobs, mu=300, sigma=10, tau=30)
-g2 <- rexgauss(nobs, mu=300, sigma=17, tau=70)
+g1 <- rsln(nobs, shift=270, meanlog=4.0, sdlog=0.5)
+g2 <- rsln(nobs, shift=240, meanlog=4.7, sdlog=0.5)
 
 #> make tibble
 df <- mkt2(g1,g2)
@@ -288,13 +289,13 @@ df <- mkt2(g1,g2)
 #> -------------------------------------------------------
 #> violinplots
 ps <- ggplot(df, aes(x = gr, y = obs, fill = gr, colour = gr, shape = gr)) + 
-  geom_violin(fill = "grey95", colour = "black", size = 1.25) +
+  geom_violin(fill = "grey95", colour = "black", linewidth = 1.25) +
   theme_bw() + 
   theme(legend.position = "none") + 
   theme(axis.title.x = element_text(size = 16, face = "bold"), 
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16)) + 
-  scale_y_continuous(limits=c(250, 700),breaks=seq(200,800,100)) +
+  scale_y_continuous(limits=c(250, 800),breaks=seq(200,800,100)) +
   scale_x_discrete(labels = c("g1", "g2"), expand = c(0.02, 0.02)) +
   labs(title = "Increasing differences", x = "", y = "Response latencies in ms") +
   theme(plot.title = element_text(face = "bold", size = 20)) + 
@@ -329,8 +330,8 @@ cowplot::plot_grid(ps, psf,
 
 ```{r, message = FALSE, fig.width = 7, fig.height = 8}
 set.seed(3)
-g1<-rexgauss(nobs, mu=300, sigma=10, tau=50)
-g2<-rexgauss(nobs, mu=300, sigma=10, tau=50) + 50
+g1<-rsln(nobs, shift=260, meanlog=4.35, sdlog=0.5)
+g2<-rsln(nobs, shift=260, meanlog=4.35, sdlog=0.5) + 50
 
 #> make tibble
 df <- mkt2(g1,g2)
@@ -338,13 +339,13 @@ df <- mkt2(g1,g2)
 #> -------------------------------------------------------
 #> violinplots
 ps <- ggplot(df, aes(x = gr, y = obs, fill = gr, colour = gr, shape = gr)) + 
-  geom_violin(fill = "grey95", colour = "black", size = 1.25) +
+  geom_violin(fill = "grey95", colour = "black", linewidth = 1.25) +
   theme_bw() + 
   theme(legend.position = "none") + 
   theme(axis.title.x = element_text(size = 16, face = "bold"), 
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16)) + 
-  scale_y_continuous(limits=c(250, 700),breaks=seq(200,800,100)) +
+  scale_y_continuous(limits=c(250, 800),breaks=seq(200,800,100)) +
   scale_x_discrete(labels = c("g1", "g2"), expand = c(0.02, 0.02)) +
   labs(title = "Complete shift", x = "", y = "Response latencies in ms") +
   theme(plot.title = element_text(face = "bold", size = 20)) + 
@@ -376,8 +377,8 @@ cowplot::plot_grid(ps, psf,
 
 ```{r, message = FALSE, fig.width = 7, fig.height = 8}
 set.seed(1)
-g1<-rexgauss(nobs, mu=400, sigma=20, tau=50)
-g2<-rexgauss(nobs, mu=370, sigma=20, tau=70)
+g1<-rsln(nobs, shift=340, meanlog=4.6, sdlog=0.5)
+g2<-rsln(nobs, shift=305, meanlog=4.8, sdlog=0.5)
 
 #> make tibble
 df <- mkt2(g1,g2)
@@ -385,13 +386,13 @@ df <- mkt2(g1,g2)
 #> -------------------------------------------------------
 #> violinplots
 ps <- ggplot(df, aes(x = gr, y = obs, fill = gr, colour = gr, shape = gr)) + 
-  geom_violin(fill = "grey95", colour = "black", size = 1.25) +
+  geom_violin(fill = "grey95", colour = "black", linewidth = 1.25) +
   theme_bw() + 
   theme(legend.position = "none") + 
   theme(axis.title.x = element_text(size = 16, face = "bold"), 
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16)) + 
-  scale_y_continuous(limits=c(200, 700),breaks=seq(200,800,100)) +
+  scale_y_continuous(limits=c(250, 800),breaks=seq(200,800,100)) +
   scale_x_discrete(labels = c("g1", "g2"), expand = c(0.02, 0.02)) +
   labs(title = "Early differences", x = "", y = "Response latencies in ms") +
   theme(plot.title = element_text(face = "bold", size = 20)) + 
@@ -432,7 +433,8 @@ J Abnorm Psychol, 114, 197-215.
 Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) 
 **Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
 The European journal of neuroscience, 46, 1738-1748. 
-[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)] [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
+[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)] 
+[[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
 
 Speckman, P.L., Rouder, J.N., Morey, R.D. & Pratte, M.S. (2008) 
 **Delta plots and coherent distribution ordering.** 

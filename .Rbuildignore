@@ -3,4 +3,6 @@
 ^README\.Rmd$
 ^README-.*\.png$
 ^NEWS\.md$
+^LICENSE\.md$
 ^notes\.txt$
+^ratio_sf\.md$

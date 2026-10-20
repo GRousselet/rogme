@@ -8,6 +8,11 @@
 \usage{
 ecdf(x, val)
 }
+\arguments{
+\item{x}{A numeric vector.}
+
+\item{val}{Value at which the cdf is evaluated.}
+}
 \description{
 Compute empirical cdf
  Compute the empirical cdf for data in x evaluated at val.

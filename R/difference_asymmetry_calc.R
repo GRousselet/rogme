@@ -46,6 +46,10 @@
 #' Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 #' Comparing two independent groups via the lower and upper quantiles.
 #' J Stat Comput Sim, 84, 1543-1551.
+#' 
+#' Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2017). 
+#' Beyond differences in means: Robust graphical methods to compare two groups in neuroscience. 
+#' European Journal of Neuroscience, 46(2), 1738–1748. https://doi.org/10.1111/ejn.13610
 #'
 #' @seealso \code{\link{hd}} Harrell-Davis quantile estimator
 #' \code{\link{allpdiff}} to compute all pairwise differences
@@ -55,18 +59,18 @@
 #' @examples
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
-#' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+#' df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 #'
 #' out <- asymhd(df, obs ~ gr) # use the default parameters
 #' out <- asymhd(df, obs ~ gr, alpha = .90) # specify alpha
 #' out <- asymhd(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
-#' out <- asymhd(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
-#' out <- asymhd(df, obs ~ gr, q = seq(.1,.4,.1)) # specify the quantiles
+#' out <- asymhd(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1")))
+#' out <- asymhd(df, obs ~ gr, qseq = seq(.1,.4,.1)) # specify the quantiles
 #' out <- asymhd(df, obs ~ gr, doall = TRUE) # compute all comparisons
 #'
 #' @export
-asymhd <- function(data = df,
+asymhd <- function(data,
                    formula = obs ~ gr,
                    qseq = seq(5,40,5)/100,
                    alpha = .05,
@@ -173,7 +177,7 @@ asymhd <- function(data = df,
 #'   allowed.
 #' @param formula A formula with format response variable ∼ predictor variable,
 #'   where ~ (tilde) means "is modeled as a function of".
-#' @param q Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.
+#' @param qseq Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.
 #' @param nboot Number of bootstrap samples - default = 1000.
 #' @param alpha Expected long-run type I error rate - default = 0.05.
 #' @param todo A list of comparisons to perform - default = NULL.
@@ -200,6 +204,10 @@ asymhd <- function(data = df,
 #' Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 #' Comparing two dependent groups via quantiles.
 #' J Appl Stat, 39, 2655-2664.
+#' 
+#' Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2017). 
+#' Beyond differences in means: Robust graphical methods to compare two groups in neuroscience. 
+#' European Journal of Neuroscience, 46(2), 1738–1748. https://doi.org/10.1111/ejn.13610
 #'
 #' @seealso \code{\link{hd}}
 #' \code{\link{asymhd}} for independent groups
@@ -211,7 +219,7 @@ asymhd <- function(data = df,
 #' C2 <- C1 + rnorm(n) + 2 # condition 2
 #' # Data with 3 independent groups and 2 dependent conditions per group
 #' library(tibble)
-#' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+#' df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'   cond1 = c(C1, C1+rnorm(n), C1+rnorm(n)),
 #'   cond2 = c(C2, C2 + 1, C2 + 3) ) # make tibble
 #' library(dplyr)
@@ -221,11 +229,11 @@ asymhd <- function(data = df,
 #' out <- asymdhd(df, diff ~ gr, alpha = .90) # specify alpha
 #' out <- asymdhd(df, diff ~ gr, nboot = 500) # specify the number of bootstrap samples
 #' out <- asymdhd(df, diff ~ gr, todo = list("group1", "group2")) # specify list of comparisons
-#' out <- asymdhd(df, diff ~ gr, q = seq(.1,.4,.1)) # specify the quantiles
+#' out <- asymdhd(df, diff ~ gr, qseq = seq(.1,.4,.1)) # specify the quantiles
 #' out <- asymdhd(df, diff ~ gr, doall = TRUE) # compute all tests
 #'
 #' @export
-asymdhd <- function(data = df,
+asymdhd <- function(data,
                     formula = obs ~ gr,
                     qseq = seq(5,40,5)/100,
                     alpha = .05,

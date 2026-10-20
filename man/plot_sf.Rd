@@ -5,7 +5,7 @@
 \title{Plot percentile bootstrap shift function}
 \usage{
 plot_sf(
-  data = df,
+  data,
   plot_theme = 1,
   symb_col = NULL,
   symb_fill = NULL,
@@ -63,15 +63,21 @@ Several themes are available:
   }
 }
 \examples{
+set.seed(21)
+df <- mkt2(rnorm(100), rnorm(100) + 1)
+out <- shifthd(df, obs ~ gr, nboot = 200)
 plot_sf(out) # default plot
 plot_sf(out, plot_theme = 2) # specify theme
 plist <- plot_sf(out) # output list of ggplot objects
 
-# The plots can then be combined using \href{https://cran.r-project.org/web/packages/gridExtra/index.html}{gridExtra} or \href{https://cran.r-project.org/web/packages/cowplot/index.html}{cowplot} - for instance:
-library(gridExtra)
-do.call("grid.arrange", c(plist, ncol=2))
 # To extract one object and for instance change a label:
 p <- plist[[1]]
-p + labs(y = "Difference")
+p + ggplot2::labs(y = "Difference")
+
+\dontrun{
+# The plots can be combined using gridExtra or cowplot - for instance:
+library(gridExtra)
+do.call("grid.arrange", c(plist, ncol=2))
+}
 
 }

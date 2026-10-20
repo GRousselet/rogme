@@ -1,9 +1,9 @@
 Quantify a single distribution
 ================
 Guillaume A. Rousselet
-2020-07-10
+2026-10-20
 
-  - [References](#references)
+- [References](#references)
 
 ``` r
 library(cowplot)
@@ -22,8 +22,8 @@ to the median.
 #> --------------------------------------
 #> Inference on the deciles of ERP onsets
 #> --------------------------------------
-#> load data:
-load("./data/onsets.RData") # onsets
+#> load data from package:
+onsets <- onsets
 
 #> -----------------------------------
 #> Panel A: scatterplot + deciles

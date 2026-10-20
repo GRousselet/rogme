@@ -58,16 +58,16 @@
 #' @examples
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
-#' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+#' df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 #'
-#' out <- shifthd(df, obs ~ gr) # use the default parameters
-#' out <- shifthd(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
-#' out <- shifthd(df, obs ~ gr, todo = list(c("g1","g2"),c("g3","g1"))) # specify list of comparisons
+#' out <- shifthd(df, obs ~ gr) # default parameters
+#' out <- shifthd(df, obs ~ gr, nboot = 500) # number of bootstrap samples
+#' out <- shifthd(df, obs ~ gr, todo = list(c("g1","g2"),c("g3","g1"))) # list of comparisons
 #' out <- shifthd(df, doall = TRUE) # compute all comparisons
 #'
 #' @export
-shifthd <- function(data = df,
+shifthd <- function(data,
                     formula = obs ~ gr,
                     nboot = 200,
                     todo = NULL,
@@ -168,7 +168,10 @@ shifthd <- function(data = df,
 #' @param doall Set to TRUE to compute all comparisons - default = FALSE. Not
 #'   executed if a \code{todo} list is provided.
 #'
-#' @return A list of data frames, one data frame per comparison. Each data frame has one row per decile. The columns are: \itemize{
+#' @return A list of data frames, one data frame per comparison. 
+#' Each data frame has one row per decile. 
+#' The columns are: 
+#' \itemize{
 #'   \item Column 1 = quantiles - seq(0.1, 0.9, 0.1)
 #'   \item Column 2 = deciles for group 1
 #'   \item Column 3 = deciles for group 2
@@ -184,16 +187,16 @@ shifthd <- function(data = df,
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
 #' C1 <- rnorm(100)
-#' df2 <- tibble(condition = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
-#'               data = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
+#' df <- tibble::tibble(cond = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
+#'               obs = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
 #'
 #' out <- shiftdhd(df, obs ~ cond) # use the default parameters
 #' out <- shiftdhd(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
-#' out <- shiftdhd(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # specify list of comparisons
-#' out <- shiftdhd(df, doall = TRUE) # compute all comparisons
+#' out <- shiftdhd(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # list of comparisons
+#' out <- shiftdhd(df, obs ~ cond, doall = TRUE) # compute all comparisons
 #'
 #' @export
-shiftdhd <- function(data = df,
+shiftdhd <- function(data,
                      formula = obs ~ cond,
                      nboot = 200,
                      todo = NULL,
@@ -309,6 +312,10 @@ shiftdhd <- function(data = df,
 #' A sharper Bonferroni procedure for multiple tests of significance
 #' Biometrika, 75, 800-802.
 #'
+#' Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2017). 
+#' Beyond differences in means: Robust graphical methods to compare two groups in neuroscience. 
+#' European Journal of Neuroscience, 46(2), 1738–1748. https://doi.org/10.1111/ejn.13610
+#'  
 #' @seealso \code{\link{hd}}
 #'
 #' \code{\link{shifthd}} for the pbse method for independent groups,
@@ -318,17 +325,17 @@ shiftdhd <- function(data = df,
 #' @examples
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
-#' df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+#' df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
 #'              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 #'
 #' out <- shifthd_pbci(df, obs ~ gr) # use the default parameters
 #' out <- shifthd_pbci(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
-#' out <- shifthd_pbci(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
+#' out <- shifthd_pbci(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1")))
 #' out <- shifthd_pbci(df, obs ~ gr, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
 #' out <- shifthd_pbci(df, doall = TRUE) # compute all comparisons
 #'
 #' @export
-shifthd_pbci <- function(data = df,
+shifthd_pbci <- function(data,
                          formula = obs ~ gr,
                          q = seq(.1, .9, .1),
                          nboot = 2000,
@@ -469,7 +476,11 @@ shifthd_pbci <- function(data = df,
 #' Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 #' Comparing two dependent groups via quantiles.
 #' J Appl Stat, 39, 2655-2664.
-#'
+#' 
+#' Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2017). 
+#' Beyond differences in means: Robust graphical methods to compare two groups in neuroscience. 
+#' European Journal of Neuroscience, 46(2), 1738–1748. https://doi.org/10.1111/ejn.13610
+#' 
 #' @seealso \code{\link{hd}}
 #'
 #' \code{\link{shiftdhd}} for the pbse method for dependent groups
@@ -480,16 +491,16 @@ shifthd_pbci <- function(data = df,
 #' set.seed(21) # generate data
 #' n <- 100 # sample size
 #' C1 <- rnorm(100)
-#' df2 <- tibble(cond = factor(c(rep("C1",n),rep("C2",n),rep("C3",n))),
+#' df <- tibble::tibble(cond = factor(c(rep("C1",n),rep("C2",n),rep("C3",n))),
 #'               obs = c(C1+6, C1+rnorm(n)+4, C1+rnorm(n))) # make tibble
 #'
 #' out <- shiftdhd_pbci(df, obs ~ cond) # use the default parameters
 #' out <- shiftdhd_pbci(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
-#' out <- shiftdhd_pbci(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # specify list of comparisons
+#' out <- shiftdhd_pbci(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1")))
 #' out <- shiftdhd_pbci(df, obs ~ cond, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
-#' out <- shiftdhd_pbci(df, doall = TRUE) # compute all comparisons
+#' out <- shiftdhd_pbci(df, obs ~ cond, doall = TRUE) # compute all comparisons
 #' @export
-shiftdhd_pbci <- function(data = df,
+shiftdhd_pbci <- function(data,
                           formula = obs ~ gr,
                           q = seq(.1, .9, .1),
                           nboot = 1000,

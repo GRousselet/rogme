@@ -4,7 +4,7 @@
 \alias{shifthd}
 \title{Shift function for two independent groups (pbse method)}
 \usage{
-shifthd(data = df, formula = obs ~ gr, nboot = 200, todo = NULL, doall = FALSE)
+shifthd(data, formula = obs ~ gr, nboot = 200, todo = NULL, doall = FALSE)
 }
 \arguments{
 \item{data}{A data frame in long format. One column is a factor describing the groups;
@@ -63,12 +63,12 @@ Independent bootstrap samples are used for each quantile and for each group.
 \examples{
 set.seed(21) # generate data
 n <- 100 # sample size
-df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 
-out <- shifthd(df, obs ~ gr) # use the default parameters
-out <- shifthd(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
-out <- shifthd(df, obs ~ gr, todo = list(c("g1","g2"),c("g3","g1"))) # specify list of comparisons
+out <- shifthd(df, obs ~ gr) # default parameters
+out <- shifthd(df, obs ~ gr, nboot = 500) # number of bootstrap samples
+out <- shifthd(df, obs ~ gr, todo = list(c("g1","g2"),c("g3","g1"))) # list of comparisons
 out <- shifthd(df, doall = TRUE) # compute all comparisons
 
 }

@@ -9,13 +9,11 @@ mkt1(x, name = c("obs", "gr"))
 \arguments{
 \item{x}{A vector.}
 
-\item{gr_names}{The name of the first column - default "gr" for groups.}
-
-\item{obs_names}{The name of the second column - default "obs" for
-observations.}
+\item{name}{Names of the two columns - default "obs" for observations
+and "gr" for groups.}
 }
 \value{
-A tibble - see details in \code{\link[TIBBLE]{tibble}}.
+A tibble - see details in \code{\link[tibble]{tibble}}.
 }
 \description{
 Make tibble from one vector x. The vector is re-organised in a
@@ -29,18 +27,9 @@ g1 <- rnorm(10)
 df <- mkt1(g1)
 
 # Make tibble using custom parameters
-df <- mkt1(g1, gr_names = "groups", obs_names = "values", group_label =
-"group1")
+df <- mkt1(g1, name = c("values", "groups"))
 
 # For instance, vector x:
 x <- c(1, 2, 3, 4, 5)
 df <- mkt1(x)
-# become a tibble: 5 × 2:
-       gr   obs
-   <fctr> <dbl>
-1  Group1     1
-2  Group1     2
-3  Group1     3
-4  Group1     4
-5  Group1     5
 }

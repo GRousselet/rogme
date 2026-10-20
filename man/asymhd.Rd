@@ -5,7 +5,7 @@
 \title{Difference asymmetry function for two independent groups}
 \usage{
 asymhd(
-  data = df,
+  data,
   formula = obs ~ gr,
   qseq = seq(5, 40, 5)/100,
   alpha = 0.05,
@@ -71,14 +71,14 @@ http://dornsife.usc.edu/labs/rwilcox/software/.
 \examples{
 set.seed(21) # generate data
 n <- 100 # sample size
-df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 
 out <- asymhd(df, obs ~ gr) # use the default parameters
 out <- asymhd(df, obs ~ gr, alpha = .90) # specify alpha
 out <- asymhd(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
-out <- asymhd(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
-out <- asymhd(df, obs ~ gr, q = seq(.1,.4,.1)) # specify the quantiles
+out <- asymhd(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1")))
+out <- asymhd(df, obs ~ gr, qseq = seq(.1,.4,.1)) # specify the quantiles
 out <- asymhd(df, obs ~ gr, doall = TRUE) # compute all comparisons
 
 }
@@ -86,6 +86,10 @@ out <- asymhd(df, obs ~ gr, doall = TRUE) # compute all comparisons
 Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 Comparing two independent groups via the lower and upper quantiles.
 J Stat Comput Sim, 84, 1543-1551.
+
+Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2017). 
+Beyond differences in means: Robust graphical methods to compare two groups in neuroscience. 
+European Journal of Neuroscience, 46(2), 1738–1748. https://doi.org/10.1111/ejn.13610
 }
 \seealso{
 \code{\link{hd}} Harrell-Davis quantile estimator

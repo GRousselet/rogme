@@ -5,7 +5,7 @@
 \title{Plot difference asymmetry functions}
 \usage{
 plot_diff_asym(
-  data = df,
+  data,
   symb_col = NULL,
   symb_fill = NULL,
   symb_size = 5,
@@ -52,7 +52,7 @@ customised using the \code{ggplot2} package - see details
 # using asymhd
 set.seed(21) # generate data
 n <- 100 # sample size
-df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 out <- asymhd(df, obs ~ gr, doall = TRUE, nboot = 100) # compute all comparisons
 plist <- plot_diff_asym(out)
@@ -64,7 +64,7 @@ C1 <- rnorm(n) # condition 1
 C2 <- C1 + rnorm(n) + 2 # condition 2
 # Data with 3 independent groups and 2 dependent conditions per group
 library(tibble)
-df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
   cond1 = c(C1, C1+rnorm(n), C1+rnorm(n)),
   cond2 = c(C2, C2 + 1, C2 + 3) ) # make tibble
 library(dplyr)

@@ -19,7 +19,6 @@ library(cowplot)
 library(ggplot2)
 ```
 
-
 We can consider two different perspectives when comparing two independent groups, by asking two questions.
 
 - **Question 1**: How does the typical observation in one group compare to the typical observation in the other group? 
@@ -83,7 +82,7 @@ wilcox.test(g1,g2)
 cidv2(g1,g2) 
 ```
 
-This test suggests the distributions differ:
+This test suggests the distributions differ, but not how:
 ```{r}
 ks(g1,g2) #> Kolmogorov-Smirnov test
 #> ks(g1,g2,w=T) #> uses a weighted version more sensitive to differences occuring in the tails
@@ -194,7 +193,8 @@ cowplot::plot_grid(pscat, pkd, psf, diff_asym,
 Rousselet, G.A., Pernet, C.R. & Wilcox, R.R. (2017) 
 **Beyond differences in means: robust graphical methods to compare two groups in neuroscience.**
 The European journal of neuroscience, 46, 1738-1748. 
-[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)] [[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
+[[article](https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.13610)] [[preprint](https://www.biorxiv.org/content/early/2017/05/16/121079)] 
+[[reproducibility package](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)]
 
 Wilcox, R.R. (2012) 
 **Comparing Two Independent Groups Via a Quantile Generalization of the Wilcoxon-Mann-Whitney Test.**

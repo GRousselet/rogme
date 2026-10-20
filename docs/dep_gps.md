@@ -1,16 +1,16 @@
 Compare two dependent groups
 ================
 Guillaume A. Rousselet
-2020-07-10
+2026-10-20
 
-  - [Shift function](#shift-function)
-  - [Linked stripcharts](#linked-stripcharts)
-  - [Scatterplot of paired
-    observations](#scatterplot-of-paired-observations)
-  - [Stripchart of differences](#stripchart-of-differences)
-  - [Difference asymmetry function](#difference-asymmetry-function)
-  - [Summary figure](#summary-figure)
-  - [References](#references)
+- [Shift function](#shift-function)
+- [Linked stripcharts](#linked-stripcharts)
+- [Scatterplot of paired
+  observations](#scatterplot-of-paired-observations)
+- [Stripchart of differences](#stripchart-of-differences)
+- [Difference asymmetry function](#difference-asymmetry-function)
+- [Summary figure](#summary-figure)
+- [References](#references)
 
 ``` r
 library(cowplot)
@@ -20,10 +20,11 @@ library(ggplot2)
 
 When comparing dependent groups, we can ask two complementary questions:
 
-  - **Question 1**: How does the typical observation in condition 1
-    compare to the typical observation in condition 2?
-  - **Question 2**: What is the typical difference for a randomly
-    sampled participant?
+- **Question 1**: How does the typical observation in condition 1
+  compare to the typical observation in condition 2?
+
+- **Question 2**: What is the typical difference across participants? In
+  other words, what difference can we expect in a typical participant?
 
 The next figure shows two dependent distributions, with relatively large
 differences in the right tails. To address Question 1, ‘How does the
@@ -76,12 +77,12 @@ t.test(df$condition1,df$condition2,paired=TRUE)
     ## 
     ## data:  df$condition1 and df$condition2
     ## t = -6.7966, df = 34, p-value = 8.11e-08
-    ## alternative hypothesis: true difference in means is not equal to 0
+    ## alternative hypothesis: true mean difference is not equal to 0
     ## 95 percent confidence interval:
     ##  -3.354557 -1.810238
     ## sample estimates:
-    ## mean of the differences 
-    ##               -2.582397
+    ## mean difference 
+    ##       -2.582397
 
 ``` r
 #> percentile bootstrap confidence interval of the difference between
@@ -91,7 +92,7 @@ out <- pb2gen(df$condition1,df$condition2)
 
 In condition 1, the median is 12.09; in condition 2, it is 14.82. The
 difference between the two medians is -2.73, with a 95% confidence
-interval of \[-6.22, 0.9\].
+interval of \[-6.04, 0.7\].
 
 # Shift function
 
@@ -119,15 +120,8 @@ psf <- plot_sf(sf, plot_theme = 2)[[1]] +
   scale_y_continuous(breaks = seq(-8, 4, 2), limits = c(-8, 4))
 ```
 
-    ## Warning: Using alpha for a discrete variable is not advised.
-    
-    ## Warning: Using alpha for a discrete variable is not advised.
-
-    ## Scale for 'alpha' is already present. Adding another scale for 'alpha', which
-    ## will replace the existing scale.
-
-    ## Scale for 'y' is already present. Adding another scale for 'y', which will
-    ## replace the existing scale.
+    ## Scale for y is already present.
+    ## Adding another scale for y, which will replace the existing scale.
 
 ``` r
 psf
@@ -152,7 +146,7 @@ scores in condition 1, the differences get progressively larger.
 #> coloured lines linking paired observations
 pd <- position_dodge(width = 0.1)
 linkedstrip <- ggplot(df.long, aes(x=gr, y=data, group=participant)) +
-                geom_line(aes(colour=participant),size=1, alpha=.5,
+                geom_line(aes(colour=participant),linewidth=1, alpha=.5,
                           position=pd) +
                 theme_bw() +
                 theme(axis.text.x = element_text(size=14),
@@ -196,8 +190,8 @@ scatterdiff
 # Stripchart of differences
 
 The next figure shows the distribution of pairwise differences, which
-let us assess Question 2, ‘What is the typical difference for a randomly
-sampled participant?’.
+let us assess Question 2, ‘What is the typical difference across
+participants?’.
 
 ``` r
 #> ----------------------------------------------------
@@ -274,8 +268,8 @@ diff_asym <- plot_diff_asym(data = dasym)[[1]] +
   scale_y_continuous(breaks = seq(-8, 8, 2), limits = c(-8, 8))
 ```
 
-    ## Scale for 'y' is already present. Adding another scale for 'y', which will
-    ## replace the existing scale.
+    ## Scale for y is already present.
+    ## Adding another scale for y, which will replace the existing scale.
 
 ``` r
 diff_asym
@@ -308,8 +302,8 @@ tmp <- plot_diff_asym(data = dasym)[[1]] +
   scale_y_continuous(breaks = seq(-8, 8, 2), limits = c(-8, 8))
 ```
 
-    ## Scale for 'y' is already present. Adding another scale for 'y', which will
-    ## replace the existing scale.
+    ## Scale for y is already present.
+    ## Adding another scale for y, which will replace the existing scale.
 
 ``` r
 tmp

@@ -1,5 +1,5 @@
 ---
-title: "Statistical tests and measures of effect sizes in `rogme`"
+title: "Tests, quantities and measures of effect sizes in `qpatterns`"
 author: "Guillaume A. Rousselet"
 date: "`r Sys.Date()`"
 output:
@@ -8,6 +8,8 @@ output:
     toc: yes
     toc_depth: 2
 ---
+
+Other functions besides the main ones described in other vignettes.
 
 | Function | Description |
 |:--------------------------------|:--------------------------------|

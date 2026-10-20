@@ -1,4 +1,28 @@
 # ------------------------
+# qpatterns 0.4.0 (planned)
+- update all bootstrap functions to offer one-sided p-values and confidence intervals
+- by default apply finite resampling p-value correction
+- by default do not correct p-values for multiple comparisons
+- offer more powerful FDR correction
+- by default do not adjust confidence intervals for multiple comparisons
+- add `onesampb` to stats.R (one-sample percentile bootstrap inference)
+- deprecate `quantiles_pbci`, rename as `hdpbci` -- use `onesampb` for one-sample inference
+- add `twosampb` to stats.R (two-sample percentible bootstrap inference)
+- deprecate `pb2gen` -- use `twosampb` instead
+- add `twosampb_joint` to stats.R (percentile bootstrap of a quantity that combines two sets of observations)
+- deprecate `allpdiff_hdpbci` -- use `twosampb_joint` instead
+- ...
+
+# ------------------------
+# qpatterns 0.3.0
+- rename package qpatterns, for Quantile Patterns, a more explicit description of what the package does
+- rename repository
+- add basic function tests
+- update README
+- update vignettes
+- update deprecated `ggplot2` syntax
+
+# ------------------------
 # rogme 0.2.2
 - new `onsets2` dataset, containing ERP onsets from 2 sessions
 - fix bug in `plot_sf` when requesting quantiles other than the deciles
