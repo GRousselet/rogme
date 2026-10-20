@@ -1,31 +1,43 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rogme
+# qpatterns (previously called rogme)
 
-Robust Graphical Methods For Group Comparisons (v. 0.2.1)
+<!-- badges: start -->
 
-The `rogme` R package provides graphical tools and robust statistical
-methods to compare groups of continous and pseudo-continuous
-observations. The goal is to illustrate and quantify how and by how much
-groups differ. The current version of the package is limited to
-comparing two groups (though multiple pairs of groups can be compared in
-one go). Future developments will extend the tools to deal with multiple
-groups, interactions and hierarchical designs.
+[![License:
+MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/GRousselet/qpatterns/blob/main/LICENSE.md)
+[![Package
+version](https://img.shields.io/github/r-package/v/GRousselet/qpatterns)](https://github.com/GRousselet/qpatterns)
+<!-- badges: end -->
 
-**NEW**: a [hierarchical shift function](docs/hsf.md) to compare two
-dependent conditions from one group is now available. It has parametric
-and bootstrap versions. The approach is described in [Rousselet &
-Wilcox, 2019](https://psyarxiv.com/3y54r/).
+The R package `qpatterns` (Quantile Patterns) provides graphical tools
+and statistical methods to illustrate and compare groups of continuous
+and pseudo-continuous observations. The package can be used to explore
+or test distributional patterns and how they differ between groups. The
+main approach is the [shift
+function](https://garstats.wordpress.com/2016/07/12/shift-function/), a
+powerful alternative to standard parametric and non-parametric group
+comparison methods – it reveals how and by how much groups differ by
+making inferences at multiple quantiles. In the shift function and other
+methods in this package, quantiles are estimated using the
+[Harrell-Davis (1982)
+estimator](https://garstats.wordpress.com/2016/06/09/the-harrell-davis-quantile-estimator/).
+The current version of the package is limited to comparing two groups
+(though multiple pairs of groups can be compared in one go). Future
+developments will handle multiple groups (including order restricted
+inferences) and interactions.
 
-The package can be installed using these commands:
+The package can be installed using this command:
 
 ``` r
-install.packages("devtools")
-devtools::install_github("GRousselet/rogme")
+# install.packages("pak")
+pak::pak("GRousselet/qpatterns")
 ```
 
-The approach behind the package can be summarised in one figure:
+The approach behind the package can be summarised in one figure, in
+which an impoverished graphical representation and a standard analysis
+are replaced with much more detailed illustrations and inferences:
 
 ![](docs/Figure1.png) **How two independent distributions differ.
 Left**: standard but misleading bar graphs of mean values. **Right**:
@@ -40,41 +52,51 @@ intervals. The shift function can be sparser or denser by changing the
 quantiles. **D.** Difference asymmetry function with 95% bootstrap
 confidence intervals.
 
-The approach is also described in these articles:
+The approach is described in these articles:
 
 [A few simple steps to improve the description of group results in
 neuroscience](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13400/full)
+General philosophy: even simple datasets might require multiple
+illustrations and inferences to be sufficiently understood. Bar graphs
+and t-tests are wasteful and outdated.
 
 [Beyond differences in means: robust graphical methods to compare two
 groups in
-neuroscience](https://www.biorxiv.org/content/early/2017/03/27/121079).
-\[[Reproducibility package using
-`rogme`](https://figshare.com/articles/Modern_graphical_methods_to_compare_two_groups_of_observations/4055970)\]
+neuroscience](https://onlinelibrary.wiley.com/doi/10.1111/ejn.13610)
+This is the main reference for this package. Please cite it if you use
+the code.
 
-`rogme` uses `ggplot2` for graphical representations, and the main
-statistical functions were developed by Rand Wilcox, as part of his
-[`WRS`](https://dornsife.usc.edu/labs/rwilcox/software/) package.
+[Reaction Times and other Skewed Distributions: Problems with the Mean
+and the
+Median](https://open.lnu.se/index.php/metapsychology/article/view/1630)
+Introduces the hierarchical shift function.
 
-The main tool in `rogme` is the [shift
+[A Quantile Shift Approach to Main Effects and Interactions in a 2-by-2
+Design](https://doi.org/10.5964/meth.12271) Introduces extensions of the
+shift function and P(X\<Y) inferences to deal with a factorial design.
+The main functions will be included in a future release of `qpatterns`.
+
+`qpatterns` uses `ggplot2` for graphical representations, and the core
+statistical functions were originally developed by Rand Wilcox, as part
+of his [`WRS`](https://dornsife.usc.edu/labs/rwilcox/software/) package.
+
+The main tool in `qpatterns` is the [shift
 function](https://garstats.wordpress.com/2016/07/12/shift-function/). A
 shift function shows the difference between the quantiles of two groups
 as a function of the quantiles of one group. For inferences, the
 function returns an uncertainty interval for each quantile difference.
 By default, the deciles are used. Currently, confidence intervals are
-computed using one of two percentile bootstrap techniques. Highest
-density intervals and [Bayesian
-bootstrap](https://github.com/rasmusab/bayesboot) intervals will be
-available eventually.
+computed using one of two bootstrap techniques.
 
 ## Vignettes
 
-  - [Quantify distribution differences using the shift
-    function](docs/sf_patterns.md)
-  - [Compare two independent groups](docs/ind_gps.md)
-  - [Compare two dependent groups](docs/dep_gps.md)
-  - [Quantify a single distribution](docs/one_gp.md)
-  - [Statistical tests and measures of effect sizes](docs/stats.md)
-  - [Hierarchical shift function](docs/hsf.md)
+- [Quantify distribution differences using the shift
+  function](docs/sf_patterns.md)
+- [Compare two independent groups](docs/ind_gps.md)
+- [Compare two dependent groups](docs/dep_gps.md)
+- [Quantify a single distribution](docs/one_gp.md)
+- [Statistical tests and measures of effect sizes](docs/stats.md)
+- [Hierarchical shift function](docs/hsf.md)
 
 ## Functions
 
@@ -86,60 +108,57 @@ computed by the `hd()` function.
 
 In the `WRS` package, the shift function can be calculated using:
 
-  - `shifthd()` or `qcomhd()` for independent groups
-  - `shiftdhd()` or `Dqcomhd()` for dependent groups
+- `shifthd()` or `qcomhd()` for independent groups
+- `shiftdhd()` or `Dqcomhd()` for dependent groups
 
 These functions can also produce non-ggplot figures.
 
-In `rogme`, the shift function can be calculated using:
+In `qpatterns`, the shift function can be calculated using:
 
-  - `shifthd()` or `shifthd_pbci()` for independent groups
-  - `shiftdhd()` or `shiftdhd_pbci()` for dependent groups
+- `shifthd()` or `shifthd_pbci()` for independent groups
+- `shiftdhd()` or `shiftdhd_pbci()` for dependent groups
 
 Illustrations of the results is handled separately by `plot_sf()`.
 
 You can see the shift function in action for instance in these
 publications:
 
-  - [blog
-    post](https://garstats.wordpress.com/2016/07/12/shift-function/)
+- [A robust and representative lower bound on object processing speed in
+  humans](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13100/full)
 
-  - [review article in the European Journal of
-    Neuroscience](http://onlinelibrary.wiley.com/doi/10.1111/ejn.13100/full)
+- [Sex Differences in the Adult Human Brain: Evidence from 5216 UK
+  Biobank
+  Participants](https://academic.oup.com/cercor/advance-article/doi/10.1093/cercor/bhy109/4996558)
 
-  - [Sex Differences in the Adult Human Brain: Evidence from 5216 UK
-    Biobank
-    Participants](https://academic.oup.com/cercor/advance-article/doi/10.1093/cercor/bhy109/4996558)
+- [Visibility graphs for fMRI data: Multiplex temporal graphs and their
+  modulations across resting-state
+  networks](https://www.mitpressjournals.org/doi/full/10.1162/NETN_a_00012)
 
-  - [Visibility graphs for fMRI data: Multiplex temporal graphs and
-    their modulations across resting-state
-    networks](https://www.mitpressjournals.org/doi/full/10.1162/NETN_a_00012)
+- [Manipulation of contact network structure and the impact on
+  foot-and-mouth disease
+  transmission](https://www.sciencedirect.com/science/article/pii/S0167587717305627)
 
-  - [Manipulation of contact network structure and the impact on
-    foot-and-mouth disease
-    transmission](https://www.sciencedirect.com/science/article/pii/S0167587717305627)
+- [No evidence that frontal eye field tDCS affects latency or accuracy
+  of
+  prosaccades](https://www.biorxiv.org/content/early/2018/06/20/351304)
 
-  - [No evidence that frontal eye field tDCS affects latency or accuracy
-    of
-    prosaccades](https://www.biorxiv.org/content/early/2018/06/20/351304)
-
-  - [A Key Characteristic of Sex Differences in the Developing Brain:
-    Greater Variability in Brain Structure of Boys than
-    Girls](https://www.ncbi.nlm.nih.gov/pubmed/28981610)
+- [A Key Characteristic of Sex Differences in the Developing Brain:
+  Greater Variability in Brain Structure of Boys than
+  Girls](https://www.ncbi.nlm.nih.gov/pubmed/28981610)
 
 ### Difference asymmetry function
 
 The difference asymmetry function is another powerful graphical and
 inferential tool. In the `WRS` package it is calculated using:
 
-  - `qwmwhd()` for independent groups
-  - `difQpci()` for dependent groups
+- `qwmwhd()` for independent groups
+- `difQpci()` for dependent groups
 
-In `rogme`, these functions have been renamed:
+In `qpatterns`, these functions have been renamed:
 
-  - `asymhd()` for independent groups
-  - `asymdhd()` for dependent groups
-  - `plot_diff_asym()` to plot the results
+- `asymhd()` for independent groups
+- `asymdhd()` for dependent groups
+- `plot_diff_asym()` to plot the results
 
 You can see the difference asymmetry function in action in this [blog
 post](https://garstats.wordpress.com/2016/07/19/typical-differences/)
@@ -188,9 +207,6 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 
 #> plot shift function
 psf <- plot_sf(sf, plot_theme = 2)
-#> Warning: Using alpha for a discrete variable is not advised.
-
-#> Warning: Using alpha for a discrete variable is not advised.
 
 #> add labels for deciles 1 & 9
 psf <- add_sf_lab(psf, sf, 

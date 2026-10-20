@@ -2,10 +2,10 @@
 % Please edit documentation in R/shift_function_calc.R
 \name{shiftdhd_pbci}
 \alias{shiftdhd_pbci}
-\title{Shift function for two depend groups (pbci method)}
+\title{Shift function for two dependent groups (pbci method)}
 \usage{
 shiftdhd_pbci(
-  data = df,
+  data,
   formula = obs ~ gr,
   q = seq(0.1, 0.9, 0.1),
   nboot = 1000,
@@ -44,13 +44,13 @@ The columns are: \itemize{
   \item Column 4 = quantile differences (column 3 - column 4)
   \item Column 5 = lower bounds of the confidence intervals
   \item Column 6 = upper bounds of the confidence intervals
-  \item Column 7 = critical p_values based on Hochberg's method
-  \item Column 8 = p_values
+  \item Column 7 = p_values 
+  \item Column 8 = p_values adjusted using Hochberg's method
   }
 }
 \description{
-\code{shiftdhd_pbci} returns a shift function for two independent groups or
-multiple shift functions for pairs of independent groups. It uses the
+\code{shiftdhd_pbci} returns a shift function for two dependent groups or
+multiple shift functions for pairs of dependent groups. It uses the
 Harrell-Davis quantile estimator in conjunction with a percentile
 bootstrap approach.
 Unlike \code{\link{shiftdhd}}: \itemize{
@@ -80,19 +80,23 @@ From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}.
 set.seed(21) # generate data
 n <- 100 # sample size
 C1 <- rnorm(100)
-df2 <- tibble(cond = factor(c(rep("C1",n),rep("C2",n),rep("C3",n))),
+df <- tibble::tibble(cond = factor(c(rep("C1",n),rep("C2",n),rep("C3",n))),
               obs = c(C1+6, C1+rnorm(n)+4, C1+rnorm(n))) # make tibble
 
 out <- shiftdhd_pbci(df, obs ~ cond) # use the default parameters
 out <- shiftdhd_pbci(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
-out <- shiftdhd_pbci(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # specify list of comparisons
+out <- shiftdhd_pbci(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1")))
 out <- shiftdhd_pbci(df, obs ~ cond, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
-out <- shiftdhd_pbci(df, doall = TRUE) # compute all comparisons
+out <- shiftdhd_pbci(df, obs ~ cond, doall = TRUE) # compute all comparisons
 }
 \references{
 Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 Comparing two dependent groups via quantiles.
 J Appl Stat, 39, 2655-2664.
+
+Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2017). 
+Beyond differences in means: Robust graphical methods to compare two groups in neuroscience. 
+European Journal of Neuroscience, 46(2), 1738–1748. https://doi.org/10.1111/ejn.13610
 }
 \seealso{
 \code{\link{hd}}

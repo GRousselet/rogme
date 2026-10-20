@@ -9,7 +9,7 @@ hdseq(x, qseq = seq(0.1, 0.9, 0.1))
 \arguments{
 \item{x}{A numeric vector of observations.}
 
-\item{q}{A numeric vector of quantiles - default to the deciles.}
+\item{qseq}{A numeric vector of quantiles - default to the deciles.}
 }
 \value{
 A vector of quantile estimates.
@@ -22,6 +22,6 @@ estimate of the qth quantile.
 x <- rnorm(100) # create vector
 hdseq(x) # estimates of the deciles
 hdseq(x, qseq = c(0.25, 0.5, 0.75)) # estimates of the quartiles
-hdseq(x, qseq = c(seq(1,4),seq(6,9))) # estimates of the deciles except the median
+hdseq(x, qseq = c(seq(1,4),seq(6,9))/10) # estimates of the deciles except the median
 
 }

@@ -1,70 +1,76 @@
 Hierarchical shift function
 ================
 Guillaume A. Rousselet
-2020-07-10
+2026-10-20
 
-  - [Introduction](#introduction)
-  - [Example 1: simulated data with a uniform
-    shift](#example-1-simulated-data-with-a-uniform-shift)
-      - [KDE](#kde)
-      - [Shift function](#shift-function)
-      - [Make data for np participants](#make-data-for-np-participants)
-      - [Compute hierarchical shift
-        function](#compute-hierarchical-shift-function)
-      - [Plot hierarchical shift
-        function](#plot-hierarchical-shift-function)
-      - [P values](#p-values)
-      - [Adjusted P values](#adjusted-p-values)
-      - [Stochastic dominance](#stochastic-dominance)
-      - [Percentile bootstrap hierarchical shift
-        function](#percentile-bootstrap-hierarchical-shift-function)
-  - [Example 2: simulated data without
-    differences](#example-2-simulated-data-without-differences)
-      - [KDE](#kde-1)
-      - [Shift function](#shift-function-1)
-      - [Make data for np
-        participants](#make-data-for-np-participants-1)
-      - [Compute hierarchical shift
-        function](#compute-hierarchical-shift-function-1)
-      - [Plot hierarchical shift
-        function](#plot-hierarchical-shift-function-1)
-      - [Stochastic dominance](#stochastic-dominance-1)
-      - [Percentile bootstrap hierarchical shift
-        function](#percentile-bootstrap-hierarchical-shift-function-1)
-  - [Example 3: real data](#example-3-real-data)
-      - [Get lexical decision dataset](#get-lexical-decision-dataset)
-      - [Compute shift functions for all
-        participants](#compute-shift-functions-for-all-participants)
-      - [Illustrate results](#illustrate-results)
-      - [Stochastic dominance](#stochastic-dominance-2)
-      - [Compute shift functions for a subset of
-        participants](#compute-shift-functions-for-a-subset-of-participants)
-      - [Illustrate results](#illustrate-results-1)
-      - [T-test](#t-test)
-      - [Reverse order of conditions](#reverse-order-of-conditions)
-      - [Quartiles instead of deciles](#quartiles-instead-of-deciles)
-      - [99% confidence intervals](#confidence-intervals)
-      - [More quantiles?](#more-quantiles)
-      - [Percentile bootstrap hierarchical shift
-        function](#percentile-bootstrap-hierarchical-shift-function-2)
-  - [References](#references)
+- [Introduction](#introduction)
+- [Example 1: simulated data with a uniform
+  shift](#example-1-simulated-data-with-a-uniform-shift)
+  - [KDE](#kde)
+  - [Shift function](#shift-function)
+  - [Make data for np participants](#make-data-for-np-participants)
+  - [Compute hierarchical shift
+    function](#compute-hierarchical-shift-function)
+  - [Plot hierarchical shift
+    function](#plot-hierarchical-shift-function)
+  - [P values](#p-values)
+  - [Adjusted P values](#adjusted-p-values)
+  - [Stochastic dominance](#stochastic-dominance)
+  - [Percentile bootstrap hierarchical shift
+    function](#percentile-bootstrap-hierarchical-shift-function)
+- [Example 2: simulated data without
+  differences](#example-2-simulated-data-without-differences)
+  - [KDE](#kde-1)
+  - [Shift function](#shift-function-1)
+  - [Make data for np participants](#make-data-for-np-participants-1)
+  - [Compute hierarchical shift
+    function](#compute-hierarchical-shift-function-1)
+  - [Plot hierarchical shift
+    function](#plot-hierarchical-shift-function-1)
+  - [Stochastic dominance](#stochastic-dominance-1)
+  - [Percentile bootstrap hierarchical shift
+    function](#percentile-bootstrap-hierarchical-shift-function-1)
+- [Example 3: real data](#example-3-real-data)
+  - [Get lexical decision dataset](#get-lexical-decision-dataset)
+  - [Compute shift functions for all
+    participants](#compute-shift-functions-for-all-participants)
+  - [Illustrate results](#illustrate-results)
+  - [Stochastic dominance](#stochastic-dominance-2)
+  - [Compute shift functions for a subset of
+    participants](#compute-shift-functions-for-a-subset-of-participants)
+  - [Illustrate results](#illustrate-results-1)
+  - [T-test](#t-test)
+  - [Reverse order of conditions](#reverse-order-of-conditions)
+  - [Quartiles instead of deciles](#quartiles-instead-of-deciles)
+  - [99% confidence intervals](#99-confidence-intervals)
+  - [More quantiles?](#more-quantiles)
+  - [Percentile bootstrap hierarchical shift
+    function](#percentile-bootstrap-hierarchical-shift-function-2)
+- [References](#references)
 
 ``` r
 library(tibble)
 library(ggplot2)
-library(retimes)
+
+# random samples from a shifted lognormal distribution
+rsln <- function(n, shift, meanlog, sdlog) {
+  shift + rlnorm(n, meanlog = meanlog, sdlog = sdlog)
+}
 ```
 
 # Introduction
 
 In the standard shift function, we compare two vectors of observations
 at multiple quantiles. Here we deal with a hierarchical setting: we have
-varying numbers of trials from 2 dependent conditions, sampled from
-multiple participants. Ideally, such data would be analysed using a
-multi-level model, including for instance ex-Gaussian fits, random
-slopes and intercepts for participants, item analyses… This can be done
-using the [lme4](https://github.com/lme4/lme4) or
-[brms](https://github.com/paul-buerkner/brms) R packages.
+many trials from 2 dependent conditions, sampled from multiple
+participants. Ideally, such data would be analysed using a multi-level
+model, including distributional fits, random slopes and intercepts for
+participants, item analyses… This can be done using the
+[lme4](https://github.com/lme4/lme4) or
+[brms](https://github.com/paul-buerkner/brms) R packages. For reaction
+times and similar types of data, check out this excellent demo:
+[Reaction time distributions: an interactive
+overview](https://lindeloev.github.io/shiny-rt/).
 
 However, in some research fields, the common approach is to collapse the
 variability across trials into a single number per participant and
@@ -72,58 +78,67 @@ condition to be able to perform a paired t-test: typically, the mean is
 computed across trials for each condition and participant, then the
 means are subtracted, and the distribution of mean differences is
 entered into a one-sample t-test. Obviously, this strategy throws away a
-huge amount of information\!
+huge amount of information!
 
 Depending on how conditions differ, looking at other aspects of the data
-than the mean can be more informative. For instance, in Rousselet &
-Wilcox (2019), we consider group comparisons of individual medians.
-Considering that the median is the second quartile, looking at the other
-quartiles can be of theoretical interest to investigate effects in early
-or later parts of distributions. This could be done in several ways, for
-instance by making inferences on the first quartile (Q1) or the third
-quartile (Q3). If the goal is to detect differences anywhere in the
-distributions, a more systematic approach consists in quantifying
-differences at multiple quantiles. Here we consider the case of the
-deciles, but other quantiles could be used. First, for each participant
-and each condition, the sample deciles are computed over trials. Second,
-for each participant, condition 2 deciles are subtracted from condition
-1 deciles - we’re dealing with a within-subject (repeated-measure)
-design. Third, for each decile, the distribution of differences is
-subjected to a one-sample test. Fourth, a correction for multiple
-comparisons is applied across the 9 one-sample tests. We call this
-procedure a **hierarchical shift function**. There are many options
-available to implement this procedure and the example used here is not
-the definitive answer: the goal is simply to demonstrate that a
-relatively simple procedure can be much more powerful and informative
-than standard approaches.
+than the mean can be more informative. For instance, in [Rousselet &
+Wilcox
+(2020)](https://open.lnu.se/index.php/metapsychology/article/view/1630),
+we consider group comparisons of individual medians. Considering that
+the median is the second quartile, looking at the other quartiles can be
+of theoretical interest to investigate effects in early or later parts
+of distributions. This could be done in several ways, for instance by
+making inferences on the first quartile (Q1) or the third quartile (Q3).
+If the goal is to detect differences anywhere in the distributions, a
+more systematic approach consists in quantifying differences at multiple
+quantiles. Here we consider the case of the deciles, but other quantiles
+could be used. First, for each participant and each condition, the
+sample deciles are computed over trials. Second, for each participant,
+condition 2 deciles are subtracted from condition 1 deciles - we’re
+dealing with a within-subject (repeated-measure) design. Third, for each
+decile, the distribution of differences is subjected to a one-sample
+test. Fourth, a correction for multiple comparisons is applied across
+the 9 one-sample tests. We call this procedure a **hierarchical shift
+function**. There are many options available to implement this procedure
+and the example used here is not the definitive answer: the goal is
+simply to demonstrate that a relatively simple procedure can be much
+more powerful and informative than standard approaches.
 
 In creating a hierarchical shift function we need to make three choices:
 a quantile estimator, a statistical test to assess quantile differences
 across participants, and a correction for multiple comparisons
-technique. The deciles are estimated using type 8 from the base R
-`quantile()` function (see justification in Rousselet & Wilcox, 2019).
-The group comparisons are performed using a one-sample t-test for the
-20% trimmed mean, which performs well in many situations. The correction
-for multiple comparisons employs Hochberg’s strategy (Hochberg, 1988),
-which guarantees that the probability of at least one false positive
-will not exceed the nominal level as long as the nominal level is not
-exceeded for each quantile. All these defaults can be changed - see
-`help(hsf)`.
+technique. Here are details of the current implementation. In
+particular, unlike all other quantile-related functions in `qpatterns`,
+here the deciles are estimated using type 8 from the base R `quantile()`
+function (see justification in Rousselet & Wilcox, 2020). The group
+comparisons are performed using a one-sample t-test for the 20% trimmed
+mean, which performs well in many situations. The correction for
+multiple comparisons employs Hochberg’s strategy (Hochberg, 1988), which
+guarantees that the probability of at least one false positive will not
+exceed the nominal level as long as the nominal level is not exceeded
+for each quantile. All these defaults can be changed - see `help(hsf)`.
 
-In Rousselet & Wilcox (2019), we consider power curves for the
-hierarchical shift function (HSF) and contrast them to other approaches:
-by design, HSF is sensitive to more types of differences than any
-standard approach using the mean or a single quantile. Another advantage
-of HSF is that the location of the distribution difference can be
-interrogated, which is impossible if inferences are limited to a single
-quantile.
+In [Rousselet & Wilcox
+(2020)](https://open.lnu.se/index.php/metapsychology/article/view/1630),
+we consider power curves for the hierarchical shift function (HSF) and
+contrast them to other approaches: by design, HSF is sensitive to more
+types of differences than any standard approach using the mean or a
+single quantile. Another advantage of HSF is that the location of the
+distribution difference can be interrogated, which is impossible if
+inferences are limited to a single quantile.
+
+A full validation of the method, and extension to other designs, remains
+to be performed.
 
 # Example 1: simulated data with a uniform shift
 
-First, we consider a uniform shift between two ex-Gaussian
-distributions. In condition 1, the ex-Gaussian parameters were mu = 500,
-sigma = 50 and tau = 200. Parameters in condition 2 were the same, but
-each sample was shifted by 50.
+First, we consider a uniform shift between two shifted lognormal
+distributions. In condition 1, the shifted lognormal parameters were
+shift = 325, meanlog = 5.8 and sdlog = 0.5. Parameters in condition 2
+were the same, but each sample was shifted by 50. Shifted lognormal
+samples are generated as `shift + rlnorm(n, meanlog, sdlog)`. The
+generated look plausibly like reaction times or durations or similar
+type of left bounded and right skewed data.
 
 Illustrate data from one participant, 1000 trials per condition.
 
@@ -131,19 +146,19 @@ Illustrate data from one participant, 1000 trials per condition.
 
 ``` r
 nt <- 1000
-# ex Gaussian parameters
-mu <- 500
-sigma <- 50
-tau <- 200
+# shifted lognormal parameters
+shift <- 325
+meanlog <- 5.8
+sdlog <- 0.5
 ES <- 50
 
 set.seed(21)
-g1 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau) 
-g2 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau) + ES
+g1 <- rsln(nt, shift, meanlog, sdlog) 
+g2 <- rsln(nt, shift, meanlog, sdlog) + ES
 df <- mkt2(g1, g2, group_labels = c("Condition1", "Condition2"))
 
 p <- ggplot(df, aes(x = obs)) + theme_classic() + 
-  stat_density(aes(colour = gr), geom="line",position="identity", size=1) +
+  stat_density(aes(colour = gr), geom="line",position="identity", linewidth=1) +
   scale_colour_viridis_d(end = 0.8) +
   coord_cartesian(xlim = c(0, 2500)) +
   theme(axis.title.x = element_text(size = 18),
@@ -171,10 +186,10 @@ p
 
 To better understand how the distributions differ, let’s look at the
 standard shift function, in which the difference between the deciles of
-the two conditions are plotted as a function of the deciles in condition
-1. The decile differences are all negative, showing stochastic dominance
-of condition 2 over condition 1. The function is not flat because of
-random sampling and limited sample size.
+the two conditions are plotted as a function of the deciles in
+condition 1. The decile differences are all negative, showing stochastic
+dominance of condition 2 over condition 1. The function is not flat
+because of random sampling and limited sample size.
 
 ``` r
 out <- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
@@ -192,15 +207,15 @@ set.seed(747)
 
 nt <- 100 # trials
 np <- 30 # participants
-# ex Gaussian parameters
-mu <- 500
-sigma <- 50
-tau <- 200
+# shifted lognormal parameters
+shift <- 325
+meanlog <- 5.8
+sdlog <- 0.5
 ES <- 50
 
 # generate data: matrix participants x trials
-data1 <- matrix(rexgauss(nt*np, mu = mu, sigma = sigma, tau = tau), nrow = np)
-data2 <- matrix(rexgauss(nt*np, mu = mu, sigma = sigma, tau = tau), nrow = np) + ES
+data1 <- matrix(rsln(nt*np, shift, meanlog, sdlog), nrow = np)
+data2 <- matrix(rsln(nt*np, shift, meanlog, sdlog), nrow = np) + ES
 
 # analysis parameters
 qseq <- seq(0.1,0.9,0.1) # quantiles
@@ -234,8 +249,8 @@ p
 out$pvalues
 ```
 
-    ## [1] 4.627365e-11 6.080292e-11 3.737277e-11 6.334578e-07 5.635363e-10
-    ## [6] 1.646131e-08 3.683236e-10 1.389007e-06 2.415958e-03
+    ## [1] 3.001921e-08 4.242029e-11 1.703970e-11 6.061152e-11 1.716205e-10
+    ## [6] 2.200586e-08 6.197510e-05 1.022342e-04 1.467945e-04
 
 ## Adjusted P values
 
@@ -243,8 +258,8 @@ out$pvalues
 out$adjusted_pvalues
 ```
 
-    ## [1] 3.701892e-10 4.256204e-10 3.363549e-10 1.900373e-06 2.817682e-09
-    ## [6] 6.584525e-08 2.209942e-09 2.778014e-06 2.415958e-03
+    ## [1] 1.200768e-07 3.393623e-10 1.533573e-10 4.242806e-10 1.029723e-09
+    ## [6] 1.100293e-07 1.467945e-04 1.467945e-04 1.467945e-04
 
 ## Stochastic dominance
 
@@ -256,20 +271,21 @@ stochastic dominance.
 
 ``` r
 nq <- length(out$quantiles)
-pdmt0 <- apply(out$individual_sf > 0, 2, sum)
-print(paste0('In ',sum(pdmt0 == nq),' participants (',round(100 * sum(pdmt0 == nq) / np, digits = 1),'%), all quantile differences are more than to zero'))
+pdgt0 <- apply(out$individual_sf > 0, 2, sum)
+print(paste0('In ',sum(pdgt0 == nq),' participants (',round(100 * sum(pdgt0 == nq) / np, digits = 1),'%), all quantile differences are greater than zero.'))
 ```
 
-    ## [1] "In 0 participants (0%), all quantile differences are more than to zero"
+    ## [1] "In 0 participants (0%), all quantile differences are greater than zero."
 
 ### Participants with all quantile differences \< 0
 
 ``` r
+nq <- length(out$quantiles)
 pdlt0 <- apply(out$individual_sf < 0, 2, sum)
-print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == nq) / np, digits = 1),'%), all quantile differences are less than to zero'))
+print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == nq) / np, digits = 1),'%), all quantile differences are less than zero.'))
 ```
 
-    ## [1] "In 22 participants (73.3%), all quantile differences are less than to zero"
+    ## [1] "In 21 participants (70%), all quantile differences are less than zero."
 
 ## Percentile bootstrap hierarchical shift function
 
@@ -317,27 +333,23 @@ confidence intervals. Here we plot them using `geom_halfeyeh()` from
 plot_hsf_pb_dist(out)
 ```
 
-    ## Warning: Ignoring unknown parameters: .point_interval
-
 ![](hsf_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 With 80% confidence interval, median of bootstrap differences and
 different colours
 
 ``` r
-plot_hsf_pb_dist(out, point_interv = "median_ci", interval_width = .80, 
+plot_hsf_pb_dist(out, point_interv = "median_qi", interval_width = .80, 
                  int_colour = "blue", fill_colour = "grey")
 ```
-
-    ## Warning: Ignoring unknown parameters: .point_interval
 
 ![](hsf_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 # Example 2: simulated data without differences
 
-Second, we consider samples from the same two ex-Gaussian distributions.
-In both conditions, the ex-Gaussian parameters were mu = 500, sigma = 50
-and tau = 200.
+Second, we consider samples from the same two shifted lognormal
+distributions. In both conditions, the shifted lognormal parameters were
+shift = 325, meanlog = 5.8 and sdlog = 0.5.
 
 Illustrate data from one participant, 1000 trials per condition.
 
@@ -345,19 +357,19 @@ Illustrate data from one participant, 1000 trials per condition.
 
 ``` r
 nt <- 1000
-# ex Gaussian parameters
-mu <- 500
-sigma <- 50
-tau <- 200
+# shifted lognormal parameters
+shift <- 325
+meanlog <- 5.8
+sdlog <- 0.5
 ES <- 0
 
 set.seed(21)
-g1 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau) 
-g2 <- rexgauss(nt, mu = mu, sigma = sigma, tau = tau) + ES
+g1 <- rsln(nt, shift, meanlog, sdlog) 
+g2 <- rsln(nt, shift, meanlog, sdlog) + ES
 df <- mkt2(g1, g2, group_labels = c("Condition1", "Condition2"))
 
 p <- ggplot(df, aes(x = obs)) + theme_classic() + 
-  stat_density(aes(colour = gr), geom="line",position="identity", size=1) +
+  stat_density(aes(colour = gr), geom="line",position="identity", linewidth=1) +
   scale_colour_viridis_d(end = 0.8) +
   coord_cartesian(xlim = c(0, 2500)) +
   theme(axis.title.x = element_text(size = 18),
@@ -381,11 +393,12 @@ p
 
 To better understand how the distributions differ, let’s look at the
 standard shift function, in which the difference between the deciles of
-the two conditions are plotted as a function of the deciles in condition
-1. The decile differences are all negative, showing stochastic dominance
-of condition 2 over condition 1. The function is not flat because of
-random sampling and limited sample size. In fact, even with 1,000
-trials, large differences are suggested for middle and upper deciles.
+the two conditions are plotted as a function of the deciles in
+condition 1. The decile differences are all negative, showing stochastic
+dominance of condition 2 over condition 1. The function is not flat
+because of random sampling and limited sample size. In fact, even with
+1,000 trials, large differences are suggested for middle and upper
+deciles.
 
 ``` r
 out <- shifthd_pbci(df, nboot = 200, adj_ci = FALSE)
@@ -403,15 +416,15 @@ set.seed(747)
 
 nt <- 100 # trials
 np <- 30 # participants
-# ex Gaussian parameters
-mu <- 500
-sigma <- 50
-tau <- 200
+# shifted lognormal parameters
+shift <- 325
+meanlog <- 5.8
+sdlog <- 0.5
 ES <- 0
 
 # generate data: matrix participants x trials
-data1 <- matrix(rexgauss(nt*np, mu = mu, sigma = sigma, tau = tau), nrow = np)
-data2 <- matrix(rexgauss(nt*np, mu = mu, sigma = sigma, tau = tau), nrow = np) + ES
+data1 <- matrix(rsln(nt*np, shift, meanlog, sdlog), nrow = np)
+data2 <- matrix(rsln(nt*np, shift, meanlog, sdlog), nrow = np) + ES
 
 # analysis parameters
 qseq <- seq(0.1,0.9,0.1) # quantiles
@@ -445,20 +458,20 @@ p
 
 ``` r
 nq <- length(out$quantiles)
-pdmt0 <- apply(out$individual_sf > 0, 2, sum)
-print(paste0('In ',sum(pdmt0 == nq),' participants (',round(100 * sum(pdmt0 == nq) / np, digits = 1),'%), all quantile differences are more than to zero'))
+pdgt0 <- apply(out$individual_sf > 0, 2, sum)
+print(paste0('In ',sum(pdgt0 == nq),' participants (',round(100 * sum(pdgt0 == nq) / np, digits = 1),'%), all quantile differences are greater than zero.'))
 ```
 
-    ## [1] "In 3 participants (10%), all quantile differences are more than to zero"
+    ## [1] "In 4 participants (13.3%), all quantile differences are greater than zero."
 
 ### Participants with all quantile differences \< 0
 
 ``` r
 pdlt0 <- apply(out$individual_sf < 0, 2, sum)
-print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == nq) / np, digits = 1),'%), all quantile differences are less than to zero'))
+print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == nq) / np, digits = 1),'%), all quantile differences are less than zero.'))
 ```
 
-    ## [1] "In 4 participants (13.3%), all quantile differences are less than to zero"
+    ## [1] "In 6 participants (20%), all quantile differences are less than zero."
 
 ## Percentile bootstrap hierarchical shift function
 
@@ -483,17 +496,13 @@ plot_hsf_pb(out, interv = "hdi")
 plot_hsf_pb_dist(out)
 ```
 
-    ## Warning: Ignoring unknown parameters: .point_interval
-
 ![](hsf_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 # Example 3: real data
 
 ## Get lexical decision dataset
 
-Data from the [French Lexicon
-Project](https://sites.google.com/site/frenchlexicon/results). Click on
-“French Lexicon Project trial-level results with R scripts.zip”. The
+Data from the French Lexicon Project (Ferrand et al., 2010). The
 `.RData` dataset was created by applying the script
 `/data-raw/getflprtdata.Rmd`.
 
@@ -533,26 +542,29 @@ plot_hsf(out)
 
 ![](hsf_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
+Shift functions are overall negative, as participants tend to be faster
+in the Word condition than in the Non-Word condition.
+
 ## Stochastic dominance
 
 ### Participants with all quantile differences \> 0
 
 ``` r
 nq <- length(out$quantiles)
-pdmt0 <- apply(out$individual_sf > 0, 2, sum)
-print(paste0('In ',sum(pdmt0 == nq),' participants (',round(100 * sum(pdmt0 == nq) / np, digits = 1),'%), all quantile differences are more than to zero'))
+pdgt0 <- apply(out$individual_sf > 0, 2, sum)
+print(paste0('In ',sum(pdgt0 == nq),' participants (',round(100 * sum(pdgt0 == nq) / np, digits = 1),'%), all quantile differences are greater than zero.'))
 ```
 
-    ## [1] "In 13 participants (1.4%), all quantile differences are more than to zero"
+    ## [1] "In 13 participants (1.4%), all quantile differences are greater than zero."
 
 ### Participants with all quantile differences \< 0
 
 ``` r
 pdlt0 <- apply(out$individual_sf < 0, 2, sum)
-print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == nq) / np, digits = 1),'%), all quantile differences are less than to zero'))
+print(paste0('In ',sum(pdlt0 == nq),' participants (',round(100 * sum(pdlt0 == nq) / np, digits = 1),'%), all quantile differences are less than zero.'))
 ```
 
-    ## [1] "In 798 participants (83.2%), all quantile differences are less than to zero"
+    ## [1] "In 798 participants (83.2%), all quantile differences are less than zero."
 
 ## Compute shift functions for a subset of participants
 
@@ -585,12 +597,12 @@ t.test(dfred[,1], dfred[,2], paired = TRUE)
     ## 
     ## data:  dfred[, 1] and dfred[, 2]
     ## t = -10.246, df = 49, p-value = 8.923e-14
-    ## alternative hypothesis: true difference in means is not equal to 0
+    ## alternative hypothesis: true mean difference is not equal to 0
     ## 95 percent confidence interval:
     ##  -110.30178  -74.12955
     ## sample estimates:
-    ## mean of the differences 
-    ##               -92.21567
+    ## mean difference 
+    ##       -92.21567
 
 ## Reverse order of conditions
 
@@ -653,15 +665,13 @@ plot_hsf_pb(out, interv = "hdi")
 plot_hsf_pb_dist(out)
 ```
 
-    ## Warning: Ignoring unknown parameters: .point_interval
-
 ![](hsf_files/figure-gfm/unnamed-chunk-41-1.png)<!-- -->
 
 # References
 
-Rousselet, G. A., & Wilcox, R. R. (2019). **Reaction times and other
+Rousselet, G. A., & Wilcox, R. R. (2020). **Reaction times and other
 skewed distributions: problems with the mean and the median.**
-\[[preprint](https://psyarxiv.com/3y54r/)\]  
+\[[article](https://open.lnu.se/index.php/metapsychology/article/view/1630)\]\
 \[[reproducibility
 package](https://figshare.com/articles/Reaction_times_and_other_skewed_distributions_problems_with_the_mean_and_the_median/6911924)\]
 
@@ -670,7 +680,6 @@ Augustinova, M., & Pallier, C. (2010). **The French Lexicon Project:
 Lexical decision data for 38,840 French words and 38,840 pseudowords.**
 Behavior Research Methods, 42, 488-496.
 \[[article](https://link.springer.com/article/10.3758/BRM.42.2.488)\]
-\[[dataset](https://sites.google.com/site/frenchlexicon/results)\]
 
 Speckman, P. L., Rouder, J. N., Morey, R. D. & Pratte, M. S. (2008).
 **Delta plots and coherent distribution ordering.** The American

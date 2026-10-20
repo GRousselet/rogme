@@ -5,7 +5,7 @@
 \title{Plot quantiles and confidence intervals}
 \usage{
 plot_hd_ci(
-  data = out,
+  data,
   qseq = seq(0.1, 0.9, 0.1),
   plotzero = TRUE,
   label.x = "Differences",
@@ -28,6 +28,20 @@ plot_hd_ci(
 \item{data}{Data frame created by `quantiles_pbci`.}
 
 \item{qseq}{Sequence of quantiles to plot - assumes median is in the middle of the sequence - default = deciles.}
+
+\item{plotzero}{Logical - if TRUE, a vertical line marks zero.}
+
+\item{label.x}{Label of the x axis, also used for the median caption.}
+
+\item{hjust, vjust}{Horizontal and vertical justification of the median caption.}
+
+\item{size_text}{Size of the median caption.}
+
+\item{colour_q, fill_q, size_q, shape_q}{Colour, fill, size and shape of the quantile symbols.}
+
+\item{colour_line, size_line, linetype_line}{Colour, line width and line type of the vertical line marking the median.}
+
+\item{colour_zero, size_zero, linetype_zero}{Colour, line width and line type of the line marking zero.}
 }
 \description{
 Using the output of \code{\link{quantiles_pbci}}, create a ggplot object
@@ -43,9 +57,10 @@ out <- quantiles_pbci(x,q=seq(1,9)/10,nboot=2000,alpha=0.05)
 # make decile plot
 p <- plot_hd_ci(data=out,plotzero=TRUE,label.x="Onsets in ms",
                    hjust=-.05,vjust=.5,size_text=5,
-                   colour_dec = "grey10",fill_dec = "grey90",
+                   colour_q = "grey10",fill_q = "grey90",
                    colour_line = "grey10", linetype_line = 1, size_line = 1) +
-                   scale_y_continuous(limits=c(250, 350),breaks=seq(250,350,25))
+                   ggplot2::scale_y_continuous(limits=c(250, 350),breaks=seq(250,350,25))
+p
 
 }
 \seealso{

@@ -34,18 +34,22 @@ A ggplot object.
 \description{
 Plot hierarchical shift function percentile bootstrap samples generated with
 \code{\link{hsf_pb}}. Bootstrap distributions of group trimmed mean
-differences are plotted using tidybayes::geom_halfeyeh. The function returns
+differences are plotted using tidybayes::stat_halfeye. The function returns
 a ggplot object, which can be customised using the
 \href{http://docs.ggplot2.org/current/}{ggplot2} package.
 }
 \examples{
+set.seed(22)
+id <- unique(flp$participant)
+df <- subset(flp, flp$participant \%in\% sample(id, 20, replace = FALSE))
+out <- hsf_pb(df, rt ~ condition + participant , nboot = 200)
 plot_hsf_pb(out) # default plot
 p <- plot_hsf_pb(out) # get ggplot object
 plot_hsf_pb(out, gp_line_colour = "purple", gp_point_colour = "purple") # pink group shift function
 
 }
 \references{
-Rousselet, G. A., & Wilcox, R. R. (2019, January 17). Reaction
+Rousselet, G. A., & Wilcox, R. R. (2020). Reaction
   times and other skewed distributions: problems with the mean and the
-  median. https://doi.org/10.31234/osf.io/3y54r
+  median. https://open.lnu.se/index.php/metapsychology/article/view/1630
 }

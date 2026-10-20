@@ -32,11 +32,11 @@
 #'   shape = 21,
 #'   colour = "grey10",
 #'   fill = "grey90") # scatterplots
-#' ps <- ps + coord_flip()
+#' ps <- ps + ggplot2::coord_flip()
 #' ps
 #'
 #' @export
-plot_scat2 <- function(data = df,
+plot_scat2 <- function(data,
                        formula = obs ~ gr,
                        xlabel = NULL,
                        ylabel = NULL,
@@ -45,8 +45,8 @@ plot_scat2 <- function(data = df,
   subf <- subset_formula(data, formula)
   xplot = subf$param_col_name
   yplot = subf$obs_col_name
-  p <- ggplot(data, aes_string(x = xplot, y = yplot, fill = xplot,
-                               colour = xplot, shape = xplot))
+  p <- ggplot(data, aes(x = .data[[xplot]], y = .data[[yplot]], fill = .data[[xplot]],
+                        colour = .data[[xplot]], shape = .data[[xplot]]))
   p <- p + ggbeeswarm::geom_quasirandom(...) +
     theme_bw() +
     # scale_colour_manual(values = symb_col) +
@@ -75,6 +75,13 @@ plot_scat2 <- function(data = df,
 #'
 #' @param data Data frame created by `quantiles_pbci`.
 #' @param qseq Sequence of quantiles to plot - assumes median is in the middle of the sequence - default = deciles.
+#' @param plotzero Logical - if TRUE, a vertical line marks zero.
+#' @param label.x Label of the x axis, also used for the median caption.
+#' @param hjust,vjust Horizontal and vertical justification of the median caption.
+#' @param size_text Size of the median caption.
+#' @param colour_q,fill_q,size_q,shape_q Colour, fill, size and shape of the quantile symbols.
+#' @param colour_line,size_line,linetype_line Colour, line width and line type of the vertical line marking the median.
+#' @param colour_zero,size_zero,linetype_zero Colour, line width and line type of the line marking zero.
 #'
 #' @seealso \code{\link{quantiles_pbci}}
 #'
@@ -87,13 +94,13 @@ plot_scat2 <- function(data = df,
 #' # make decile plot
 #' p <- plot_hd_ci(data=out,plotzero=TRUE,label.x="Onsets in ms",
 #'                    hjust=-.05,vjust=.5,size_text=5,
-#'                    colour_dec = "grey10",fill_dec = "grey90",
+#'                    colour_q = "grey10",fill_q = "grey90",
 #'                    colour_line = "grey10", linetype_line = 1, size_line = 1) +
-#'                    scale_y_continuous(limits=c(250, 350),breaks=seq(250,350,25))
-# p
+#'                    ggplot2::scale_y_continuous(limits=c(250, 350),breaks=seq(250,350,25))
+#' p
 #'
 #' @export
-plot_hd_ci <- function(data = out,
+plot_hd_ci <- function(data,
                        qseq = seq(.1,.9,.1),
                         plotzero = TRUE,
                         label.x = "Differences",
@@ -116,23 +123,23 @@ plot_hd_ci <- function(data = out,
   lo.c <- as.character(round(data$ci.low[md.loc], digits=1)) # turn into characters
   up.c <- as.character(round(data$ci.up[md.loc], digits=1)) # turn into characters
   caption <- paste("Median = \n ",md.c," [",lo.c,", ",up.c,"]",sep="")
-  if (all.equal(qseq,seq(.1,.9,.1))){
+  if (isTRUE(all.equal(qseq,seq(.1,.9,.1)))){
     label.y <- "Deciles"
   }  else {
     label.y <- "Quantiles"
   }
-  p <- ggplot(data=out, aes(x=quantile*10, y=est_q)) +
+  p <- ggplot(data=data, aes(x=quantile*10, y=est_q)) +
     geom_abline(intercept = md, slope = 0,
                 colour = colour_line,
-                size = size_line,
+                linewidth = size_line,
                 linetype = linetype_line)
   if (plotzero){
     p <- p + geom_abline(intercept = 0, slope = 0,
                          colour = colour_zero,
-                         size = size_zero,
+                         linewidth = size_zero,
                          linetype = linetype_zero)
   }
-  p <- p + geom_linerange(aes(ymin=ci.low, ymax=ci.up), colour=colour_line,size=1) +
+  p <- p + geom_linerange(aes(ymin=ci.low, ymax=ci.up), colour=colour_line,linewidth=1) +
     geom_point(colour = colour_q,
                size = size_q,
                shape = shape_q,
@@ -178,11 +185,11 @@ plot_hd_ci <- function(data = out,
 #' @param alpha_q Alpha of the segments marking the quartiles - default = .5,
 #' @param colour_q Colour of the segments marking the quartiles - default = "black"
 #' @examples
-#' df <- tibble(cond1 = rnorm(50), cond2 = cond1 + rnorm(50))
+#' df <- tibble::tibble(cond1 = rnorm(50), cond2 = cond1 + rnorm(50))
 #' plot_scat2d(df, formula = cond2 ~ cond1) # basic call
 #' plot_scat2d(df, formula = cond2 ~ cond1, size_q=3) # specify size of quartile segments
 #' plot_scat2d(df, formula = cond2 ~ cond1, size_q=c(1,2,1)) # use thicker line for median
-#' plot_scat2d(df, formula = cond2 ~ cond1, linetype_q = "longdash") # specify linetype - default = dashed
+#' plot_scat2d(df, formula = cond2 ~ cond1, linetype_q = "longdash") # specify linetype
 #' @seealso \code{\link{hd}}
 #' @export
 plot_scat2d <- function(df = df,
@@ -246,7 +253,7 @@ plot_scat2d <- function(df = df,
   }
 
   # scatterplot of paired observations -----------------
-  p <- ggplot(df, aes_string(x = xplot, y = yplot)) +
+  p <- ggplot(df, aes(x = .data[[xplot]], y = .data[[yplot]])) +
     # reference line
     geom_abline(intercept = 0) +
     # quartiles
@@ -254,12 +261,12 @@ plot_scat2d <- function(df = df,
     scale_y_continuous(breaks=seq(floor(min.y),ceiling(max.y),axis.steps)) +
     coord_cartesian(xlim = c(floor(min.x), ceiling(max.x)),
                     ylim = c(floor(min.y), ceiling(max.y))) +
-    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
-    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
-    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
-    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],size=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
-    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],size=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
-    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],size=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
+    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],linewidth=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
+    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],linewidth=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
+    geom_segment(aes(x=hd1,y=min.y-abs(min.y),xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],linewidth=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
+    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.25,linetype=linetype_q[1],linewidth=size_q[1],alpha=alpha_q[1],colour=colour_q[1]) +
+    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.5,linetype=linetype_q[2],linewidth=size_q[2],alpha=alpha_q[2],colour=colour_q[2]) +
+    geom_segment(aes(x=min.x-abs(min.x),y=hd2,xend=hd1,yend=hd2),data=df.75,linetype=linetype_q[3],linewidth=size_q[3],alpha=alpha_q[3],colour=colour_q[3]) +
     # scatterplot
     geom_point(size=size_p,
                stroke=stroke_p,

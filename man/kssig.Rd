@@ -2,16 +2,17 @@
 % Please edit documentation in R/stats.R
 \name{kssig}
 \alias{kssig}
-\title{Compute significance level of the  Kolmogorov-Smirnov test statistic
-m=sample size of first group
-n=sample size of second group
-val=observed value of test statistic}
+\title{Compute significance level of the  Kolmogorov-Smirnov test statistic}
 \usage{
 kssig(m, n, val)
 }
+\arguments{
+\item{m}{Sample size of first group}
+
+\item{n}{Sample size of second group}
+
+\item{val}{Observed value of test statistic}
+}
 \description{
 Compute significance level of the  Kolmogorov-Smirnov test statistic
-m=sample size of first group
-n=sample size of second group
-val=observed value of test statistic
 }

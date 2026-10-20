@@ -5,7 +5,7 @@
 \title{Percentile bootstrap hierarchical shift function for one group, two dependent conditions}
 \usage{
 hsf_pb(
-  data = df,
+  data,
   formula = obs ~ cond + id,
   qseq = seq(0.1, 0.9, 0.1),
   tr = 0.2,
@@ -64,9 +64,7 @@ set.seed(22) # subset random sample of participants from the French Lexicon Proj
 id <- unique(flp$participant)
 df <- subset(flp, flp$participant \%in\% sample(id, 50, replace = FALSE))
 out <- hsf_pb(df, rt ~ condition + participant) # use the default parameters
-plot_hsf_pb(out) # plot results. Shift functions are overall negative, as
-participants tend to be faster in the Word condition than in the Non-Word
-condition.
+plot_hsf_pb(out) # plot results 
 
 out <- hsf_pb(df, rt ~ condition + participant, qseq = c(.25, .5, .75)) # estimate quartiles only
 
@@ -74,9 +72,9 @@ out <- hsf_pb(df, rt ~ condition + participant, todo = c(2,1)) # reverse compari
 
 }
 \references{
-Rousselet, G. A., & Wilcox, R. R. (2019, January 17). Reaction
+Rousselet, G. A., & Wilcox, R. R. (2020). Reaction
   times and other skewed distributions: problems with the mean and the
-  median. https://doi.org/10.31234/osf.io/3y54r
+  median. https://open.lnu.se/index.php/metapsychology/article/view/1630
 }
 \seealso{
 \code{\link{plot_hsf_pb}} to plot the results.

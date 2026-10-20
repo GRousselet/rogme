@@ -13,6 +13,10 @@ pb2gen(x, y, alpha = 0.05, nboot = 2000, est = hd, ...)
 interval is computed.}
 
 \item{nboot}{Number of bootstrap samples - default = 2000.}
+
+\item{est}{Function used to estimate the parameter being compared - default = \code{hd}.}
+
+\item{...}{Additional arguments passed to \code{est}.}
 }
 \value{
 A list with variables: \code{est.1} \code{est.2}, \code{est.diff} \code{ci}, \code{p.value}, \code{sq.se}, \code{n1}, \code{n2}

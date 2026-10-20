@@ -1,18 +1,18 @@
 Quantify distribution differences using the shift function
 ================
 Guillaume A. Rousselet
-2020-07-10
+2026-10-20
 
-  - [No clear difference](#no-clear-difference)
-  - [Mean difference](#mean-difference)
-  - [Skewness difference](#skewness-difference)
-  - [Reaction time differences](#reaction-time-differences)
-      - [Weak early differences, then increasing
-        differences](#weak-early-differences-then-increasing-differences)
-      - [Complete shift](#complete-shift)
-      - [Early differences, then decreasing
-        differences](#early-differences-then-decreasing-differences)
-  - [References](#references)
+- [No clear difference](#no-clear-difference)
+- [Mean difference](#mean-difference)
+- [Skewness difference](#skewness-difference)
+- [Reaction time differences](#reaction-time-differences)
+  - [Weak early differences, then increasing
+    differences](#weak-early-differences-then-increasing-differences)
+  - [Complete shift](#complete-shift)
+  - [Early differences, then decreasing
+    differences](#early-differences-then-decreasing-differences)
+- [References](#references)
 
 In the README file, we considered the case of 2 independent groups that
 differ in spread. To get a better understanding of the shift function,
@@ -85,13 +85,7 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 
 #> plot shift function
 psf <- plot_sf(sf, plot_theme = 2)
-```
 
-    ## Warning: Using alpha for a discrete variable is not advised.
-    
-    ## Warning: Using alpha for a discrete variable is not advised.
-
-``` r
 #> change axis labels
 psf[[1]] <- psf[[1]] +
             labs(x = "Group 1 quantiles of scores (a.u.)",
@@ -204,13 +198,7 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 
 #> plot shift function
 psf <- plot_sf(sf, plot_theme = 2)
-```
 
-    ## Warning: Using alpha for a discrete variable is not advised.
-    
-    ## Warning: Using alpha for a discrete variable is not advised.
-
-``` r
 #> change axis labels
 psf[[1]] <- psf[[1]] +
             labs(x = "Group 1 quantiles of scores (a.u.)",
@@ -329,13 +317,7 @@ sf <- shifthd(data = df, formula = obs ~ gr, nboot = 200)
 
 #> plot shift function
 psf <- plot_sf(sf, plot_theme = 2)
-```
 
-    ## Warning: Using alpha for a discrete variable is not advised.
-    
-    ## Warning: Using alpha for a discrete variable is not advised.
-
-``` r
 #> change axis labels
 psf[[1]] <- psf[[1]] +
             labs(x = "Group 1 quantiles of scores (a.u.)",
@@ -390,13 +372,13 @@ More generally, the shift function is well suited to investigate how
 skewed distributions differ. The figures in the next section illustrate
 reaction time data in which a manipulation:
 
-  - affects most strongly slow behavioural responses, but with limited
-    effects on fast responses;
+- affects most strongly slow behavioural responses, but with limited
+  effects on fast responses;
 
-  - affects all responses, fast and slow, similarly;
+- affects all responses, fast and slow, similarly;
 
-  - has stronger effects on fast responses, and weaker ones for slow
-    responses.
+- has stronger effects on fast responses, and weaker ones for slow
+  responses.
 
 # Reaction time differences
 
@@ -406,12 +388,8 @@ comparisons limited to say the median reaction times across participants
 (Ridderinkhof et al., 2005; Pratte et al., 2010).
 
 ``` r
-library(retimes)
-```
-
-    ## Reaction Time Analysis (version 0.1-2)
-
-``` r
+#> shifted lognormal generator: shift + lognormal(meanlog, sdlog)
+rsln <- function(n, shift, meanlog, sdlog) shift + rlnorm(n, meanlog, sdlog)
 Nb = 1000 #> number of bootstrap samples
 nobs <- 1000 #> number of observations per group
 ```
@@ -422,8 +400,8 @@ nobs <- 1000 #> number of observations per group
 
 ``` r
 set.seed(3)
-g1 <- rexgauss(nobs, mu=300, sigma=10, tau=30)
-g2 <- rexgauss(nobs, mu=300, sigma=17, tau=70)
+g1 <- rsln(nobs, shift=270, meanlog=4.0, sdlog=0.5)
+g2 <- rsln(nobs, shift=240, meanlog=4.7, sdlog=0.5)
 
 #> make tibble
 df <- mkt2(g1,g2)
@@ -431,13 +409,13 @@ df <- mkt2(g1,g2)
 #> -------------------------------------------------------
 #> violinplots
 ps <- ggplot(df, aes(x = gr, y = obs, fill = gr, colour = gr, shape = gr)) + 
-  geom_violin(fill = "grey95", colour = "black", size = 1.25) +
+  geom_violin(fill = "grey95", colour = "black", linewidth = 1.25) +
   theme_bw() + 
   theme(legend.position = "none") + 
   theme(axis.title.x = element_text(size = 16, face = "bold"), 
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16)) + 
-  scale_y_continuous(limits=c(250, 700),breaks=seq(200,800,100)) +
+  scale_y_continuous(limits=c(250, 800),breaks=seq(200,800,100)) +
   scale_x_discrete(labels = c("g1", "g2"), expand = c(0.02, 0.02)) +
   labs(title = "Increasing differences", x = "", y = "Response latencies in ms") +
   theme(plot.title = element_text(face = "bold", size = 20)) + 
@@ -454,13 +432,6 @@ sf <- shifthd_pbci(data = df, formula = obs ~ gr, q=seq(.1,.9,.1), nboot = Nb)
 psf <- plot_sf(sf, plot_theme = 2, symb_size = 4)[[1]] + 
   scale_y_continuous(breaks = seq(-160, 20, 20), limits = c(-160, 20)) +
   labs(y = "Decile differences")
-```
-
-    ## Warning: Using alpha for a discrete variable is not advised.
-    
-    ## Warning: Using alpha for a discrete variable is not advised.
-
-``` r
 #> psf
 
 #> combine kernel density plots + shift functions
@@ -475,16 +446,14 @@ cowplot::plot_grid(ps, psf,
                     align = "v")
 ```
 
-    ## Warning: Removed 1 rows containing non-finite values (stat_ydensity).
-
 ![](sf_patterns_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ## Complete shift
 
 ``` r
 set.seed(3)
-g1<-rexgauss(nobs, mu=300, sigma=10, tau=50)
-g2<-rexgauss(nobs, mu=300, sigma=10, tau=50) + 50
+g1<-rsln(nobs, shift=260, meanlog=4.35, sdlog=0.5)
+g2<-rsln(nobs, shift=260, meanlog=4.35, sdlog=0.5) + 50
 
 #> make tibble
 df <- mkt2(g1,g2)
@@ -492,13 +461,13 @@ df <- mkt2(g1,g2)
 #> -------------------------------------------------------
 #> violinplots
 ps <- ggplot(df, aes(x = gr, y = obs, fill = gr, colour = gr, shape = gr)) + 
-  geom_violin(fill = "grey95", colour = "black", size = 1.25) +
+  geom_violin(fill = "grey95", colour = "black", linewidth = 1.25) +
   theme_bw() + 
   theme(legend.position = "none") + 
   theme(axis.title.x = element_text(size = 16, face = "bold"), 
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16)) + 
-  scale_y_continuous(limits=c(250, 700),breaks=seq(200,800,100)) +
+  scale_y_continuous(limits=c(250, 800),breaks=seq(200,800,100)) +
   scale_x_discrete(labels = c("g1", "g2"), expand = c(0.02, 0.02)) +
   labs(title = "Complete shift", x = "", y = "Response latencies in ms") +
   theme(plot.title = element_text(face = "bold", size = 20)) + 
@@ -513,13 +482,7 @@ sf <- shifthd_pbci(data = df, formula = obs ~ gr, q=seq(.1,.9,.1), nboot = Nb)
 psf <- plot_sf(sf, plot_theme = 2, symb_size = 4)[[1]] +
                   scale_y_continuous(breaks = seq(-100, 20, 20), limits = c(-100, 20)) +
                   labs(y = "Decile differences")
-```
 
-    ## Warning: Using alpha for a discrete variable is not advised.
-    
-    ## Warning: Using alpha for a discrete variable is not advised.
-
-``` r
 #> combine kernel density plots + shift functions
 cowplot::plot_grid(ps, psf,
                    labels=c("A", "B"),
@@ -532,16 +495,14 @@ cowplot::plot_grid(ps, psf,
                    align = "v")
 ```
 
-    ## Warning: Removed 1 rows containing non-finite values (stat_ydensity).
-
 ![](sf_patterns_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## Early differences, then decreasing differences
 
 ``` r
 set.seed(1)
-g1<-rexgauss(nobs, mu=400, sigma=20, tau=50)
-g2<-rexgauss(nobs, mu=370, sigma=20, tau=70)
+g1<-rsln(nobs, shift=340, meanlog=4.6, sdlog=0.5)
+g2<-rsln(nobs, shift=305, meanlog=4.8, sdlog=0.5)
 
 #> make tibble
 df <- mkt2(g1,g2)
@@ -549,13 +510,13 @@ df <- mkt2(g1,g2)
 #> -------------------------------------------------------
 #> violinplots
 ps <- ggplot(df, aes(x = gr, y = obs, fill = gr, colour = gr, shape = gr)) + 
-  geom_violin(fill = "grey95", colour = "black", size = 1.25) +
+  geom_violin(fill = "grey95", colour = "black", linewidth = 1.25) +
   theme_bw() + 
   theme(legend.position = "none") + 
   theme(axis.title.x = element_text(size = 16, face = "bold"), 
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16)) + 
-  scale_y_continuous(limits=c(200, 700),breaks=seq(200,800,100)) +
+  scale_y_continuous(limits=c(250, 800),breaks=seq(200,800,100)) +
   scale_x_discrete(labels = c("g1", "g2"), expand = c(0.02, 0.02)) +
   labs(title = "Early differences", x = "", y = "Response latencies in ms") +
   theme(plot.title = element_text(face = "bold", size = 20)) + 
@@ -570,13 +531,7 @@ sf <- shifthd_pbci(data = df, formula = obs ~ gr, q=seq(.1,.9,.1), nboot = Nb)
 psf <- plot_sf(sf, plot_theme = 2, symb_size = 4)[[1]] +
                 scale_y_continuous(breaks = seq(-70, 30, 10), limits = c(-70, 30)) +
                 labs(y = "Decile differences")
-```
 
-    ## Warning: Using alpha for a discrete variable is not advised.
-    
-    ## Warning: Using alpha for a discrete variable is not advised.
-
-``` r
 #> combine kernel density plots + shift functions
 cowplot::plot_grid(ps, psf,
                     labels=c("A", "B"),
@@ -589,7 +544,8 @@ cowplot::plot_grid(ps, psf,
                     align = "v")
 ```
 
-    ## Warning: Removed 19 rows containing non-finite values (stat_ydensity).
+    ## Warning: Removed 5 rows containing non-finite outside the scale range
+    ## (`stat_ydensity()`).
 
 ![](sf_patterns_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 

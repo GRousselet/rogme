@@ -16,6 +16,8 @@ occuring in the tails of the distributions.}
 \item{sig}{TRUE to use the exact significance level. If there are ties, the
 reported significance level is exact when using the unweighted test, but
 for the weighted test the reported level is too high.}
+
+\item{alpha}{Alpha significance level.}
 }
 \description{
 \code{ks} returns a list containing the value of the test statistic, the

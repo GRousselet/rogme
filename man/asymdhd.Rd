@@ -5,7 +5,7 @@
 \title{Difference asymmetry function for two dependent groups or a single distribution}
 \usage{
 asymdhd(
-  data = df,
+  data,
   formula = obs ~ gr,
   qseq = seq(5, 40, 5)/100,
   alpha = 0.05,
@@ -23,6 +23,8 @@ allowed.}
 \item{formula}{A formula with format response variable ∼ predictor variable,
 where ~ (tilde) means "is modeled as a function of".}
 
+\item{qseq}{Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.}
+
 \item{alpha}{Expected long-run type I error rate - default = 0.05.}
 
 \item{nboot}{Number of bootstrap samples - default = 1000.}
@@ -31,8 +33,6 @@ where ~ (tilde) means "is modeled as a function of".}
 
 \item{doall}{Set to TRUE to compute all comparisons - default = FALSE. Not
 executed if a \code{todo} list is provided.}
-
-\item{q}{Quantiles to estimate - default = 0.05:0.05:.4 - must be <.5.}
 }
 \value{
 A list of data frames, one data frame per comparison. Each data frame
@@ -75,7 +75,7 @@ C1 <- rnorm(n) # condition 1
 C2 <- C1 + rnorm(n) + 2 # condition 2
 # Data with 3 independent groups and 2 dependent conditions per group
 library(tibble)
-df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
   cond1 = c(C1, C1+rnorm(n), C1+rnorm(n)),
   cond2 = c(C2, C2 + 1, C2 + 3) ) # make tibble
 library(dplyr)
@@ -85,7 +85,7 @@ out <- asymdhd(df, diff ~ gr) # use the default parameters
 out <- asymdhd(df, diff ~ gr, alpha = .90) # specify alpha
 out <- asymdhd(df, diff ~ gr, nboot = 500) # specify the number of bootstrap samples
 out <- asymdhd(df, diff ~ gr, todo = list("group1", "group2")) # specify list of comparisons
-out <- asymdhd(df, diff ~ gr, q = seq(.1,.4,.1)) # specify the quantiles
+out <- asymdhd(df, diff ~ gr, qseq = seq(.1,.4,.1)) # specify the quantiles
 out <- asymdhd(df, diff ~ gr, doall = TRUE) # compute all tests
 
 }
@@ -93,6 +93,10 @@ out <- asymdhd(df, diff ~ gr, doall = TRUE) # compute all tests
 Wilcox, R.R. & Erceg-Hurn, D.M. (2012)
 Comparing two dependent groups via quantiles.
 J Appl Stat, 39, 2655-2664.
+
+Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2017). 
+Beyond differences in means: Robust graphical methods to compare two groups in neuroscience. 
+European Journal of Neuroscience, 46(2), 1738–1748. https://doi.org/10.1111/ejn.13610
 }
 \seealso{
 \code{\link{hd}}

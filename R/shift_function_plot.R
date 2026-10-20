@@ -29,19 +29,25 @@
 #' @param q_line_size Size of the line joining the quantiles - default = 1.5.
 #' @param theme2_alpha Alpha transparency for theme 2 - default c(0.4, 1)
 #' @examples
+#' set.seed(21)
+#' df <- mkt2(rnorm(100), rnorm(100) + 1)
+#' out <- shifthd(df, obs ~ gr, nboot = 200)
 #' plot_sf(out) # default plot
 #' plot_sf(out, plot_theme = 2) # specify theme
 #' plist <- plot_sf(out) # output list of ggplot objects
 #'
-#' # The plots can then be combined using \href{https://cran.r-project.org/web/packages/gridExtra/index.html}{gridExtra} or \href{https://cran.r-project.org/web/packages/cowplot/index.html}{cowplot} - for instance:
-#' library(gridExtra)
-#' do.call("grid.arrange", c(plist, ncol=2))
 #' # To extract one object and for instance change a label:
 #' p <- plist[[1]]
-#' p + labs(y = "Difference")
+#' p + ggplot2::labs(y = "Difference")
+#'
+#' \dontrun{
+#' # The plots can be combined using gridExtra or cowplot - for instance:
+#' library(gridExtra)
+#' do.call("grid.arrange", c(plist, ncol=2))
+#' }
 #'
 #' @export
-plot_sf <- function(data = df,
+plot_sf <- function(data,
                       plot_theme = 1,
                       symb_col = NULL,
                       symb_fill = NULL,
@@ -140,7 +146,7 @@ plot_sf <- function(data = df,
       lab.x <- paste0("Quantiles for ",names(df)[2])
       lab.y <- paste0("Quantile differences:\n",names(df)[2]," - ",names(df)[3])
     }
-    p <- ggplot(df, aes_string(x = xplot, y = "difference")) +
+    p <- ggplot(df, aes(x = .data[[xplot]], y = .data[["difference"]])) +
       # x=0 reference line
       geom_hline(yintercept = 0, linetype = 2, alpha = 0.5) +
       # y=median reference line
@@ -160,10 +166,10 @@ plot_sf <- function(data = df,
       p <- p +
         # vertical bars for uncertainty intervals
         geom_linerange(aes(ymin = ci_lower, ymax = ci_upper), colour = diffint_col,
-          size = diffint_size) +
+          linewidth = diffint_size) +
         # line joining the quantiles
         geom_line(colour = q_line_col, alpha = q_line_alpha, linetype = "solid",
-          size = q_line_size) +
+          linewidth = q_line_size) +
         # symbols marking the quantiles
         geom_point(colour = symb_col, size = symb_size, shape = symb_shape, fill = symb_fill)
     }
@@ -171,32 +177,31 @@ plot_sf <- function(data = df,
       p <- p +
         # vertical bars for uncertainty intervals
         geom_linerange(aes(ymin = ci_lower, ymax = ci_upper), colour = "white",
-          size = diffint_size) +
+          linewidth = diffint_size) +
         geom_linerange(aes(ymin = ci_lower, ymax = ci_upper, colour = factor(sign),
-          alpha = factor(deco)), size = diffint_size) +
-        scale_color_manual(values = symb_fill, guide = FALSE) +
-        scale_alpha_discrete(range = theme2_alpha, guide = FALSE) +
+          alpha = deco), linewidth = diffint_size) +
+        scale_color_manual(values = symb_fill, guide = "none") +
         # line joining the quantiles
         geom_line(colour = q_line_col, alpha = q_line_alpha, linetype = "solid",
-          size = q_line_size) +
+          linewidth = q_line_size) +
         # symbols marking the quantiles
         geom_point(colour = "black", fill = "white", size = symb_size, shape = symb_shape) +
-        geom_point(aes(fill = factor(sign), alpha = factor(deco)), colour = symb_col,
+        geom_point(aes(fill = factor(sign), alpha = deco), colour = symb_col,
           size = symb_size, shape = symb_shape) +
-        scale_fill_manual(values = symb_fill, guide = FALSE) +
-        scale_alpha_discrete(range = theme2_alpha, guide = FALSE)
+        scale_fill_manual(values = symb_fill, guide = "none") +
+        scale_alpha_continuous(range = theme2_alpha, guide = "none")
     }
     if (plot_theme == 3){ # greyscale gradient for the quantiles
       p <- p +
         # vertical bars for uncertainty intervals
         geom_linerange(aes(ymin = ci_lower, ymax = ci_upper), colour = diffint_col,
-          size = diffint_size) +
+          linewidth = diffint_size) +
         # line joining the quantiles
         geom_line(colour = q_line_col, alpha = q_line_alpha, linetype = "solid",
-          size = q_line_size) +
+          linewidth = q_line_size) +
         # symbols marking the quantiles
         geom_point(aes(fill = deco), colour="black", size = symb_size, shape = symb_shape) +
-        scale_fill_gradient(low = symb_fill[1], high = symb_fill[2], guide = FALSE)
+        scale_fill_gradient(low = symb_fill[1], high = symb_fill[2], guide = "none")
     }
     # print(p)
     plist[[pc]] <- p

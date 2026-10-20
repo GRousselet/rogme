@@ -1,15 +1,15 @@
 Compare two independent groups
 ================
 Guillaume A. Rousselet
-2020-07-10
+2026-10-20
 
-  - [Stripcharts of marginal
-    distributions](#stripcharts-of-marginal-distributions)
-  - [Shift function](#shift-function)
-  - [All pairwise differences](#all-pairwise-differences)
-  - [Difference asymmetry function](#difference-asymmetry-function)
-  - [Summary figure](#summary-figure)
-  - [References](#references)
+- [Stripcharts of marginal
+  distributions](#stripcharts-of-marginal-distributions)
+- [Shift function](#shift-function)
+- [All pairwise differences](#all-pairwise-differences)
+- [Difference asymmetry function](#difference-asymmetry-function)
+- [Summary figure](#summary-figure)
+- [References](#references)
 
 ``` r
 library(cowplot)
@@ -19,11 +19,11 @@ library(ggplot2)
 We can consider two different perspectives when comparing two
 independent groups, by asking two questions.
 
-  - **Question 1**: How does the typical observation in one group
-    compare to the typical observation in the other group?
+- **Question 1**: How does the typical observation in one group compare
+  to the typical observation in the other group?
 
-  - **Question 2**: What is the typical difference between any member of
-    group 1 and any member of group 2?
+- **Question 2**: What is the typical difference between any member of
+  group 1 and any member of group 2?
 
 # Stripcharts of marginal distributions
 
@@ -138,7 +138,7 @@ cidv2(g1,g2)
     ##      P(X<Y) P(X=Y) P(X>Y)
     ## [1,] 0.5084      0 0.4916
 
-This test suggests the distributions differ:
+This test suggests the distributions differ, but not how:
 
 ``` r
 ks(g1,g2) #> Kolmogorov-Smirnov test
@@ -182,15 +182,8 @@ psf <- plot_sf(sf, plot_theme = 2)[[1]] +
         scale_y_continuous(breaks = seq(-6, 6, 2), limits = c(-6, 6))
 ```
 
-    ## Warning: Using alpha for a discrete variable is not advised.
-    
-    ## Warning: Using alpha for a discrete variable is not advised.
-
-    ## Scale for 'alpha' is already present. Adding another scale for 'alpha', which
-    ## will replace the existing scale.
-
-    ## Scale for 'y' is already present. Adding another scale for 'y', which will
-    ## replace the existing scale.
+    ## Scale for y is already present.
+    ## Adding another scale for y, which will replace the existing scale.
 
 ``` r
 psf
@@ -240,6 +233,15 @@ for (qi in 1:length(q_seq)){
                       linetype = lineseq[[qi]],
                       colour = "black")
 }
+```
+
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once per session.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+``` r
 pkd <- p
 pkd
 ```

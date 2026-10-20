@@ -21,6 +21,6 @@ A dataset containing fake data from 35 participants in 2 conditions.
    \item{condition2}{results from condition 2, in arbitrary units}
  }
 
- @source \url{https://www.biorxiv.org/content/10.1101/121079v2}
+ @source \url{https://onlinelibrary.wiley.com/doi/10.1111/ejn.13610}
 }
 \keyword{datasets}

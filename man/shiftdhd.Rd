@@ -4,13 +4,7 @@
 \alias{shiftdhd}
 \title{Shift function for two dependent groups (pbse methods)}
 \usage{
-shiftdhd(
-  data = df,
-  formula = obs ~ cond,
-  nboot = 200,
-  todo = NULL,
-  doall = FALSE
-)
+shiftdhd(data, formula = obs ~ cond, nboot = 200, todo = NULL, doall = FALSE)
 }
 \arguments{
 \item{data}{A data frame in long format. One column is a factor describing the conditions;
@@ -29,7 +23,10 @@ where ~ (tilde) means "is modeled as a function of".}
 executed if a \code{todo} list is provided.}
 }
 \value{
-A list of data frames, one data frame per comparison. Each data frame has one row per decile. The columns are: \itemize{
+A list of data frames, one data frame per comparison. 
+Each data frame has one row per decile. 
+The columns are: 
+\itemize{
   \item Column 1 = quantiles - seq(0.1, 0.9, 0.1)
   \item Column 2 = deciles for group 1
   \item Column 3 = deciles for group 2
@@ -67,13 +64,13 @@ The same bootstrap samples are used for each quantile and for each group.
 set.seed(21) # generate data
 n <- 100 # sample size
 C1 <- rnorm(100)
-df2 <- tibble(condition = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
-              data = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
+df <- tibble::tibble(cond = factor(c(rep("C1",100),rep("C2",100),rep("C3",100))),
+              obs = c(C1+6, C1+rnorm(100)+4, C1+rnorm(100))) # make tibble
 
 out <- shiftdhd(df, obs ~ cond) # use the default parameters
 out <- shiftdhd(df, obs ~ cond, nboot = 500) # specify the number of bootstrap samples
-out <- shiftdhd(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # specify list of comparisons
-out <- shiftdhd(df, doall = TRUE) # compute all comparisons
+out <- shiftdhd(df, obs ~ cond, todo = list(c("C1","C2"),c("C3","C1"))) # list of comparisons
+out <- shiftdhd(df, obs ~ cond, doall = TRUE) # compute all comparisons
 
 }
 \references{

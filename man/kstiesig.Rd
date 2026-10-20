@@ -6,6 +6,11 @@
 \usage{
 kstiesig(x, y, val)
 }
+\arguments{
+\item{x, y}{Two vectors.}
+
+\item{val}{Observed value of test statistic.}
+}
 \description{
 Compute significance level of the Kolmogorov-Smirnov test statistic
 for the data in vectors x and y at val, the observed value of the

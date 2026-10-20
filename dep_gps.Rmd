@@ -23,7 +23,8 @@ library(ggplot2)
 When comparing dependent groups, we can ask two complementary questions:
 
 - **Question 1**: How does the typical observation in condition 1 compare to the typical observation in condition 2?
-- **Question 2**: What is the typical difference for a randomly sampled participant?
+
+- **Question 2**: What is the typical difference across participants? In other words, what difference can we expect in a typical participant?
 
 The next figure shows two dependent distributions, with relatively large differences in the right tails. To address Question 1, ‘How does the typical observation in condition 1 compare to the typical observation in condition 2?’, we consider the median of each condition. 
 
@@ -105,7 +106,7 @@ Because we are dealing with a paired design, our investigation should not be lim
 #> coloured lines linking paired observations
 pd <- position_dodge(width = 0.1)
 linkedstrip <- ggplot(df.long, aes(x=gr, y=data, group=participant)) +
-                geom_line(aes(colour=participant),size=1, alpha=.5,
+                geom_line(aes(colour=participant),linewidth=1, alpha=.5,
                           position=pd) +
                 theme_bw() +
                 theme(axis.text.x = element_text(size=14),
@@ -144,7 +145,7 @@ scatterdiff
 
 # Stripchart of differences 
 
-The next figure shows the distribution of pairwise differences, which let us assess Question 2, ‘What is the typical difference for a randomly sampled participant?’. 
+The next figure shows the distribution of pairwise differences, which let us assess Question 2, ‘What is the typical difference across participants?’. 
 
 ```{r fig.width = 5, fig.height = 5}
 #> ----------------------------------------------------

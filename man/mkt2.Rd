@@ -19,9 +19,11 @@ mkt2(
 
 \item{obs_names}{The name of the second column - default "obs" for
 observations.}
+
+\item{group_labels}{Labels of the two groups - default "Group1" and "Group2".}
 }
 \value{
-A tibble - see details in \code{\link[TIBBLE]{tibble}}.
+A tibble - see details in \code{\link[tibble]{tibble}}.
 }
 \description{
 Make tibble from two vectors x and y. The two vectors are re-organised in a
@@ -43,17 +45,4 @@ c("group1", "group2"))
 x <- c(1, 2, 3, 4, 5)
 y <- c(11, 12, 13, 14, 15)
 df <- mkt2(x, y)
-# become a tibble: 10 × 2:
-       gr   obs
-   <fctr> <dbl>
-1  Group1     1
-2  Group1     2
-3  Group1     3
-4  Group1     4
-5  Group1     5
-6  Group2    11
-7  Group2    12
-8  Group2    13
-9  Group2    14
-10 Group2    15
 }

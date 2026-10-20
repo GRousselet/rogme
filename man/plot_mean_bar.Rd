@@ -6,6 +6,15 @@
 \usage{
 plot_mean_bar(p, col = "grey21", width = 0.5, size = 0.5)
 }
+\arguments{
+\item{p}{A ggplot object.}
+
+\item{col}{Colour of the bar.}
+
+\item{width}{Width of the bar.}
+
+\item{size}{Line width of the bar.}
+}
 \description{
 Add bar marking the mean
 }

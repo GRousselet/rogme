@@ -27,6 +27,7 @@ for more details.
 }
 
 \examples{
+x <- rnorm(100)
 hd(x) # use default estimation of the median (q = 0.5)
 hd(x, q = 0.25) # estimate the first quartile
 hd(x, q = 0.75) # estimate the third quartile

@@ -5,7 +5,7 @@
 \title{Shift function for two independent groups (pbci method)}
 \usage{
 shifthd_pbci(
-  data = df,
+  data,
   formula = obs ~ gr,
   q = seq(0.1, 0.9, 0.1),
   nboot = 2000,
@@ -30,7 +30,7 @@ where ~ (tilde) means "is modeled as a function of".}
 
 \item{alpha}{Expected long-run type I error rate - default = 0.05}
 
-\item{adj_ci}{Adjust confidence intervals & p values for multiple comparisons - default = TRUE}
+\item{adj_ci}{Adjust confidence intervals for multiple comparisons - default = TRUE}
 
 \item{todo}{A list of comparisons to perform - default = NULL.}
 
@@ -39,15 +39,15 @@ executed if a \code{todo} list is provided.}
 }
 \value{
 A list of data frames, one data frame per comparison. Each data frame
-  has one row per decile. The columns are: \itemize{
+  has one row per quantile. The columns are: \itemize{
   \item Column 1 = quantiles
   \item Column 2 = quantiles for group 1
   \item Column 3 = quantiles for group 2
   \item Column 4 = quantile differences (column 4 - column 5)
   \item Column 5 = lower bounds of the confidence intervals
   \item Column 6 = upper bounds of the confidence intervals
-  \item Column 7 = critical p_values based on Hochberg's method
-  \item Column 8 = p_values (based on Hochberg's method if adj_ci = TRUE)
+  \item Column 7 = p_values
+  \item Column 8 = p_values  adjusted using Hochberg's 1988 recursive method
   }
 }
 \description{
@@ -79,12 +79,12 @@ From Rallfun-v32.txt - see \url{https://github.com/nicebread/WRS/}.
 \examples{
 set.seed(21) # generate data
 n <- 100 # sample size
-df <- tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
+df <- tibble::tibble(gr = factor(c(rep("group1",n),rep("group2",n),rep("group3",n))),
              obs= c(rnorm(n)+6, rnorm(n)+4, rnorm(n)*1.5+6)) # make tibble
 
 out <- shifthd_pbci(df, obs ~ gr) # use the default parameters
 out <- shifthd_pbci(df, obs ~ gr, nboot = 500) # specify the number of bootstrap samples
-out <- shifthd_pbci(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1"))) # specify list of comparisons
+out <- shifthd_pbci(df, obs ~ gr, todo = list(c("group1","group2"),c("group3","group1")))
 out <- shifthd_pbci(df, obs ~ gr, q = c(.1,.25,.5,.75,.9)) # specify the quantiles
 out <- shifthd_pbci(df, doall = TRUE) # compute all comparisons
 
@@ -93,6 +93,14 @@ out <- shifthd_pbci(df, doall = TRUE) # compute all comparisons
 Wilcox, R.R., Erceg-Hurn, D.M., Clark, F. & Carlson, M. (2014)
 Comparing two independent groups via the lower and upper quantiles.
 J Stat Comput Sim, 84, 1543-1551.
+
+Hochberg, Y. (1988)
+A sharper Bonferroni procedure for multiple tests of significance
+Biometrika, 75, 800-802.
+
+Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2017). 
+Beyond differences in means: Robust graphical methods to compare two groups in neuroscience. 
+European Journal of Neuroscience, 46(2), 1738–1748. https://doi.org/10.1111/ejn.13610
 }
 \seealso{
 \code{\link{hd}}

@@ -6,6 +6,16 @@
 \usage{
 quantiles_pbci(x, q = seq(1, 9)/10, nboot = 2000, alpha = 0.05)
 }
+\arguments{
+\item{x}{A numeric vector of observations.}
+
+\item{q}{A numeric vector of quantiles - default to the deciles.}
+
+\item{nboot}{Number of bootstrap samples - default = 2000.}
+
+\item{alpha}{Alpha level - default = 0.05, which means that a 95% confidence
+interval is computed.}
+}
 \description{
 Compute percentile bootstrap confidence intervals of quantiles,
 estimated using the Harrell-Davis estimator.

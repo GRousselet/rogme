@@ -60,11 +60,11 @@ Quartiles of each condition are superimposed. Quartiles are estimated using the
 Harrell-Davis estimator.
 }
 \examples{
-df <- tibble(cond1 = rnorm(50), cond2 = cond1 + rnorm(50))
+df <- tibble::tibble(cond1 = rnorm(50), cond2 = cond1 + rnorm(50))
 plot_scat2d(df, formula = cond2 ~ cond1) # basic call
 plot_scat2d(df, formula = cond2 ~ cond1, size_q=3) # specify size of quartile segments
 plot_scat2d(df, formula = cond2 ~ cond1, size_q=c(1,2,1)) # use thicker line for median
-plot_scat2d(df, formula = cond2 ~ cond1, linetype_q = "longdash") # specify linetype - default = dashed
+plot_scat2d(df, formula = cond2 ~ cond1, linetype_q = "longdash") # specify linetype
 }
 \seealso{
 \code{\link{hd}}
