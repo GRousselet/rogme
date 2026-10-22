@@ -11,3 +11,4 @@ deleted.txt
 tmp.R
 vignette_header.txt
 .DS_Store
+*.Rproj
